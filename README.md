@@ -44,14 +44,12 @@ git clone -b LabBranch https://github.com/tianocore-training/edk2.git
 git clone https://github.com/tianocore/edk2-libc.git
 
 cd ..
-
 ```
+
 Download this Lab Material
 
 ```
 git clone https://github.com/tianocore-training/Lab_Material_FW.git
-
-
 ```
 
 After downloading, Copy /Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any files.
