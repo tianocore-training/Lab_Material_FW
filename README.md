@@ -34,14 +34,36 @@ Lab Material for UEFI / EDK II Training
 
 To see the Slides with links to the presentations goto https://gitpitch.com/tianocore-training/Tianocore_Training_Contents/master#/
 
+This lab Material uses the edk2 and edk2-libc
+
+Before downloading this Lab:
+```
+Mkdir edk2-ws
+cd edk2-sw
+git clone -b LabBranch https://github.com/tianocore-training/edk2.git
+git clone https://github.com/tianocore/edk2-libc.git
+
+cd ..
+
+```
+Download this Lab Material
+
+```
+git clone https://github.com/tianocore-training/Lab_Material_FW.git
+
+
+```
+
+After downloading, Copy /Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any files.
+
+
 ### Lab Material all started in the FW directory
 
 - **FW**
   - Documentation
   - DriverWizard
   - edk2-ws 
-      - edk2 - Same as https://github.com/tianocore/edk2 
-      - edk2-libc Same as https://github.com/tianocore/edk2-libc 
+       - edk2-libc Same as https://github.com/tianocore/edk2-libc 
   - LabSampleCode
   
 ####  From Presentations_FW
