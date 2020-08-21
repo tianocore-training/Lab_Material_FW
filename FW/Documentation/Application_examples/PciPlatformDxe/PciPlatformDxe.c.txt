@@ -1,0 +1,249 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is
+  licensed for Intel CPUs and chipsets under the terms of your
+  license agreement with Intel or your vendor.  This file may
+  be modified by the user, subject to additional terms of the
+  license agreement
+--*/
+/*++
+
+Copyright (c) 2006 - 2011, Intel Corporation. All rights reserved.<BR>
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+--*/
+
+#include <PiDxe.h>
+
+#include <Guid/IgdLegacyRomFileName.h>
+#include <Guid/ZeroGuid.h>
+
+#include <Protocol/PciPlatform.h>
+#include <Protocol/PciIo.h>
+
+#include <Library/DxeServicesLib.h>
+#include <Library/UefiDriverEntryPoint.h>
+#include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiRuntimeServicesTableLib.h>
+#include <Library/DebugLib.h>
+#include <Library/IoLib.h>
+#include <Library/PciLib.h>
+
+#include <McAccess.h>
+#include <PchAccess.h>
+
+#include "PciPlatformDxe.h"
+
+//
+// Onboard legacy Option ROM table.
+//
+PCI_OPTION_ROM_TABLE mPciOptionRomTable[] = {
+  { IGD_LEGACY_OPTION_ROM_FILE_GUID, 0, IGD_BUS_NUM, IGD_DEV_NUM, IGD_FUNC_NUM, IGD_VID, IGD_DID },
+  { ZERO_GUID,              0, 0, 0, 0, 0xffff, 0xffff }
+};
+
+//
+// PCI Platform Protocol
+//
+EFI_PCI_PLATFORM_PROTOCOL mPciPlatform = {
+  PhaseNotify,
+  PlatformPrepController,
+  GetPlatformPolicy,
+  GetPciRom
+};
+
+EFI_HANDLE mPciPlatformHandle = NULL;
+EFI_HANDLE mImageHandle       = NULL;
+
+EFI_STATUS
+EFIAPI
+PhaseNotify (
+  IN EFI_PCI_PLATFORM_PROTOCOL                      *This,
+  IN EFI_HANDLE                                     HostBridge,
+  IN EFI_PCI_HOST_BRIDGE_RESOURCE_ALLOCATION_PHASE  Phase,
+  IN EFI_PCI_CHIPSET_EXECUTION_PHASE                ChipsetPhase
+  )
+{
+  if (Phase == EfiPciHostBridgeEndResourceAllocation) {
+    //
+    // Force a known base address for the SMBUS device.  May want to find a better
+    // way to reserve the address...
+    //
+    PciWrite32 (PCI_LIB_ADDRESS (0, PCI_DEVICE_NUMBER_PCH_SMBUS, PCI_FUNCTION_NUMBER_PCH_SMBUS, R_PCH_SMBUS_BASE), 0xEFA0);
+    return EFI_SUCCESS;
+  }
+  return EFI_UNSUPPORTED;
+}
+
+
+EFI_STATUS
+EFIAPI
+PlatformPrepController (
+  IN  EFI_PCI_PLATFORM_PROTOCOL                      *This,
+  IN  EFI_HANDLE                                     HostBridge,
+  IN  EFI_HANDLE                                     RootBridge,
+  IN  EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL_PCI_ADDRESS    PciAddress,
+  IN  EFI_PCI_CONTROLLER_RESOURCE_ALLOCATION_PHASE   Phase,
+  IN  EFI_PCI_CHIPSET_EXECUTION_PHASE                ChipsetPhase
+  )
+{
+  return EFI_UNSUPPORTED;
+}
+
+EFI_STATUS
+EFIAPI
+GetPlatformPolicy (
+  IN  CONST EFI_PCI_PLATFORM_PROTOCOL                     *This,
+  OUT       EFI_PCI_PLATFORM_POLICY                       *PciPolicy
+  )
+{
+  if (PciPolicy == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  return EFI_UNSUPPORTED;
+}
+
+EFI_STATUS
+EFIAPI
+GetPciRom (
+  IN  CONST EFI_PCI_PLATFORM_PROTOCOL                   *This,
+  IN        EFI_HANDLE                                  PciHandle,
+  OUT       VOID                                        **RomImage,
+  OUT       UINTN                                       *RomSize
+  )
+/*++
+
+  Routine Description:
+    Return a PCI ROM image for the onboard device represented by PciHandle
+
+  Arguments:
+    This      - Protocol instance pointer.
+    PciHandle - PCI device to return the ROM image for.
+    RomImage  - PCI Rom Image for onboard device
+    RomSize   - Size of RomImage in bytes
+
+  Returns:
+    EFI_SUCCESS   - RomImage is valid
+    EFI_NOT_FOUND - No RomImage
+
+--*/
+{
+  EFI_STATUS                    Status;
+  EFI_PCI_IO_PROTOCOL           *PciIo;
+  UINTN                         Segment;
+  UINTN                         Bus;
+  UINTN                         Device;
+  UINTN                         Function;
+  UINT16                        VendorId;
+  UINT16                        DeviceId;
+  UINT16                        DeviceClass;
+  UINTN                         TableIndex;
+
+  //
+  // Get PciIo protocol based on handle.
+  //
+  Status = gBS->HandleProtocol (
+                  PciHandle,
+                  &gEfiPciIoProtocolGuid,
+                  (VOID **) &PciIo
+                  );
+  if (EFI_ERROR (Status)) {
+    return EFI_NOT_FOUND;
+  }
+
+  //
+  // Get location (Bus, Device, Function) and device class information to determine
+  // if the device has an embedded Option ROM.
+  //
+  PciIo->GetLocation (PciIo, &Segment, &Bus, &Device, &Function);
+  PciIo->Pci.Read (PciIo, EfiPciIoWidthUint16, 0x0A, 1, &DeviceClass);
+  PciIo->Pci.Read (PciIo, EfiPciIoWidthUint16, 0, 1, &VendorId);
+  PciIo->Pci.Read (PciIo, EfiPciIoWidthUint16, 2, 1, &DeviceId);
+
+  //
+  // Loop through table of video option rom descriptions
+  //
+  for (TableIndex = 0; mPciOptionRomTable[TableIndex].VendorId != 0xffff; TableIndex++) {
+    //
+    // See if the PCI device specified by PciHandle matches at device in mPciOptionRomTable
+    //
+    if (VendorId != mPciOptionRomTable[TableIndex].VendorId ||
+        DeviceId != mPciOptionRomTable[TableIndex].DeviceId ||
+        Segment != mPciOptionRomTable[TableIndex].Segment ||
+        Bus != mPciOptionRomTable[TableIndex].Bus ||
+        Device != mPciOptionRomTable[TableIndex].Device ||
+        Function != mPciOptionRomTable[TableIndex].Function) {
+      continue;
+    }
+
+    Status = GetSectionFromFv (
+               &mPciOptionRomTable[TableIndex].FileName,
+               EFI_SECTION_RAW,
+               0,
+               RomImage,
+               RomSize
+               );
+
+    if (EFI_ERROR (Status)) {
+      continue;
+    }
+
+    return EFI_SUCCESS;
+  }
+
+  return EFI_NOT_FOUND;
+}
+
+EFI_STATUS
+EFIAPI
+PciPlatformDriverEntry (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+/*++
+
+Routine Description:
+
+Arguments:
+  (Standard EFI Image entry - EFI_IMAGE_ENTRY_POINT)
+
+Returns:
+  EFI_STATUS
+
+--*/
+{
+  EFI_STATUS  Status;
+
+  mImageHandle = ImageHandle;
+
+  //
+  // Install on a new handle
+  //
+  Status = gBS->InstallProtocolInterface (
+                  &mPciPlatformHandle,
+                  &gEfiPciPlatformProtocolGuid,
+                  EFI_NATIVE_INTERFACE,
+                  &mPciPlatform
+                  );
+
+  return Status;
+}
+
+//
+// TODO:
+// Fix up hard coded CMOS accesses.  Do we need them?  Can we use PCDs?
+//
+BOOLEAN
+BootLegacyNetwork (
+  VOID
+  )
+{
+  IoWrite8 (0x72, 0x7E);
+  return (BOOLEAN)((IoRead8 (0x73) & BIT3) != 0);
+}

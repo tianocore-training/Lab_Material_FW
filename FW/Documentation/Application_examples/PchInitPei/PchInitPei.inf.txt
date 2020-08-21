@@ -1,0 +1,86 @@
+#
+# This file contains an 'Intel Pre-EFI Module' and is licensed
+# for Intel CPUs and Chipsets under the terms of your license
+# agreement with Intel or your vendor.  This file may be
+# modified by the user, subject to additional terms of the
+# license agreement
+#
+## @file
+# Component description file for PCH Init PEIM.
+#
+# Copyright (c) 2006 - 2011, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PchInitPei
+  FILE_GUID                      = 3CD4B254-6E70-11DF-97FC-080027B4D046
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 0.1
+
+  ENTRY_POINT                    = PchInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  PchInitPei.c
+  PchInitPei.h
+  PchUsbInit.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IbexpeakPchPkg/IbexpeakPchPkg.dec
+
+[LibraryClasses]
+  PcdLib
+  PeiServicesLib
+  BaseLib
+  PeimEntryPoint
+  DebugLib
+  PciLib
+  IoLib
+  IoComplexLib
+  HobLib
+  UsbCommonLib
+
+[Ppis]
+  gPchPeiInitPpiGuid                  # PPI ALWAYS_PRODUCED
+  gEfiPeiMemoryDiscoveredPpiGuid      # PPI Used for callback
+  gEfiPeiMasterBootModePpiGuid        # PPI Used for callback
+
+[Pcd]
+  gEfiPchTokenSpaceGuid.PcdPchAcpiIoPortBaseAddress
+  gEfiPchTokenSpaceGuid.PcdPchRcbaMmioBaseAddress
+  gEfiPchTokenSpaceGuid.PcdPchGpioIoPortBaseAddress
+  gEfiPchTokenSpaceGuid.PcdPchHpetEnable
+  gEfiPchTokenSpaceGuid.PcdPchHpetBaseAddress
+  gEfiPchTokenSpaceGuid.PcdPchThermalBase
+  gEfiPchTokenSpaceGuid.PcdPchThermalDimm1Readings
+  gEfiPchTokenSpaceGuid.PcdPchThermalDimm2Readings
+  gEfiPchTokenSpaceGuid.PcdPchThermalDimm3Readings
+  gEfiPchTokenSpaceGuid.PcdPchThermalDimm4Readings
+  gEfiPchTokenSpaceGuid.PcdPchThermalMchReadings
+  gEfiPchTokenSpaceGuid.PcdPchThermalPchReadings
+  gEfiPchTokenSpaceGuid.PcdPchThermalProcEnergyReadings
+  gEfiPchTokenSpaceGuid.PcdPchThermalProcReadings
+  gEfiPchTokenSpaceGuid.PcdPchThermalReportingEnable
+  gEfiPchTokenSpaceGuid.PcdEnableAllUsbPorts
+  gEfiPchTokenSpaceGuid.PcdEhciRecoveryMmioBase
+
+[Depex]
+  TRUE
+

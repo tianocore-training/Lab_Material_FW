@@ -1,0 +1,372 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is
+  licensed for Intel CPUs and chipsets under the terms of your
+  license agreement with Intel or your vendor.  This file may
+  be modified by the user, subject to additional terms of the
+  license agreement
+--*/
+/*++
+
+Copyright (c) 1999 - 2010, Intel Corporation. All rights reserved.<BR>
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+--*/
+
+/**@file
+  Serial driver that layers on top of a Serial Port Library instance
+
+**/
+
+#include <PiDxe.h>
+
+#include <Protocol/SerialIo.h>
+#include <Protocol/DevicePath.h>
+
+#include <Library/DebugLib.h>
+#include <Library/UefiDriverEntryPoint.h>
+#include <Library/BaseLib.h>
+#include <Library/UefiLib.h>
+#include <Library/DevicePathLib.h>
+#include <Library/BaseMemoryLib.h>
+#include <Library/MemoryAllocationLib.h>
+#include <Library/UefiBootServicesTableLib.h>
+#include <Library/PcdLib.h>
+#include <Library/SerialPortLib.h>
+
+//
+// Serial Driver Defaults
+//
+#define SERIAL_PORT_DEFAULT_RECEIVE_FIFO_DEPTH  1
+#define SERIAL_PORT_DEFAULT_TIMEOUT             1000000
+#define SERIAL_PORT_DEFAULT_CONTROL_MASK        0
+
+//
+// Serial I/O Protocol Interface
+//
+EFI_STATUS
+EFIAPI
+SerialReset (
+  IN EFI_SERIAL_IO_PROTOCOL         *This
+  );
+
+EFI_STATUS
+EFIAPI
+SerialSetAttributes (
+  IN EFI_SERIAL_IO_PROTOCOL         *This,
+  IN UINT64                         BaudRate,
+  IN UINT32                         ReceiveFifoDepth,
+  IN UINT32                         Timeout,
+  IN EFI_PARITY_TYPE                Parity,
+  IN UINT8                          DataBits,
+  IN EFI_STOP_BITS_TYPE             StopBits
+  );
+
+EFI_STATUS
+EFIAPI
+SerialSetControl (
+  IN EFI_SERIAL_IO_PROTOCOL         *This,
+  IN UINT32                         Control
+  );
+
+EFI_STATUS
+EFIAPI
+SerialGetControl (
+  IN EFI_SERIAL_IO_PROTOCOL         *This,
+  OUT UINT32                        *Control
+  );
+
+EFI_STATUS
+EFIAPI
+SerialWrite (
+  IN EFI_SERIAL_IO_PROTOCOL         *This,
+  IN OUT UINTN                      *BufferSize,
+  IN VOID                           *Buffer
+  );
+
+EFI_STATUS
+EFIAPI
+SerialRead (
+  IN EFI_SERIAL_IO_PROTOCOL         *This,
+  IN OUT UINTN                      *BufferSize,
+  OUT VOID                          *Buffer
+  );
+
+//
+// Global Varibles
+//
+
+UINTN  mControl = SERIAL_PORT_DEFAULT_CONTROL_MASK;
+
+EFI_HANDLE  mSerialIoHandle;
+
+EFI_SERIAL_IO_MODE  mSerialIoMode = {
+  SERIAL_PORT_DEFAULT_CONTROL_MASK,
+  SERIAL_PORT_DEFAULT_TIMEOUT,
+  FixedPcdGet64 (PcdUartDefaultBaudRate),     // BaudRate
+  SERIAL_PORT_DEFAULT_RECEIVE_FIFO_DEPTH,
+  FixedPcdGet8 (PcdUartDefaultDataBits),      // DataBits
+  FixedPcdGet8 (PcdUartDefaultParity),        // Parity
+  FixedPcdGet8 (PcdUartDefaultStopBits)       // StopBits
+};
+
+EFI_SERIAL_IO_PROTOCOL mSerialIo = {
+  SERIAL_IO_INTERFACE_REVISION,
+  SerialReset,
+  SerialSetAttributes,
+  SerialSetControl,
+  SerialGetControl,
+  SerialWrite,
+  SerialRead,
+  &mSerialIoMode
+};
+
+typedef struct {
+  ACPI_HID_DEVICE_PATH      PciRootBridge;
+  PCI_DEVICE_PATH           IsaBridge;
+  ACPI_HID_DEVICE_PATH      IsaSerial;
+  UART_DEVICE_PATH          UartDevicePath;
+  EFI_DEVICE_PATH_PROTOCOL  EndDevicePath;
+} SERIAL_IO_DEVICE_PATH;
+
+SERIAL_IO_DEVICE_PATH mSerialIoDevicePath = {
+  {
+    ACPI_DEVICE_PATH,
+    ACPI_DP,
+    (UINT8)(sizeof(ACPI_HID_DEVICE_PATH)),
+    (UINT8)((sizeof(ACPI_HID_DEVICE_PATH)) >> 8),
+    EISA_PNP_ID(0x0A03),
+    0
+  },
+  {
+    HARDWARE_DEVICE_PATH,
+    HW_PCI_DP,
+    (UINT8)(sizeof(PCI_DEVICE_PATH)),
+    (UINT8)((sizeof(PCI_DEVICE_PATH)) >> 8),
+    0x0,
+    0x1f
+  },
+  {
+    ACPI_DEVICE_PATH,
+    ACPI_DP,
+    (UINT8)(sizeof(ACPI_HID_DEVICE_PATH)),
+    (UINT8)((sizeof(ACPI_HID_DEVICE_PATH)) >> 8),
+    EISA_PNP_ID(0x0501),
+    0
+  },
+  {
+    {
+      MESSAGING_DEVICE_PATH,
+      MSG_UART_DP,
+      {
+        (UINT8) (sizeof (UART_DEVICE_PATH)),
+        (UINT8) ((sizeof (UART_DEVICE_PATH)) >> 8)
+      }
+    },
+    0,
+    FixedPcdGet64 (PcdUartDefaultBaudRate),
+    FixedPcdGet8 (PcdUartDefaultDataBits),
+    FixedPcdGet8 (PcdUartDefaultParity),
+    FixedPcdGet8 (PcdUartDefaultStopBits)
+  },
+  {
+    END_DEVICE_PATH_TYPE,
+    END_ENTIRE_DEVICE_PATH_SUBTYPE,
+    {
+      END_DEVICE_PATH_LENGTH,
+      0
+    }
+  }
+};
+
+/**
+  The user Entry Point for module Serial. The user code starts with this function.
+
+  @param[in] ImageHandle    The firmware allocated handle for the EFI image.
+  @param[in] SystemTable    A pointer to the EFI System Table.
+
+  @retval EFI_SUCCESS       The entry point is executed successfully.
+  @retval other             Some error occurs when executing this entry point.
+
+**/
+EFI_STATUS
+EFIAPI
+InitializeSerial (
+  IN EFI_HANDLE           ImageHandle,
+  IN EFI_SYSTEM_TABLE     *SystemTable
+  )
+{
+  SerialPortInitialize ();
+  return gBS->InstallMultipleProtocolInterfaces (
+                &mSerialIoHandle,
+                &gEfiDevicePathProtocolGuid, &mSerialIoDevicePath,
+                &gEfiSerialIoProtocolGuid, &mSerialIo,
+                NULL
+                );
+}
+
+//
+// Interface Functions
+//
+/**
+  Reset serial device
+
+  @param This             - Pointer to EFI_SERIAL_IO_PROTOCOL
+
+  @retval EFI_SUCCESS      - Reset successfully
+  @retval EFI_DEVICE_ERROR - Failed to reset
+
+**/
+EFI_STATUS
+EFIAPI
+SerialReset (
+  IN EFI_SERIAL_IO_PROTOCOL  *This
+  )
+{
+  mControl = SERIAL_PORT_DEFAULT_CONTROL_MASK;
+  return SerialPortInitialize ();
+}
+
+/**
+  Set new attributes to a serial device
+
+  @param This                   - Pointer to EFI_SERIAL_IO_PROTOCOL
+  @param  BaudRate               - The baudrate of the serial device
+  @param  ReceiveFifoDepth       - The depth of receive FIFO buffer
+  @param  Timeout                - The request timeout for a single char
+  @param  Parity                 - The type of parity used in serial device
+  @param  DataBits               - Number of databits used in serial device
+  @param  StopBits               - Number of stopbits used in serial device
+
+  @retval  EFI_SUCCESS            - The new attributes were set
+  @retval  EFI_INVALID_PARAMETERS - One or more attributes have an unsupported value
+  @retval  EFI_UNSUPPORTED        - Data Bits can not set to 5 or 6
+  @retval  EFI_DEVICE_ERROR       - The serial device is not functioning correctly (no return)
+
+**/
+EFI_STATUS
+EFIAPI
+SerialSetAttributes (
+  IN EFI_SERIAL_IO_PROTOCOL  *This,
+  IN UINT64                  BaudRate,
+  IN UINT32                  ReceiveFifoDepth,
+  IN UINT32                  Timeout,
+  IN EFI_PARITY_TYPE         Parity,
+  IN UINT8                   DataBits,
+  IN EFI_STOP_BITS_TYPE      StopBits
+  )
+{
+  return EFI_SUCCESS;
+}
+
+/**
+  Set Control Bits
+
+  @param This            - Pointer to EFI_SERIAL_IO_PROTOCOL
+  @param Control         - Control bits that can be settable
+
+  @retval EFI_SUCCESS     - New Control bits were set successfully
+  @retval EFI_UNSUPPORTED - The Control bits wanted to set are not supported
+
+**/
+EFI_STATUS
+EFIAPI
+SerialSetControl (
+  IN EFI_SERIAL_IO_PROTOCOL  *This,
+  IN UINT32                  Control
+  )
+{
+  return EFI_SUCCESS;
+}
+
+/**
+  Get ControlBits
+
+  @param This        - Pointer to EFI_SERIAL_IO_PROTOCOL
+  @param Control     - Control signals of the serial device
+
+  @retval EFI_SUCCESS - Get Control signals successfully
+
+**/
+EFI_STATUS
+EFIAPI
+SerialGetControl (
+  IN EFI_SERIAL_IO_PROTOCOL  *This,
+  OUT UINT32                 *Control
+  )
+{
+  *Control = (UINT32) mControl;
+  if (!SerialPortPoll()) {
+    *Control |= EFI_SERIAL_INPUT_BUFFER_EMPTY;
+  }
+  return EFI_SUCCESS;
+}
+
+/**
+  Write the specified number of bytes to serial device
+
+  @param This             - Pointer to EFI_SERIAL_IO_PROTOCOL
+  @param  BufferSize       - On input the size of Buffer, on output the amount of
+                       data actually written
+  @param  Buffer           - The buffer of data to write
+
+  @retval EFI_SUCCESS      - The data were written successfully
+  @retval EFI_DEVICE_ERROR - The device reported an error
+  @retval EFI_TIMEOUT      - The write operation was stopped due to timeout
+
+**/
+EFI_STATUS
+EFIAPI
+SerialWrite (
+  IN EFI_SERIAL_IO_PROTOCOL  *This,
+  IN OUT UINTN               *BufferSize,
+  IN VOID                    *Buffer
+  )
+{
+  *BufferSize = SerialPortWrite (Buffer, *BufferSize);
+  return EFI_SUCCESS;
+}
+
+/**
+  Read the specified number of bytes from serial device
+
+  @param This             - Pointer to EFI_SERIAL_IO_PROTOCOL
+  @param BufferSize       - On input the size of Buffer, on output the amount of
+                       data returned in buffer
+  @param Buffer           -  The buffer to return the data into
+
+  @retval EFI_SUCCESS      - The data were read successfully
+  @retval EFI_DEVICE_ERROR - The device reported an error
+  @retval EFI_TIMEOUT      - The read operation was stopped due to timeout
+
+**/
+EFI_STATUS
+EFIAPI
+SerialRead (
+  IN EFI_SERIAL_IO_PROTOCOL  *This,
+  IN OUT UINTN               *BufferSize,
+  OUT VOID                   *Buffer
+  )
+{
+  if (*BufferSize == 0) {
+    return EFI_SUCCESS;
+  }
+
+  if (Buffer == NULL) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  if (SerialPortPoll ()) {
+    *BufferSize = SerialPortRead (Buffer, 1);
+  } else {
+    *BufferSize = 0;
+    return EFI_TIMEOUT;
+  }
+
+  return EFI_SUCCESS;
+}

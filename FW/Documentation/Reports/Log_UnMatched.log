@@ -1,0 +1,16 @@
+Ppi, Produced, 203, c:\fw\edk2\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 49, PpiList
+Ppi, Produced, 203, c:\fw\edk2\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 77, NewPpi
+Ppi, Consumed, 203, c:\fw\edk2\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 105, Guid
+Ppi, Callback, 203, c:\fw\edk2\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 132, NotifyList
+Protocol, Produced, 267, c:\fw\edk2\MdePkg\Library\UefiLib\UefiLib.c, 289, (EFI_GUID *) Name
+Protocol, Consumed, 267, c:\fw\edk2\MdePkg\Library\UefiLib\UefiLib.c, 1696, Protocol
+Protocol, Callback, 267, c:\fw\edk2\MdePkg\Library\UefiLib\UefiLib.c, 254, (EFI_GUID *) Name
+Protocol, Consumed, 368, c:\fw\edk2\OvmfPkg\Library\PlatformBootManagerLib\BdsPlatform.c, 838, Id
+Protocol, Consumed, 507, c:\fw\edk2\ShellPkg\Library\UefiShellDriver1CommandsLib\Dh.c, 319, ProtocolGuidArray[ProtocolIndex]
+Ppi, Produced, 601, c:\fw\edk2\MdeModulePkg\Core\Pei\Ppi\Ppi.c, 303, PpiList
+Ppi, Produced, 601, c:\fw\edk2\MdeModulePkg\Core\Pei\Ppi\Ppi.c, 758, PpiList
+Ppi, Consumed, 606, c:\fw\edk2\MdeModulePkg\Core\Pei\FwVol\FwVol.c, 599, FvInfo2Ppi.FvFormat
+Protocol, Produced, 666, c:\fw\edk2\MdeModulePkg\Core\Dxe\SectionExtraction\CoreSectionExtraction.c, 239, ExtractHandlerGuidTable [ExtractHandlerNumber]
+Protocol, Produced, 679, c:\fw\edk2\MdeModulePkg\Core\Dxe\Hand\Handle.c, 316, Protocol
+Protocol, Produced, 679, c:\fw\edk2\MdeModulePkg\Core\Dxe\Hand\Handle.c, 589, Protocol
+Protocol, Produced, 679, c:\fw\edk2\MdeModulePkg\Core\Dxe\Hand\Handle.c, 870, Protocol

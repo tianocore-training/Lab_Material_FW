@@ -1,0 +1,226 @@
+/*++
+  This file contains an 'Intel Pre-EFI Module' and is licensed  
+  for Intel CPUs and Chipsets under the terms of your license   
+  agreement with Intel or your vendor.  This file may be        
+  modified by the user, subject to additional terms of the      
+  license agreement                                             
+--*/
+/** @file
+  This PEIM initialize platform for MRC, following action is performed,
+    1. Initizluize GMCH
+    2. Detect boot mode
+    3. Detect video adapter to determine whether we need pre allocated memory 
+    4. Calls MRC to initialize memory and install a PPI notify to do post memory initialization.
+  This file contains the main entrypoint of the PEIM.
+  
+Copyright (c) 1999 - 2010, Intel Corporation.<BR>
+All rights reserved.  This software and associated documentation
+(if any) is furnished under a license and may only be used or
+copied in accordance with the terms of the license.  Except as
+permitted by such license, no part of this software or
+documentation may be reproduced, stored in a retrieval system, or transmitted 
+in any form or by any means without the express written consent of Intel Corporation. 
+
+**/
+
+
+#include "CommonHeader.h"
+
+#include "Platform.h"
+
+EFI_STATUS
+EFIAPI
+EndOfPeiSignalPpiNotifyCallback (
+  IN EFI_PEI_SERVICES           **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR  *NotifyDescriptor,
+  IN VOID                       *Ppi
+  );
+//
+// The global indicator, the FvFileLoader callback will modify it to TRUE after loading PEIM into memory
+//
+BOOLEAN ImageInMemory = FALSE;
+
+STATIC EFI_PEI_PPI_DESCRIPTOR mPpiBootMode[1] = {
+  {
+    (EFI_PEI_PPI_DESCRIPTOR_PPI | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
+    &gEfiPeiMasterBootModePpiGuid,
+    NULL
+  }
+};  
+
+EFI_PEI_NOTIFY_DESCRIPTOR mMemoryDiscoveredNotifyList[1] = {
+  { 
+    (EFI_PEI_PPI_DESCRIPTOR_NOTIFY_CALLBACK | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
+    &gEfiPeiMemoryDiscoveredPpiGuid,
+    MemoryDiscoveredPpiNotifyCallback 
+  }
+};
+
+EFI_PEI_NOTIFY_DESCRIPTOR mEndOfPeiSignalPpiNotifyList[1] = {
+  { 
+    (EFI_PEI_PPI_DESCRIPTOR_NOTIFY_CALLBACK | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
+    &gEfiEndOfPeiSignalPpiGuid,
+    EndOfPeiSignalPpiNotifyCallback
+  }
+};
+
+EFI_PEI_STALL_PPI mStallPpi = {
+  PEI_STALL_RESOLUTION,
+  Stall
+};
+
+EFI_PEI_PPI_DESCRIPTOR mPpiStall[1] = {
+  {
+    (EFI_PEI_PPI_DESCRIPTOR_PPI | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
+    &gEfiPeiStallPpiGuid,
+    &mStallPpi
+  }
+};
+
+/**
+  This is the entrypoint of PEIM
+  
+  @param  FileHandle  Handle of the file being invoked.
+  @param  PeiServices Describes the list of possible PEI Services.
+
+  @retval EFI_SUCCESS if it completed successfully.  
+**/
+EFI_STATUS
+EFIAPI
+PeiInitPlatform (
+  IN       EFI_PEI_FILE_HANDLE  FileHandle,
+  IN CONST EFI_PEI_SERVICES     **PeiServices
+  )
+{
+  EFI_STATUS                              Status;
+  EFI_BOOT_MODE                           BootMode;
+  EFI_PEI_STALL_PPI                       *StallPpi;
+  EFI_PEI_PPI_DESCRIPTOR                  *StallPeiPpiDescriptor;   
+  EFI_FV_FILE_INFO                        FileInfo;
+  
+  //
+  // This is a second path on entry, in recovery boot path the Stall PPI need to be memory-based
+  // to improve recovery performance.
+  //
+  Status = PeiServicesFfsGetFileInfo (FileHandle, &FileInfo);
+  ASSERT_EFI_ERROR (Status);
+  //
+  // The follow conditional check only works for memory-mapped FFS,
+  // so we ASSERT that the file is really a MM FFS.
+  //
+  ASSERT (FileInfo.Buffer != NULL);
+  if (!(((UINTN) FileInfo.Buffer <= (UINTN) PeiInitPlatform) &&  
+        ((UINTN) PeiInitPlatform <= (UINTN) FileInfo.Buffer + FileInfo.BufferSize))) {
+    //
+    // Now that module in memory, update the 
+    // PPI that describes the Stall to other modules
+    //
+    Status = PeiServicesLocatePpi (
+               &gEfiPeiStallPpiGuid,
+               0,
+               &StallPeiPpiDescriptor,
+               (VOID **) &StallPpi
+               );
+
+    if (!EFI_ERROR (Status)) {
+
+      Status = PeiServicesReInstallPpi (
+                 StallPeiPpiDescriptor,
+                 &mPpiStall[0]
+                 );
+    } else {
+      
+      Status = PeiServicesInstallPpi (&mPpiStall[0]);
+    }
+    return Status;
+  }
+    
+  
+  //
+  // MCH initialization for MRC
+  //
+  PeiMchPreMemInit ();
+ 
+  //
+  // ICH init before MRC
+  //   
+  PeiIchPreMemInit ();
+
+  //
+  // Do platform specific logic to create a boot mode
+  //
+  Status = UpdateBootMode ((EFI_PEI_SERVICES**)PeiServices, &BootMode);
+  ASSERT_EFI_ERROR (Status);
+  
+  //
+  // Signal possible dependent modules that there has been a 
+  // final boot mode determination
+  //
+  if (!EFI_ERROR(Status)) {
+    Status = PeiServicesInstallPpi (&mPpiBootMode[0]);
+    ASSERT_EFI_ERROR (Status);
+  }
+
+  if (BootMode != BOOT_ON_S3_RESUME) {    
+    IchClearSmiAndWake ();    
+  }
+
+  //
+  //  Detect video adapter to decide pre allocated memory
+  //   
+  DEBUG ((EFI_D_INFO, "Detect graphic Memory Before MRC\n"));    
+  GraphicsInit ((EFI_PEI_SERVICES**)PeiServices);
+
+  DEBUG ((EFI_D_INFO, "MRC Entry\n"));
+  MemoryInit ((EFI_PEI_SERVICES**)PeiServices);
+
+  //
+  // Now that all of the pre-permament memory activities have
+  // been taken care of, post a call-back for the permament-memory
+  // resident services, such as HOB construction.
+  // PEI Core will switch stack after this PEIM exit.  After that the MTRR
+  // can be set.
+  //
+  Status = PeiServicesNotifyPpi (&mMemoryDiscoveredNotifyList[0]);
+  ASSERT_EFI_ERROR (Status);
+
+
+  if (BootMode != BOOT_ON_S3_RESUME) {
+    Status = PeiServicesNotifyPpi (mEndOfPeiSignalPpiNotifyList);
+    ASSERT_EFI_ERROR (Status);
+  }
+  
+  if (BootMode == BOOT_IN_RECOVERY_MODE) {
+    PeiServicesRegisterForShadow (FileHandle);
+  }  
+
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
+EndOfPeiSignalPpiNotifyCallback (
+  IN EFI_PEI_SERVICES           **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR  *NotifyDescriptor,
+  IN VOID                       *Ppi
+  )
+{
+  EFI_STATUS                            Status;
+
+  DEBUG ((EFI_D_INFO, "End of PEI Signal Callback\n"));
+
+  //
+  // Restore the flash region to be UC
+  // for both normal boot as we build a Resource Hob to 
+  // describe this region as UC to DXE core.
+  //
+  WriteBackInvalidateDataCacheRange (
+    (VOID *) (UINTN) PcdGet32 (PcdFlashAreaBaseAddress),
+    PcdGet32 (PcdFlashAreaSize)
+  );    
+
+  Status = MtrrSetMemoryAttribute (PcdGet32 (PcdFlashAreaBaseAddress), PcdGet32 (PcdFlashAreaSize), CacheUncacheable);
+  ASSERT_EFI_ERROR (Status);
+
+  return EFI_SUCCESS;
+}

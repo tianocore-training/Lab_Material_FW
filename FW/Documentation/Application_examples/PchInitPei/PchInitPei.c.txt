@@ -1,0 +1,1409 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and uniquely
+  identified as "Intel Mobile Silicon Support Module" and is
+  licensed for Intel Mobile CPUs and chipsets under the terms of your
+  license agreement with Intel or your vendor.  This file may
+  be modified by the user, subject to additional terms of the
+  license agreement
+--*/
+/*++
+
+Copyright (c) 2004 - 2011, Intel Corporation. All rights reserved.<BR>
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+Module Name:
+
+  PchInitPeim.c
+
+Abstract:
+
+  The PCH Init PEIM implements the PCH PEI Init PPI.
+
+--*/
+
+//
+// TODO:
+// At some point the code should use the PCI LIB functions and not the macros
+// that were included as part of the code drop.
+//
+
+#include "PchInitPei.h"
+
+//
+// Global variables
+//
+static PCH_PEI_INIT_PPI       mPchPeiInitPpi = {
+  PeiPchInitialize,
+  PeiPchGbeMandatedReset,
+  PeiPchClearEvents,
+  PeiPchGetIntrusionStatus,
+  PeiPchGetLastSleepState,
+  PeiPchSetGpioConfig,
+  PeiPchGetGpioLevels,
+  PeiPchSetGpioLevels,
+  PeiPchGetPowerFailureState
+};
+
+static EFI_PEI_PPI_DESCRIPTOR mPpiListVariable = {
+  (EFI_PEI_PPI_DESCRIPTOR_PPI | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
+  &gPchPeiInitPpiGuid,
+  &mPchPeiInitPpi
+};
+
+static EFI_PEI_NOTIFY_DESCRIPTOR mNotifyList[] = {
+  {
+    EFI_PEI_PPI_DESCRIPTOR_NOTIFY_CALLBACK,
+    &gEfiPeiMasterBootModePpiGuid,
+    PchInitUsb
+  },
+  {
+    EFI_PEI_PPI_DESCRIPTOR_NOTIFY_CALLBACK | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST,
+    &gEfiPeiMemoryDiscoveredPpiGuid,
+    PchInitAfterMemInstall
+  }
+};
+
+//
+// Support procedures start here.
+//
+
+STATIC
+BOOLEAN
+PeiPchCheckGpioBaseEnabled (
+  VOID
+  )
+{
+  return (BOOLEAN) (((PciRead16 (PCI_PCH_LPC_ADDRESS(R_PCH_LPC_GPIO_BASE)) & B_PCH_LPC_GPIO_BASE_BAR) == 0) ||
+    ((PciRead8 (PCI_PCH_LPC_ADDRESS(R_PCH_LPC_GPIO_CNT)) & B_PCH_LPC_GPIO_CNT_GPIO_EN) == 0));
+}
+
+//
+// PPI Procedures start here.
+//
+
+/**
+  Enables programming of PCH GPIO usage information during POST.  The individual
+  fields correspond directly to the registers in the PCH.  Bank = 1 refers to
+  GPIO_USE_SEL and associated fields.
+
+  @param Bank       Determines the GPIO bank to program.  Values 1 - 3 are valid.
+  @param UseSelect  Used to select Native or GPIO functionality.
+  @param IoSelect   Determines if the signal is an input or output.
+  @param Blink      Enables blink functionality for the given outputs.
+  @param Invert     Determines if the signal should be inverted when sent to GPE
+                    logic.
+**/
+EFI_STATUS
+EFIAPI
+PeiPchSetGpioConfig (
+  IN  UINT8   Bank,
+  IN  UINT32  UseSelect,
+  IN  UINT32  IoSelect,
+  IN  UINT32  Blink,
+  IN  UINT32  Invert
+  )
+{
+  //
+  // Check to make sure the GPIO base is assigned.
+  //
+  if (PeiPchCheckGpioBaseEnabled ()){
+    return EFI_NOT_READY;
+  }
+
+  //
+  // Program GPIO configuration registers based on bank selection.
+  //
+  switch (Bank) {
+    case 1:
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_USE_SEL), UseSelect);
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_IO_SEL), IoSelect);
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_BLINK), Blink);
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_GPI_INV), Invert);
+      break;
+    case 2:
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_USE_SEL2), UseSelect);
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_IO_SEL2), IoSelect);
+      break;
+    case 3:
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_USE_SEL3), UseSelect);
+      IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_IO_SEL3), IoSelect);
+      break;
+    default:
+      return EFI_INVALID_PARAMETER;
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+  Reads the current status of the GPIO Level registers and returns the values
+  to the caller.
+
+  @param *GpLvl1  Values from GPIO Level register 1.
+  @param *GpLvl2  Values from GPIO Level register 2.
+  @param *GpLvl3  Values from GPIO Level register 3.
+
+  @retval EFI_SUCCESS Values read from the GPIO level register.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchGetGpioLevels (
+  OUT UINT32  *GpLvl1,
+  OUT UINT32  *GpLvl2,
+  OUT UINT32  *GpLvl3
+  )
+{
+  //
+  // Check to make sure the GPIO base is assigned.
+  //
+  if (PeiPchCheckGpioBaseEnabled ()){
+    return EFI_NOT_READY;
+  }
+
+  //
+  // Read level registers if valid storage location provided.
+  //
+  if (GpLvl1 != NULL) {
+    *GpLvl1 = IoRead32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_LVL));
+  }
+  if (GpLvl2 != NULL) {
+    *GpLvl2 = IoRead32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_LVL2));
+  }
+  if (GpLvl3 != NULL) {
+    *GpLvl3 = IoRead32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_LVL3));
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+  Sets the current status of the GPIO Level registers.
+
+  @param *GpLvl1   Values to be set in GPIO Level register 1.
+  @param *GpLvl2   Values to be set in GPIO Level register 2.
+  @param *GpLvl3   Values to be set in GPIO Level register 3.
+
+  @retval EFI_SUCCESS Values written to the GPIO level register.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchSetGpioLevels (
+  IN  UINT32  *GpLvl1,
+  IN  UINT32  *GpLvl2,
+  IN  UINT32  *GpLvl3
+  )
+{
+  //
+  // Check to make sure the GPIO base is assigned.
+  //
+  if (PeiPchCheckGpioBaseEnabled ()){
+    return EFI_NOT_READY;
+  }
+
+  //
+  // Read level registers if valid storage location provided.
+  //
+  if (GpLvl1 != NULL) {
+    IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_LVL), *GpLvl1);
+  }
+  if (GpLvl2 != NULL) {
+    IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_LVL2), *GpLvl2);
+  }
+  if (GpLvl3 != NULL) {
+    IoWrite32 (IO_PCH_GPIO_ADDRESS(R_PCH_GPIO_LVL3), *GpLvl3);
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+  Determines the sleep state that the system was in prior to the current boot.
+  This will map some states to S5 if the system was in S1/S3 and a forced power
+  event is detected.
+
+  @param Clear  Clears the sleep state register once the sleep state information
+                has been obtained.
+
+  @retval PCH_S0  State has been read and cleared or a reset has occured.
+  @retval PCH_S1  System has come out of S1.
+  @retval PCH_S3  System has come out of S3.
+  @retval PCH_S4  System has come out of S4.
+  @retval PCH_S5  System has come out of S5 or was in S1/S3 and a power override
+                  event has occured.
+**/
+PCH_SLEEP_STATE_VAL
+EFIAPI
+PeiPchGetLastSleepState (
+  IN  BOOLEAN   Clear
+  )
+{
+  PCH_SLEEP_STATE_VAL RetVal;
+  BOOLEAN             PowerEvent;
+  BOOLEAN             WakeEventFound;
+  UINT32              SleepState;
+  UINT16              Pm1Sts;
+  UINT8               GenPmCon3;
+
+  //
+  // By default we will just assume that the system is waking from S5.
+  //
+  RetVal = PCH_S5;
+
+  //
+  // Get the current value of the sleep type register.
+  //
+  SleepState  = (IoRead32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_PM1_CNT))) & B_PCH_ACPI_PM1_CNT_SLP_TYP;
+  if (Clear) {
+    IoAnd32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_PM1_CNT), (UINT32) ~B_PCH_ACPI_PM1_CNT_SLP_TYP);
+  }
+
+  //
+  // Read ACPI registers used to determine state other than the sleep type.
+  //
+  Pm1Sts  = IoRead16 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_PM1_STS));
+  GenPmCon3 = PciRead8 (PCI_PCH_LPC_ADDRESS(R_PCH_LPC_GEN_PMCON_3));
+  if (Clear) {
+    IoWrite16 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_PM1_STS), B_PCH_ACPI_PM1_STS_PRBTNOR);
+    PciOr8 (PCI_PCH_LPC_ADDRESS(R_PCH_LPC_GEN_PMCON_3), B_PCH_LPC_GEN_PMCON_PWR_FLR);
+  }
+
+  //
+  // Check for any power override events.
+  //
+  PowerEvent = FALSE;
+  if ((GenPmCon3 & B_PCH_LPC_GEN_PMCON_PWR_FLR) != 0) {
+    PowerEvent = TRUE;
+  }
+  if ((Pm1Sts & B_PCH_ACPI_PM1_STS_PRBTNOR) != 0) {
+    PowerEvent = TRUE;
+  }
+
+  //
+  // Check to make sure this is an actual wake
+  //
+  WakeEventFound = (BOOLEAN) ((Pm1Sts & B_PCH_ACPI_PM1_STS_WAK) != 0);
+
+  //
+  // Determine the sleep state to return.
+  //
+  switch (SleepState) {
+    case V_PCH_ACPI_PM1_CNT_S0:
+      RetVal = PCH_S0;
+      break;
+    case V_PCH_ACPI_PM1_CNT_S1_DESK:
+      if (!PowerEvent && WakeEventFound) {
+        RetVal = PCH_S1;
+      } else {
+        RetVal = PCH_S5;
+      }
+      break;
+    case V_PCH_ACPI_PM1_CNT_S3:
+      if (!PowerEvent && WakeEventFound) {
+        RetVal = PCH_S3;
+      } else {
+        RetVal = PCH_S5;
+      }
+      break;
+    case V_PCH_ACPI_PM1_CNT_S4:
+      RetVal = PCH_S4;
+      break;
+    case V_PCH_ACPI_PM1_CNT_S5:
+      RetVal = PCH_S5;
+      break;
+    default:
+      RetVal = PCH_S5;
+      break;
+  }
+
+  return RetVal;
+}
+
+/**
+  Reads the chassis intrusion status bit in the PCH and returns the current
+  value.  The status can also be cleared if needed by setting the Clear parameter
+  to TURE.
+
+  @param Clear        Determines if the Chassis Intrusion status should be
+                      cleared on exit.
+
+  @retval Intrusion   Returns the logical value of the Chassis Intrusion flag.
+
+**/
+BOOLEAN
+EFIAPI
+PeiPchGetIntrusionStatus (
+  IN  BOOLEAN     Clear
+  )
+{
+  UINT16                      Tco2Status;
+  BOOLEAN                     BoxOpen;
+
+  //
+  // Read the ACPI registers and check the intruder status bit.
+  //
+  Tco2Status = IoRead16 (IO_PCH_TCO_ADDRESS(R_PCH_TCO2_STS));
+  BoxOpen = (BOOLEAN) (Tco2Status & B_PCH_TCO2_STS_INTRD_DET);
+
+  if (BoxOpen && Clear) {
+    //
+    // Clear the bit for next boot. (reset B_ICH_INTRD_DET by writing high)
+    // Just write back because B_ICH_INTRD_DET is already high
+    //
+    IoWrite16 (IO_PCH_TCO_ADDRESS(R_PCH_TCO2_STS), B_PCH_TCO2_STS_INTRD_DET);
+  }
+
+  return BoxOpen;
+}
+
+/**
+  Determines if a power failure has been detected by the PCH.
+
+  @param Clear    Determines if the state of the power failure status should be
+                  cleared.  Set to TRUE to clear the status bit(s).
+
+  @retval TRUE    A power failure was detected.
+  @retval FALSE   No power failure was detected.
+**/
+BOOLEAN
+EFIAPI
+PeiPchGetPowerFailureState (
+  IN  BOOLEAN   Clear
+  )
+{
+  UINT16    GenPmCon3;
+  BOOLEAN   PowerFailure;
+
+  //
+  // Default return value.
+  //
+  PowerFailure = FALSE;
+
+  //
+  // Read the PM3 register.
+  //
+  GenPmCon3 = PciRead16 (PCI_PCH_LPC_ADDRESS(R_PCH_LPC_GEN_PMCON_3));
+  if ((GenPmCon3 & B_PCH_LPC_GEN_PMCON_PWR_FLR) != 0) {
+    PowerFailure = TRUE;
+    if (Clear) {
+      PciOr16 (PCI_PCH_LPC_ADDRESS(R_PCH_LPC_GEN_PMCON_3), B_PCH_LPC_GEN_PMCON_PWR_FLR);
+    }
+  }
+
+  return PowerFailure;
+}
+
+/**
+  Clears the wake/smi status and event enable bits based on the input parameters.
+
+  @param ClearStatus  Flag used to determine if the status should be cleared.
+  @param ClearEnables Flag used to determine if the enable flags should be cleared.
+
+  @retval EFI_SUCCESS
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchClearEvents (
+  IN  BOOLEAN   ClearStatus,
+  IN  BOOLEAN   ClearEnables
+  )
+{
+  if (ClearStatus) {
+    //
+    // Only clear Power Button bits in PM1 status register.
+    //
+    IoWrite16 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_PM1_STS), (B_PCH_ACPI_PM1_STS_PRBTNOR | B_PCH_ACPI_PM1_STS_PWRBTN));
+
+    //
+    // Read status registers and write them back out to clear any status bits
+    // that were set.
+    //
+    IoWrite32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_GPE0a_STS), IoRead32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_GPE0a_STS)));
+    IoWrite32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_GPE0b_STS), IoRead32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_GPE0b_STS)));
+    IoWrite32 (IO_PCH_ACPI_ADDRESS(R_PCH_SMI_STS), IoRead32 (IO_PCH_ACPI_ADDRESS(R_PCH_SMI_STS)));
+  }
+
+  if (ClearEnables) {
+    IoWrite16 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_PM1_EN), 0);
+    IoWrite32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_GPE0a_EN), 0);
+    IoWrite32 (IO_PCH_ACPI_ADDRESS(R_PCH_ACPI_GPE0b_EN), 0);
+    IoWrite32 (IO_PCH_ACPI_ADDRESS(R_PCH_SMI_EN), 0);
+  }
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+PchInitAfterMemInstall (
+  IN EFI_PEI_SERVICES             **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR    *NotifyDescriptor,
+  IN VOID                         *Ppi
+  )
+/*++
+
+Routine Description:
+
+  Internal function performing PCH init needed in PEI phase right after memory installed
+
+Arguments:
+
+  PeiServices       General purpose services available to every PEIM.
+  NotifyDescriptor  The notification structure this PEIM registered on install.
+  Ppi               The memory discovered PPI.  Not used.
+
+Returns:
+
+  EFI_SUCCESS        The function completed successfully.
+
+--*/
+{
+  EFI_STATUS      Status;
+
+  Status = PeiPchSataInit ();
+
+  return  Status;
+}
+
+EFI_STATUS
+EFIAPI
+PeiPchSataInit (
+  VOID
+  )
+/*++
+
+Routine Description:
+
+  Internal function performing SATA init needed in PEI phase
+
+  @retval EFI_SUCCESS   The function completed successfully.
+
+--*/
+{
+
+  UINT32          Data32And;
+  UINT32          Data32Or;
+
+  //
+  // PCH BIOS Spec Rev 1.0 section 5.1
+  //
+  // Step 3
+  // System BIOS must set D31:F2:Reg 94h[8:0] = 183h as part of the chipset initialization prior to
+  // SATA configuration. These bits should be restored while resuming from a S3 sleep state.
+  //
+  Data32And = (UINT32) ~(BIT8 | BIT7 | BIT6 | BIT5 | BIT4 | BIT3 | BIT2 | BIT1 | BIT0);
+  Data32Or  = 0x183;
+
+  PchSataPciCfg8AndThenOr (
+    R_PCH_SATA_SCLKCG,
+    Data32And,
+    Data32Or
+    );
+
+  //
+  // Step 4
+  //
+  // D31:F2:Reg 92h[15] = 1b
+  // Set OOB Retry Mode bit of Port Control and Status (PCS) register
+  // These bits should be restored while resuming from a S3 sleep state
+  //
+  PchSataPciCfg16Or (
+    R_PCH_SATA_PCS,
+    (UINT16) (B_PCH_SATA_PCS_OOB_RETRY)
+    );
+
+  //
+  // PCH BIOS Spec Update Rev 1.03, Section 17.1.6 Step 1,2,3,4
+  // Program the trace setting, etc.
+  //
+  // Please refer to EDS Spec Update Rev1.12 onward for the SATA buffer setting that recommended for
+  // Ibex Peak B0 and later.
+  //
+  // Ibex Peak Chipset EDS SU 1.53
+  //
+  // BDF 0/31/2 DFT Regs 18h [31:0]  = 0x001C7000
+  // BDF 0/31/2 DFT Regs 28h [31:0]  = 0x0A000033
+  // BDF 0/31/2 DFT Regs 3Eh [15:0]  = 0x0464
+  // BDF 0/31/2 DFT Regs 54h [23:0]  = 0x555555
+  // BDF 0/31/2 DFT Regs 64h [31:0]  = 0xCCCCCCCC
+  // BDF 0/31/2 DFT Regs 68h [15:0]  = 0xCCCC
+  // BDF 0/31/2 DFT Regs 78h [31:16] = 0x8888
+  // BDF 0/31/2 DFT Regs 84h [31:0]  = 0x001C7000
+  // BDF 0/31/2 DFT Regs 88h [31:0]  = 0x88888888
+  // BDF 0/31/2 DFT Regs 8Ch [31:0]  = 0x55555555
+  // BDF 0/31/2 DFT Regs 94h [15:0]  = 0x5555
+  // BDF 0/31/2 DFT Regs A0h [31:0]  = 0x001C7000
+  // BDF 0/31/2 DFT Regs A8h [31:0]  = 0x0C0C0C0C
+  // BDF 0/31/2 DFT Regs C4h [31:0]  = 0x0C0C0C0C
+  // BDF 0/31/2 DFT Regs C8h [31:0]  = 0x0C0C0C0C
+  // BDF 0/31/2 DFT Regs D4h [31:0]  = 0x10000000 (Note: This is only apply to B2 stepping onward)
+  //
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0x18);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x001C7000);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0x28);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x0A000033);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0x3C);
+  Data32And = 0x0000FFFF;
+  Data32Or  = 0x04640000;
+  PchSataPciCfg8AndThenOr (
+    R_PCH_SATA_STRD,
+    Data32And,
+    Data32Or
+    );
+
+  PchSataPciCfg8Write (R_PCH_SATA_SIRI, 0x54);
+  Data32And = 0xFF000000;
+  Data32Or  = 0x00555555;
+  PchSataPciCfg32AndThenOr (
+    R_PCH_SATA_STRD,
+    Data32And,
+    Data32Or
+    );
+
+  PchSataPciCfg8Write (R_PCH_SATA_SIRI, 0x64);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0xCCCCCCCC);
+
+  PchSataPciCfg8Write (R_PCH_SATA_SIRI, 0x68);
+  Data32And = 0xFFFF0000;
+  Data32Or  = 0x0000CCCC;
+  PchSataPciCfg32AndThenOr (
+    R_PCH_SATA_STRD,
+    Data32And,
+    Data32Or
+    );
+
+  PchSataPciCfg8Write (R_PCH_SATA_SIRI, 0x78);
+  Data32And = 0x0000FFFF;
+  Data32Or  = 0x88880000;
+  PchSataPciCfg32AndThenOr (
+    R_PCH_SATA_STRD,
+    Data32And,
+    Data32Or
+    );
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0x84);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x001C7000);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, R_PCH_SATA_INDEXED_REG_SIR88);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x88888888);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0x8C);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x55555555);
+
+  PchSataPciCfg8Write (R_PCH_SATA_SIRI, 0x94);
+  Data32And = 0xFFFF0000;
+  Data32Or  = 0x00005555;
+  PchSataPciCfg32AndThenOr (
+    R_PCH_SATA_STRD,
+    Data32And,
+    Data32Or
+    );
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0xA0);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x001C7000);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0xA8);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x0C0C0C0C);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0xC4);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x0C0C0C0C);
+
+  PchSataPciCfg8Write  (R_PCH_SATA_SIRI, 0xC8);
+  PchSataPciCfg32Write (R_PCH_SATA_STRD, 0x0C0C0C0C);
+
+  if (GetStepping() >= PchB2) {
+    PchSataPciCfg8Write (R_PCH_SATA_SIRI, 0xD4);
+    Data32And = 0x00000000;
+    Data32Or  = 0x10000000;
+    PchSataPciCfg32AndThenOr (
+      R_PCH_SATA_STRD,
+      Data32And,
+      Data32Or
+      );
+  }
+
+  //
+  // Step 5
+  // Program D31:F2:98h[22] = 1b
+  //
+  PchSataPciCfg32Or (0x98, BIT22);
+
+  //
+  // Step 6
+  // Program D31:F2:98h[19] = 1b
+  //
+  PchSataPciCfg32Or (0x98, BIT19);
+
+  //
+  // Step 7
+  // Program D31:F2:98h[16] = 1b
+  //
+  PchSataPciCfg32Or (0x98, BIT16);
+
+  //
+  // Step 8
+  // Program D31:F2:98h[12:7] = 04h
+  //
+  Data32And = (UINT32) (~(BIT7 | BIT8 | BIT10 | BIT11 | BIT12));
+  Data32Or  = (UINT32) (BIT9);
+  PchSataPciCfg32AndThenOr (
+    0x98,
+    Data32And,
+    Data32Or
+    );
+
+  //
+  //  Enable the SATA port0 ~ port3.
+  //
+  PchSataPciCfg8Write (R_PCH_SATA_PCS, (UINT8)  (B_PCH_SATA_PCS_PORT3_EN + \
+                                                 B_PCH_SATA_PCS_PORT2_EN + \
+                                                 B_PCH_SATA_PCS_PORT1_EN + \
+                                                 B_PCH_SATA_PCS_PORT0_EN));
+
+  //
+  //  Enable the SATA port4 and port5.
+  //
+  PchSata2PciCfg8Write (R_PCH_SATA_PCS, (UINT8) (B_PCH_SATA2_PCS_PORT5_EN + \
+                                                 B_PCH_SATA2_PCS_PORT4_EN));
+
+  return EFI_SUCCESS;
+}
+
+typedef struct {
+  UINT8                   Device;
+  UINT8                   Function;
+} USB_CONTROLLER;
+
+EFI_STATUS
+PeiPchMiscInit (
+  IN  UINT8                       BusNumber
+  )
+/*++
+
+Routine Description:
+
+  Internal function performing miscellaneous init needed in early PEI phase
+
+Arguments:
+
+  BusNumber               The PCI Bus Number of this PCH device
+  Rcba                    Root Complex Base Address.
+  PmBase                  Power management I/O base address.
+  GpioBase                GPIO I/O base address
+  HpetConfig              HPET configuration that determines if enable HPET function and the HPET base address
+
+Returns:
+
+  EFI_SUCCESS             Succeeds.
+  EFI_DEVICE_ERROR        Device error, aborts abnormally.
+
+--*/
+{
+  UINT32      CpuidRegEax;
+  UINT32      Rcba;
+  UINT16      PmBase;
+  UINT16      GpioBase;
+
+  //
+  // Initialize variables based on PCD values.
+  //
+  Rcba = (UINT32) PcdGet64 (PcdPchRcbaMmioBaseAddress);
+  PmBase = PcdGet16 (PcdPchAcpiIoPortBaseAddress);
+  GpioBase = PcdGet16 (PcdPchGpioIoPortBaseAddress);
+
+  if (GetStepping () == PchA0) {
+    //
+    // PCH BIOS Spec Update Rev 0.61 Sighting # 3305026 : Full Speed USB devices
+    // may operate at low speed only. (Closed - Fixed with Ibex Peak A1 Stepping)
+    // PCH BIOS Spec Update Rev 0.61 Sighting # 3305122 : USB Rate Matching Hub (RMH)
+    // May Not Functional. (Closed - Fixed with Ibex Peak B0 Stepping)
+    //
+    // Step 1
+    // Disable RMH by setting RCBA+3598h [0] = 1b at PEI or bootblock phase.
+    //
+    PchMmRcrb32Or (0x3598, BIT0);
+
+    //
+    // Step 2
+    // Check if SLP_TYP is either S4 or S0 before bios cleared it.
+    // If it is S0, then perform S4. If it is S4,
+    // proceed boot and let the BIOS cleared the SLP_TYP registe
+    //
+    DEBUG ((EFI_D_INFO, "SLP Type:%0x!\n", IoRead16(PmBase + R_PCH_ACPI_PM1_CNT) & B_PCH_ACPI_PM1_CNT_SLP_TYP));
+    DEBUG ((EFI_D_INFO, "PM1 STS:%0x!\n", IoRead16(PmBase + R_PCH_ACPI_PM1_STS)));
+
+    //
+    // You may mask it if your system keep rebooting after belows code
+    //
+    if ((IoRead16(PmBase + R_PCH_ACPI_PM1_CNT) & B_PCH_ACPI_PM1_CNT_SLP_TYP) == 0) {
+      DEBUG ((EFI_D_INFO, "Issue S4!\n"));
+      IoWrite32 (GpioBase + R_PCH_GPIO_USE_SEL, 0x4000);
+      IoWrite32 (GpioBase + R_PCH_GPIO_IO_SEL, 0x4000);
+      IoWrite32 (GpioBase + R_PCH_GPIO_GPI_INV, 0);
+      IoWrite32 ((PmBase + R_PCH_ACPI_GPE0a_EN), 0x40000000);
+      IoWrite16 ((PmBase + R_PCH_ACPI_PM1_CNT), V_PCH_ACPI_PM1_CNT_S4);
+      IoWrite16 ((PmBase + R_PCH_ACPI_PM1_CNT), V_PCH_ACPI_PM1_CNT_S4 | B_PCH_ACPI_PM1_CNT_SLP_EN);
+    }
+  }
+
+  //
+  // Swapping of EHCI controllers to function zero is done in SEC to support
+  // the USB debugger.
+  //
+
+  //
+  // PCH BIOS Spec Rev 1.0, Section 7.1.5.1, 7.1.5.2
+  // Step 1.a.1
+  // RCBA + Offset 14h[7:0] = 11h (byte)
+  //
+  MmioWrite8 (Rcba + R_PCH_RCRB_V0CTL, 0x11);
+
+  //
+  // PCH BIOS Spec Rev 1.0, Section 7.1.5.1, 7.1.5.2
+  // Step 1.a.2
+  // RCBA + Offset 50h[15:0] = 7654h (word)
+  //
+  MmioWrite16 (Rcba + R_PCH_RCRB_CIR0, 0x7654);
+
+  //
+  // PCH BIOS Spec Rev 1.0, Section 7.1.5.1, 7.1.5.2
+  // Step 1.a.3
+  // For Lynnfield/Clarksfield
+  // RCBA + Offset 40h = 00000000h (dword)
+  // For Haveldale/Aubrundale
+  // Done in Clarkdale/Arrandale Memory Reference Code
+  //
+  AsmCpuid (1, &CpuidRegEax, NULL, NULL, NULL);
+  if ((CpuidRegEax & CPUID_FULL_FAMILY_MODEL) == CPUID_FULL_FAMILY_MODEL_FIELDS) {
+    MmioWrite32(Rcba + 0x40, 0);
+  }
+
+  //
+  // Others done on PchDmi.c
+  //
+
+  //
+  // Initial and enable HPET High Precision Timer memory address for basic usage
+  //
+  if (PcdGet32 (PcdPchHpetEnable) != 0) {
+    MmioAndThenOr32 (
+      (UINTN) (Rcba + R_PCH_RCRB_HPTC),
+      (UINT32) ~B_PCH_RCRB_HPTC_AS,
+      (UINT32) (((PcdGet32 (PcdPchHpetBaseAddress) >> N_PCH_HPET_ADDR_ASEL) & B_PCH_RCRB_HPTC_AS) | B_PCH_RCRB_HPTC_AE)
+      );
+
+    //
+    // Read back for posted write to take effect
+    //
+    MmioRead32 (Rcba + R_PCH_RCRB_HPTC);
+
+    //
+    // Set HPET Timer enable to start counter spinning
+    //
+    MmioOr32 (PcdGet32 (PcdPchHpetBaseAddress) + 0x10, 0x1);
+
+    //
+    // Create a HOB to describe the region.
+    //
+    BuildResourceDescriptorHob (
+      EFI_RESOURCE_MEMORY_MAPPED_IO,
+      (EFI_RESOURCE_ATTRIBUTE_PRESENT     |
+       EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+       EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE),
+      PcdGet32 (PcdPchHpetBaseAddress),
+      ALIGN_VALUE (V_PCH_HPET_MMIO_SIZE, EFI_PAGE_SIZE)
+      );
+    BuildMemoryAllocationHob (
+      PcdGet32 (PcdPchHpetBaseAddress),
+      ALIGN_VALUE (V_PCH_HPET_MMIO_SIZE, EFI_PAGE_SIZE),
+      EfiMemoryMappedIO
+      );
+  }
+
+  //
+  // PCH BIOS Spec Update Rev 1.05, Section 5.1
+  // Step 6.1
+  // RCBA + Offset 3428h[0] = 1b (*dale processor only)
+  //
+  if (((CpuidRegEax & CPUID_FULL_FAMILY_MODEL) == CPUID_FULL_FAMILY_MODEL_DALES) ||
+      ((CpuidRegEax & CPUID_FULL_FAMILY_MODEL) == CPUID_FULL_FAMILY_MODEL_DALES_32NM)) {
+    MmioOr8 (Rcba + R_PCH_RCRB_FD2, (UINT8) BIT0);
+  }
+
+  //
+  // PCH BIOS Spec Rev 0.6, Section 12.3.1, Item 1
+  // Enable the IOAPIC by setting the APIC Enable bit, RCBA + offset 31FFh, Bit[0] if the system needs to use the IOxAPIC.
+  // The APIC Enable bits needs read back after the bit is written.
+  //
+  MmioOr16 ((UINTN) (Rcba + R_PCH_RCRB_OIC), (UINT16) B_PCH_RCRB_OIC_AEN);
+  //
+  // Reads back for posted write to take effect
+  //
+  MmioRead16 (Rcba + R_PCH_RCRB_OIC);
+
+  //
+  // Enable specific LPC I/O Decodes.
+  //
+  EnableLpcDecode ();
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+PeiPchThermalInit (
+  IN  UINT8                       BusNumber
+  )
+/*++
+
+Routine Description:
+
+  PCH BIOS Spec Update Rev 1.01, Section 21.4.1, Step 3
+  Enable thermal report by programming relevant fields from Table 21-2
+  Thermal Reporting Data. Note that this programming step must be done
+  prior to the DRAM_INIT_DONE HECI message for ME enabled system.
+  Note that for *field processor and *dale processor with CPUID <= 0x00020651,
+  system BIOS is required to set TBARB + 0ffset 1Ah [8].
+
+Arguments:
+
+  BusNumber               The PCI Bus Number of this PCH device
+  ThermalBaseB            BIOS Assigned Thermal Base Address
+  ThermalReportControl    Determines if enable Thermal Data Reporting, Processor/PCH/MCH/DIMMs temperature read
+                          and Processor Core Energy read
+
+Returns:
+
+  EFI_SUCCESS             Succeeds.
+  EFI_DEVICE_ERROR        Device error, aborts abnormally.
+
+--*/
+{
+  UINT16            RegData16;
+  UINT32            CpuidRegEax;
+
+  //
+  // D31:F6:Reg 44h[31:0], with a 64-bit BAR for BIOS.  Enable the BAR by setting the SPTYPEN bit, D31:F6:Reg 40h[0].
+  //
+  PciWrite32 (
+    PCI_LIB_ADDRESS(
+      BusNumber,
+      PCI_DEVICE_NUMBER_PCH_THERMAL,
+      PCI_FUNCTION_NUMBER_PCH_THERMAL,
+      R_PCH_THERMAL_TBARB
+      ),
+    (UINT32)(PcdGet64 (PcdPchThermalBase))
+    );
+  PciWrite32 (
+    PCI_LIB_ADDRESS(
+      BusNumber,
+      PCI_DEVICE_NUMBER_PCH_THERMAL,
+      PCI_FUNCTION_NUMBER_PCH_THERMAL,
+      R_PCH_THERMAL_TBARBH
+      ),
+    (UINT32)(RShiftU64 (PcdGet64 (PcdPchThermalBase),32))
+    );
+  PciOr32 (
+    PCI_LIB_ADDRESS(
+      BusNumber,
+      PCI_DEVICE_NUMBER_PCH_THERMAL,
+      PCI_FUNCTION_NUMBER_PCH_THERMAL,
+      R_PCH_THERMAL_TBARB
+      ),
+    (UINT32) B_PCH_THERMAL_SPTYPEN
+    );
+
+  //
+  // Create a HOB to describe the Thermal MMIO space
+  //
+  BuildResourceDescriptorHob (
+    EFI_RESOURCE_MEMORY_MAPPED_IO,
+    (EFI_RESOURCE_ATTRIBUTE_PRESENT     |
+     EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+     EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE),
+    PcdGet64 (PcdPchThermalBase),
+    V_PCH_THERMAL_TBARB_SIZE
+    );
+  BuildMemoryAllocationHob (
+    PcdGet64 (PcdPchThermalBase),
+    V_PCH_THERMAL_TBARB_SIZE,
+    EfiMemoryMappedIO
+    );
+
+  //
+  // Enable thermal report by programming relevant fields
+  //
+  RegData16 = MmioRead16 ((UINTN) (PcdGet64 (PcdPchThermalBase)) + R_PCH_TBARB_TRC);
+
+  //
+  // Clear all thermal reporting enable bits.
+  //
+  RegData16 &= ~(B_PCH_TBARB_TRC_DIMM1_RDEN |
+                 B_PCH_TBARB_TRC_DIMM2_RDEN |
+                 B_PCH_TBARB_TRC_DIMM3_RDEN |
+                 B_PCH_TBARB_TRC_DIMM4_RDEN |
+                 B_PCH_TBARB_TRC_MCH_RDEN |
+                 B_PCH_TBARB_TRC_PCH_RDEN |
+                 B_PCH_TBARB_TRC_CPU_ENGY_RDEN |
+                 B_PCH_TBARB_TRC_CPU_RDEN |
+                 B_PCH_TBARB_TRC_C6_WORKAROUND |
+                 B_PCH_TBARB_TRC_THRM_PRT_EN |
+                 B_PCH_TBARB_TRC_CPU2_RDEN);
+
+  //
+  // If any DIMMs are enabled for thermal sensors, enable the feature.
+  //
+  if (PcdGet8 (PcdPchThermalDimm1Readings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_DIMM1_RDEN;
+  }
+  if (PcdGet8 (PcdPchThermalDimm2Readings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_DIMM2_RDEN;
+  }
+  if (PcdGet8 (PcdPchThermalDimm3Readings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_DIMM3_RDEN;
+  }
+  if (PcdGet8 (PcdPchThermalDimm4Readings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_DIMM4_RDEN;
+  }
+
+  //
+  // Enable MCH and PCH readings if requested by platform.
+  //
+  if (PcdGet8 (PcdPchThermalMchReadings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_MCH_RDEN;
+  }
+  if (PcdGet8 (PcdPchThermalPchReadings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_PCH_RDEN;
+  }
+
+  //
+  // Enable Processor power and thermal reporting based on platform settings.
+  //
+  if (PcdGet8 (PcdPchThermalProcEnergyReadings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_CPU_ENGY_RDEN;
+  }
+  if (PcdGet8 (PcdPchThermalProcReadings) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_CPU_RDEN;
+  }
+
+  //
+  // This workaround will bring the Processor Core out of C6 while the PECI transaction is in progress,
+  // and then return the Processor Core to the C6 state after completing the PECI transaction.
+  // Note that for *field processor and *dale processor with CPUID <= 0x00020651, system BIOS is required
+  // to set TBARB + 0ffset 1Ah [8].
+  //
+  AsmCpuid (1, &CpuidRegEax, NULL, NULL, NULL);
+  if (((CpuidRegEax & CPUID_FULL_FAMILY_MODEL) == CPUID_FULL_FAMILY_MODEL_FIELDS) ||
+      ((CpuidRegEax & CPUID_FULL_FAMILY_MODEL) == CPUID_FULL_FAMILY_MODEL_DALES)  ||
+      ((CpuidRegEax & CPUID_FULL_FAMILY_MODEL_STEPPING) <= 0x00020651)) {
+    RegData16 |= B_PCH_TBARB_TRC_C6_WORKAROUND;
+  }
+
+  //
+  // Determine if reporting should be enabled at all.
+  //
+  if (PcdGet8 (PcdPchThermalReportingEnable) != 0) {
+    RegData16 |= B_PCH_TBARB_TRC_THRM_PRT_EN;
+  }
+
+  //
+  // Set Thermal Reporting Control register.
+  //
+  MmioWrite16 ((UINTN) (PcdGet64 (PcdPchThermalBase)) + R_PCH_TBARB_TRC, RegData16);
+
+  //
+  // Clear BAR and disable access
+  //
+  PciWrite32 (
+    PCI_LIB_ADDRESS(
+      BusNumber,
+      PCI_DEVICE_NUMBER_PCH_THERMAL,
+      PCI_FUNCTION_NUMBER_PCH_THERMAL,
+      R_PCH_THERMAL_TBARB
+      ),
+    0
+    );
+  PciWrite32 (
+    PCI_LIB_ADDRESS(
+      BusNumber,
+      PCI_DEVICE_NUMBER_PCH_THERMAL,
+      PCI_FUNCTION_NUMBER_PCH_THERMAL,
+      R_PCH_THERMAL_TBARBH
+      ),
+    0
+    );
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+PeiPchInitialize (
+  IN  UINT8                    	  BusNumber
+  )
+/*++
+
+Routine Description:
+
+  This function performs basic initialization for PCH in PEI phase.
+
+  ** This function must be called once for EACH PCH device on the platform with BusNumber indicating
+     the PCI Bus where the PCH device is located
+
+  If any of the OPTIONAL base address arguments is zero, this function will disable the corresponding
+  decoding, otherwise this function will enable the decoding.
+
+  This function locks down the PMBase.
+
+Arguments:
+
+  This                    Pointer to the PPI instance
+  BusNumber               The PCI Bus Number of this PCH device
+
+Returns:
+
+  EFI_SUCCESS             Succeeds.
+  EFI_INVALID_PARAMETER   Argument is not valid
+  EFI_DEVICE_ERROR        Device error, aborts abnormally.
+
+--*/
+{
+  EFI_STATUS  Status;
+  UINT32      Rcba;
+  UINT16      PmBase;
+  UINT16      GpioBase;
+
+  Status = EFI_SUCCESS;
+  Rcba = (UINT32) PcdGet64 (PcdPchRcbaMmioBaseAddress);
+  PmBase = PcdGet16 (PcdPchAcpiIoPortBaseAddress);
+  GpioBase = PcdGet16 (PcdPchGpioIoPortBaseAddress);
+
+  //
+  // Set RCBA and allocate range
+  //
+  ASSERT ((Rcba & (UINT32) (~B_PCH_LPC_RCBA_BAR)) == 0);
+  PciAndThenOr32 (
+    PCI_LIB_ADDRESS (BusNumber,
+    PCI_DEVICE_NUMBER_PCH_LPC,
+    0,
+    R_PCH_LPC_RCBA),
+    (UINT32) (~B_PCH_LPC_RCBA_BAR),
+    Rcba | B_PCH_LPC_RCBA_EN
+    );
+
+  BuildResourceDescriptorHob (
+    EFI_RESOURCE_MEMORY_MAPPED_IO,
+    (EFI_RESOURCE_ATTRIBUTE_PRESENT     |
+     EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+     EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE),
+    Rcba,
+    V_PCH_LPC_RCBA_MMIO_SIZE
+    );
+  BuildMemoryAllocationHob (
+    Rcba,
+    V_PCH_LPC_RCBA_MMIO_SIZE,
+    EfiMemoryMappedIO
+    );
+
+  //
+  // Set PM Base
+  //
+  ASSERT ((PmBase & (UINT16) (~B_PCH_LPC_ACPI_BASE_BAR)) == 0);
+  PciAndThenOr32 (
+    PCI_LIB_ADDRESS (BusNumber,
+    PCI_DEVICE_NUMBER_PCH_LPC,
+    0,
+    R_PCH_LPC_ACPI_BASE),
+    (UINT32) (~B_PCH_LPC_ACPI_BASE_BAR),
+    PmBase
+    );
+
+  if (PmBase != 0) {
+    //
+    // Enable PM Base and allocate I/O range.
+    //
+    PciOr8 (
+      PCI_LIB_ADDRESS (BusNumber,
+      PCI_DEVICE_NUMBER_PCH_LPC,
+      0,
+      R_PCH_LPC_ACPI_CNT),
+      (UINT8) B_PCH_LPC_ACPI_CNT_ACPI_EN
+      );
+  } else {
+    //
+    // Disable PM Base
+    //
+    PciAnd8 (
+      PCI_LIB_ADDRESS (BusNumber,
+      PCI_DEVICE_NUMBER_PCH_LPC,
+      0,
+      R_PCH_LPC_ACPI_CNT),
+      (UINT8) (~B_PCH_LPC_ACPI_CNT_ACPI_EN)
+      );
+  }
+
+  //
+  // PCH BIOS Spec Rev 1.0 Section 13.3 Additional Power Management Programming
+  // Step 8
+  // Set "GEN_PMCON_LOCK" register,D31:F0:A6h = 06h, after stretch and ACPI base programming completed.
+  // Set ACPI_BASE_LOCK (D31:F0:A6h[1]) bit here to lock down the PM Base.
+  // Set SLP_S4# Stretching Policy Lock-Down (D31:F0:A6h[2]) bit in platform code due to that
+  // "SLP_S4# Minimum Assertion Width" may be changed for customer platform specific.
+  //
+  PciOr8 (
+    PCI_LIB_ADDRESS (BusNumber,
+    PCI_DEVICE_NUMBER_PCH_LPC,
+    0,
+    R_PCH_LPC_GEN_PMCON_LOCK),
+    (UINT8) B_PCH_LPC_GEN_PMCON_LOCK_ABASE_LK
+    );
+
+  //
+  // Set GPIO Base
+  //
+  ASSERT ((GpioBase & (UINT16) (~B_PCH_LPC_GPIO_BASE_BAR)) == 0);
+  PciAndThenOr32 (
+    PCI_LIB_ADDRESS (BusNumber,
+    PCI_DEVICE_NUMBER_PCH_LPC,
+    0,
+    R_PCH_LPC_GPIO_BASE),
+    (UINT32) (~B_PCH_LPC_GPIO_BASE_BAR),
+    GpioBase
+    );
+
+  if (GpioBase != 0) {
+    //
+    // Enable GPIO Base
+    //
+    PciOr8 (
+      PCI_LIB_ADDRESS (BusNumber,
+      PCI_DEVICE_NUMBER_PCH_LPC,
+      0,
+      R_PCH_LPC_GPIO_CNT),
+      (UINT8) B_PCH_LPC_GPIO_CNT_GPIO_EN
+      );
+  } else {
+    //
+    // Disable GPIO Base
+    //
+    PciOr8 (
+      PCI_LIB_ADDRESS (BusNumber,
+      PCI_DEVICE_NUMBER_PCH_LPC,
+      0,
+      R_PCH_LPC_GPIO_CNT),
+      (UINT8) (~B_PCH_LPC_GPIO_CNT_GPIO_EN)
+      );
+  }
+
+  //
+  // Clear NMI status and leave SERR# NMIs disabled.  Need to determine the real
+  // cause of NMIs being generated when legacy code is executed.
+  //
+  IoWrite8 (R_PCH_NMI_SC, (B_PCH_NMI_SC_IOCHK_NMI_EN | B_PCH_NMI_SC_PCI_SERR_EN));
+  IoWrite8 (R_PCH_NMI_SC, B_PCH_NMI_SC_PCI_SERR_EN);
+
+  //
+  // Initialize reset of chipset.
+  //
+  Status = PeiPchMiscInit (BusNumber);
+  Status = PeiPchThermalInit (BusNumber);
+
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
+PeiPchGbeMandatedReset (
+  IN  UINT8                       BusNumber,
+  IN  BOOLEAN                     EnableGbe,
+  IN  BOOLEAN                     MeStatus
+  )
+/*++
+
+Routine Description:
+
+  This function may trigger platform reset depending on the current GbE status,
+  the intended GbE enabling, and current ME status. (When ME is enabled, this function
+  may trigger a Global reset.)
+
+  This function may not return if it triggers an platform reset and the BIOS boot flow
+  restarts.
+
+  ** Platform code calling this function must ensure the platform is in a
+  state ready for the (global) reset action to be taken within this function.
+
+  If this function returns EFI_SUCCESS it indicates there is no need for platform
+  reset in this boot, and boot flow continues.
+
+  If this function returns EFI_DEVICE_ERROR, something error happens.
+
+Arguments:
+
+  This                    Pointer to PPI instance
+  BusNumber               The PCI Bus Number of this PCH instance
+  EnableGbe               Intended GbE enabling action in this boot.
+                          TRUE  - GbE is to be enabled;
+                          FALSE - GbE is to be disabled;
+  MeStatus                Current ME status:
+                          TRUE  - ME is enabled
+                          FALSE - ME is disabled
+
+Returns:
+
+  (Won't return if platform reset action is taken)
+  EFI_SUCCESS             No platform reset action is taken. System can continue boot flow.
+  EFI_DEVICE_ERROR        Device error, aborts abnormally.
+
+--*/
+{
+  UINT32  Rcba;
+  UINT8   RegData8;
+  UINT16  PM_BASE_ADDRESS;
+  UINT16  GPIO_BASE_ADDRESS;
+
+  Rcba = PciRead32 (
+          PCI_LIB_ADDRESS (BusNumber,
+          PCI_DEVICE_NUMBER_PCH_LPC,
+          0,
+          R_PCH_LPC_RCBA)
+          ) &~BIT0;
+  ASSERT(Rcba != 0);
+
+  PM_BASE_ADDRESS = PciRead16 (
+          PCI_LIB_ADDRESS (BusNumber,
+          PCI_DEVICE_NUMBER_PCH_LPC,
+          0,
+          R_PCH_LPC_ACPI_BASE)
+          ) &~BIT0;
+  ASSERT(PM_BASE_ADDRESS != 0);
+
+  GPIO_BASE_ADDRESS = PciRead16 (
+          PCI_LIB_ADDRESS (BusNumber,
+          PCI_DEVICE_NUMBER_PCH_LPC,
+          0,
+          R_PCH_LPC_GPIO_BASE)
+          ) &~BIT0;
+  ASSERT(GPIO_BASE_ADDRESS != 0);
+
+  //
+  // Read the BUC register
+  //
+  RegData8 = MmioRead8 (Rcba + R_PCH_RCRB_BUC);
+
+  //
+  // If no change of status, just return success.
+  //
+  if (((RegData8 & B_PCH_RCRB_BUC_LAN_DIS) && !EnableGbe) || (!(RegData8 & B_PCH_RCRB_BUC_LAN_DIS) && EnableGbe)) {
+    return EFI_SUCCESS;
+  }
+
+  //
+  // Set the BUC register
+  //
+  if (EnableGbe) {
+    //
+    // PCH BIOS Spec Update Rev 1.04, Section 10.3.1 Enable the Internal GbE Controller
+    // Step 1
+    // Set RCBA + 3414h[5] = 0b
+    //
+    MmioAnd8 (Rcba + R_PCH_RCRB_BUC, (UINT8) (~B_PCH_RCRB_BUC_LAN_DIS));
+  } else {
+    //
+    // PCH BIOS Spec Rev 1.0, Section 10.3.2 Disable the Internal GbE Controller
+    // Step 2
+    // Set RCBA + 3414h[5] = 1b
+    //
+    MmioOr8 (Rcba + R_PCH_RCRB_BUC, (UINT8) B_PCH_RCRB_BUC_LAN_DIS);
+  }
+
+  //
+  // Read back for posted write to take effect
+  //
+  MmioRead8 (Rcba + R_PCH_RCRB_BUC);
+
+  //
+  // Do a reset.
+  // If ME is enabled, do a global reset
+  //
+  if (MeStatus == TRUE) {
+    PciOr32 (
+      PCI_LIB_ADDRESS(
+        BusNumber,
+        PCI_DEVICE_NUMBER_PCH_LPC,
+        PCI_FUNCTION_NUMBER_PCH_LPC,
+        R_PCH_LPC_PMIR
+        ),
+      B_PCH_LPC_CF9GR
+      );
+  }
+
+  IoOr8 (R_PCH_RST_CNT, (UINT8) (B_PCH_RST_CNT_FULL_RST | B_PCH_RST_CNT_SYS_RST));
+  IoOr8 (R_PCH_RST_CNT, (UINT8) B_PCH_RST_CNT_RST_CPU);
+
+  //
+  // Shouldn't reach here
+  //
+  return EFI_SUCCESS;
+}
+
+//
+// Entry point
+//
+EFI_STATUS
+EFIAPI
+PchInit (
+  IN       EFI_PEI_FILE_HANDLE       FileHandle,
+  IN CONST EFI_PEI_SERVICES          **PeiServices
+  )
+/*++
+
+Routine Description:
+
+  Installs the PCH PEI Init PPI.
+
+Arguments:
+
+  FfsHeader    - Not used.
+  PeiServices  - General purpose services available to every PEIM.
+
+Returns:
+
+  EFI_SUCCESS
+
+--*/
+{
+  EFI_STATUS  Status;
+
+  //
+  // Validate that this is a supported PCH.
+  //
+  if (!IS_PCH_IBXPK_DEVICE_ID(PchLpcPciCfg16Read(R_PCH_LPC_DEVICE_ID))) {
+    DEBUG ((EFI_D_ERROR, "Not a supported PCH.\n"));
+    return EFI_UNSUPPORTED;
+  }
+
+  //
+  // Install the PCH PEI Init PPI
+  //
+  Status = PeiServicesInstallPpi (&mPpiListVariable);
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Install a call-back for performing SATA init in PEI phase.
+  //
+  Status = PeiServicesNotifyPpi (mNotifyList);
+  ASSERT_EFI_ERROR (Status);
+
+  return Status;
+}
+
+

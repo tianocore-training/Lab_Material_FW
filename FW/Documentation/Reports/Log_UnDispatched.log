@@ -1,0 +1,1060 @@
+
+[FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+[FFS:FFS_PAD] offset=a8 size=40 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=11d28 size=40 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=17000 size=68 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=20590 size=58 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=254a8 size=40 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=2a370 size=78 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+[FFS:APPLICATION] offset=f3ce0 size=24b2e guid=462CAA21-7614-4503-836E-8AB6F4662331 free_space=2 alignment=0
+    [SECTION:PE32] offset=18 size=24ac4
+    [SECTION:RAW] offset=24adc size=34
+    [SECTION:USER_INTERFACE] offset=24b10 size=10, UiApp
+    [SECTION:VERSION] offset=24b20 size=e
+
+[FFS:FREEFORM] offset=1f4c08 size=f30 guid=7E374E25-8E01-4FEE-87F2-390C23C606CD free_space=0 alignment=0
+    [SECTION:RAW] offset=18 size=f8
+    [SECTION:RAW] offset=110 size=44
+    [SECTION:RAW] offset=154 size=58
+    [SECTION:RAW] offset=1ac size=d5b
+    [SECTION:RAW] offset=f08 size=28
+
+[FFS:DRIVER] offset=1fd658 size=f0fa guid=FA20568B-548B-4B2B-81EF-1BA08D4A3CEC free_space=6 alignment=0
+    [SECTION:DXE_DEPEX] offset=18 size=5e, 
+        PUSH BD445D79-B7AD-4F04-9AD8-29BD2040EB3C
+        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+        OR
+        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+        AND
+        AND
+        AND
+        END
+
+    [SECTION:PE32] offset=78 size=f044
+    [SECTION:USER_INTERFACE] offset=f0bc size=30, BootScriptExecutorDxe
+    [SECTION:VERSION] offset=f0ec size=e
+
+[FFS:APPLICATION] offset=221c80 size=e85fa guid=7C04A583-9E3E-4F1C-AD65-E05268D0B4D1 free_space=6 alignment=0
+    [SECTION:PE32] offset=18 size=e85c4
+    [SECTION:USER_INTERFACE] offset=e85dc size=10, Shell
+    [SECTION:VERSION] offset=e85ec size=e
+
+[FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+[FFS:FIRMWARE_VOLUME_IMAGE] offset=78 size=114f07 guid=9E21FD93-9C72-4C15-8C4B-E77F1DB2D792 free_space=233081 alignment=0
+    [SECTION:GUID_DEFINED] offset=18 size=114eef, guid=EE4E5898-3914-4259-9D6E-DC7BD79403CF
+        [SECTION:RAW] offset=0 size=7c
+        [SECTION:FIRMWARE_VOLUME_IMAGE] offset=7c size=e0004, 
+            [FV:] file_system=8C8CE578-8A3D-4F1C-9935-896185C32DD3 size=e0000 checksum=63055
+                [FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+                [FFS:FREEFORM] offset=78 size=2c guid=1B45CC0A-156A-428A-AF62-49864DA0E6E6 free_space=4 alignment=0
+                    [SECTION:RAW] offset=18 size=14
+
+                [FFS:FFS_PAD] offset=a8 size=40 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+                [FFS:PEI_CORE] offset=e8 size=c5fa guid=52C05B14-0B98-496C-BC3B-04B50211D680 free_space=6 alignment=2
+                    [SECTION:RAW] offset=18 size=1c
+                    [SECTION:PE32] offset=34 size=c5a4
+                    [SECTION:USER_INTERFACE] offset=c5d8 size=14, PeiCore
+                    [SECTION:VERSION] offset=c5ec size=e
+
+                [FFS:PEIM] offset=c6e8 size=563a guid=9B3ADA4F-AE56-4C24-8DEA-F03B7558AE50 free_space=6 alignment=2
+                    [SECTION:RAW] offset=18 size=f4
+                    [SECTION:PEI_DEPEX] offset=10c size=6, 
+                        TRUE
+                        END
+
+                    [SECTION:PE32] offset=114 size=5504
+                    [SECTION:USER_INTERFACE] offset=5618 size=14, PcdPeim
+                    [SECTION:VERSION] offset=562c size=e
+
+                [FFS:FFS_PAD] offset=11d28 size=40 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+                [FFS:PEIM] offset=11d68 size=2a7e guid=A3610442-E69F-4DF3-82CA-2360C4031A23 free_space=2 alignment=2
+                    [SECTION:PEI_DEPEX] offset=18 size=6, 
+                        TRUE
+                        END
+
+                    [SECTION:RAW] offset=20 size=14
+                    [SECTION:PE32] offset=34 size=2a04
+                    [SECTION:USER_INTERFACE] offset=2a38 size=38, ReportStatusCodeRouterPei
+                    [SECTION:VERSION] offset=2a70 size=e
+
+                [FFS:PEIM] offset=147e8 size=2816 guid=9D225237-FA01-464C-A949-BAABC02D31D0 free_space=2 alignment=2
+                    [SECTION:PEI_DEPEX] offset=18 size=16, 
+                        PUSH 0065D394-9951-4144-82A3-0AFC8579C251
+                        END
+
+                    [SECTION:RAW] offset=30 size=4
+                    [SECTION:PE32] offset=34 size=27a4
+                    [SECTION:USER_INTERFACE] offset=27d8 size=2e, StatusCodeHandlerPei
+                    [SECTION:VERSION] offset=2808 size=e
+
+                [FFS:FFS_PAD] offset=17000 size=68 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+                [FFS:PEIM] offset=17068 size=9522 guid=222C386D-5ABC-4FB4-B124-FBB82488ACF4 free_space=6 alignment=2
+                    [SECTION:PEI_DEPEX] offset=18 size=16, 
+                        PUSH 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+                        END
+
+                    [SECTION:RAW] offset=30 size=4
+                    [SECTION:PE32] offset=34 size=94c4
+                    [SECTION:USER_INTERFACE] offset=94f8 size=1c, PlatformPei
+                    [SECTION:VERSION] offset=9514 size=e
+
+                [FFS:FFS_PAD] offset=20590 size=58 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+                [FFS:PEIM] offset=205e8 size=4eba guid=86D70125-BAA3-4296-A62F-602BEBBB9081 free_space=6 alignment=2
+                    [SECTION:PEI_DEPEX] offset=18 size=3a, 
+                        PUSH B9E0ABFE-5979-4914-977F-6DEE78C278A6
+                        PUSH 7408D748-FC8C-4EE6-9288-C4BEC092A410
+                        PUSH 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=4e44
+                    [SECTION:USER_INTERFACE] offset=4e98 size=12, DxeIpl
+                    [SECTION:VERSION] offset=4eac size=e
+
+                [FFS:FFS_PAD] offset=254a8 size=40 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+                [FFS:PEIM] offset=254e8 size=4e86 guid=89E549B0-7CFE-449D-9BA3-10D8B2312D71 free_space=2 alignment=2
+                    [SECTION:PEI_DEPEX] offset=18 size=16, 
+                        PUSH 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+                        END
+
+                    [SECTION:RAW] offset=30 size=4
+                    [SECTION:PE32] offset=34 size=4e24
+                    [SECTION:USER_INTERFACE] offset=4e58 size=1e, S3Resume2Pei
+                    [SECTION:VERSION] offset=4e78 size=e
+
+                [FFS:FFS_PAD] offset=2a370 size=78 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+                [FFS:PEIM] offset=2a3e8 size=9bfe guid=EDADEB9D-DDBA-48BD-9D22-C1C169C8C5C6 free_space=ac01a alignment=2
+                    [SECTION:PEI_DEPEX] offset=18 size=28, 
+                        PUSH F894643D-C449-42D1-8EA8-85BDD8C65BDE
+                        PUSH 01F34D25-4DE2-23AD-3FF3-36353FF323F1
+                        AND
+                        END
+
+                    [SECTION:RAW] offset=40 size=14
+                    [SECTION:PE32] offset=54 size=9b84
+                    [SECTION:USER_INTERFACE] offset=9bd8 size=16, CpuMpPei
+                    [SECTION:VERSION] offset=9bf0 size=e
+
+        [SECTION:RAW] offset=e0080 size=c
+        [SECTION:FIRMWARE_VOLUME_IMAGE] offset=e008c size=b00004, 
+            [FV:] file_system=8C8CE578-8A3D-4F1C-9935-896185C32DD3 size=b00000 checksum=62734
+                [FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+                [FFS:FREEFORM] offset=78 size=5c guid=FC510EE7-FFDC-11D4-BD41-0080C73C8881 free_space=4 alignment=0
+                    [SECTION:RAW] offset=18 size=44
+
+                [FFS:DXE_CORE] offset=d8 size=2473e guid=D6A2CB7F-6A18-4E2F-B43B-9920A733700A free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=24704
+                    [SECTION:USER_INTERFACE] offset=2471c size=14, DxeCore
+                    [SECTION:VERSION] offset=24730 size=e
+
+                [FFS:DRIVER] offset=24818 size=40fa guid=D93CE3D8-A7EB-4730-8C8E-CC466A9ECC3C free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=4064
+                    [SECTION:USER_INTERFACE] offset=40a4 size=46, ReportStatusCodeRouterRuntimeDxe
+                    [SECTION:VERSION] offset=40ec size=e
+
+                [FFS:DRIVER] offset=28918 size=30c2 guid=6C2004EF-4E0E-4BE4-B14C-340EB4AA5891 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=3a, 
+                        PUSH 86212936-0E76-41C8-A03A-2AF2FC1C39E2
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=3024
+                    [SECTION:USER_INTERFACE] offset=3078 size=3c, StatusCodeHandlerRuntimeDxe
+                    [SECTION:VERSION] offset=30b4 size=e
+
+                [FFS:DRIVER] offset=2b9e0 size=68f2 guid=80CF7257-87AB-47F9-A3FE-D50B76D89541 free_space=6 alignment=0
+                    [SECTION:RAW] offset=18 size=dc
+                    [SECTION:DXE_DEPEX] offset=f4 size=16, 
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        END
+
+                    [SECTION:PE32] offset=10c size=67c4
+                    [SECTION:USER_INTERFACE] offset=68d0 size=12, PcdDxe
+                    [SECTION:VERSION] offset=68e4 size=e
+
+                [FFS:DRIVER] offset=322d8 size=38ee guid=B601F8C4-43B7-4784-95B1-F4226CB40CEE free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=3884
+                    [SECTION:USER_INTERFACE] offset=38c4 size=1a, RuntimeDxe
+                    [SECTION:VERSION] offset=38e0 size=e
+
+                [FFS:DRIVER] offset=35bc8 size=43d6 guid=F80697E9-7FD6-4665-8646-88E33EF71DFC free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=4364
+                    [SECTION:USER_INTERFACE] offset=43a4 size=24, SecurityStubDxe
+                    [SECTION:VERSION] offset=43c8 size=e
+
+                [FFS:DRIVER] offset=39fa0 size=61f6 guid=13AC6DD0-73D0-11D4-B06B-00AA00BD6DE7 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=61a4
+                    [SECTION:USER_INTERFACE] offset=61d4 size=12, EbcDxe
+                    [SECTION:VERSION] offset=61e8 size=e
+
+                [FFS:DRIVER] offset=40198 size=271e guid=79CA4208-BBA1-4A9A-8456-E1E66A81484E free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=26c4
+                    [SECTION:USER_INTERFACE] offset=26f4 size=1a, Legacy8259
+                    [SECTION:VERSION] offset=2710 size=e
+
+                [FFS:DRIVER] offset=428b8 size=2d5a guid=A19B1FE7-C1BC-49F8-875F-54A5D542443F free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=2d04
+                    [SECTION:USER_INTERFACE] offset=2d34 size=18, CpuIo2Dxe
+                    [SECTION:VERSION] offset=2d4c size=e
+
+                [FFS:DRIVER] offset=45618 size=fbe6 guid=1A1E4886-9517-440E-9FDE-3BE44CEE2136 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=fb84
+                    [SECTION:USER_INTERFACE] offset=fbc4 size=12, CpuDxe
+                    [SECTION:VERSION] offset=fbd8 size=e
+
+                [FFS:DRIVER] offset=55200 size=27b6 guid=F2765DEC-6B41-11D5-8E71-00902707B35E free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=3a, 
+                        PUSH 26BACCB1-6F42-11D4-BCE7-0080C73C8881
+                        PUSH 38321DBA-4FE0-4E17-8AEC-413055EAEDC1
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=2744
+                    [SECTION:USER_INTERFACE] offset=2798 size=10, Timer
+                    [SECTION:VERSION] offset=27a8 size=e
+
+                [FFS:DRIVER] offset=579b8 size=2ae6 guid=F6697AC4-A776-4EE1-B643-1FEFF2B615BB free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=2a64
+                    [SECTION:USER_INTERFACE] offset=2a94 size=44, IncompatiblePciDeviceSupportDxe
+                    [SECTION:VERSION] offset=2ad8 size=e
+
+                [FFS:DRIVER] offset=5a4a0 size=5c9a guid=11A6EDF6-A9BE-426D-A6CC-B22FE51D9224 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=5c24
+                    [SECTION:USER_INTERFACE] offset=5c64 size=28, PciHotPlugInitDxe
+                    [SECTION:VERSION] offset=5c8c size=e
+
+                [FFS:DRIVER] offset=60140 size=aea6 guid=128FB770-5E79-4176-9E51-9BB268A17DD1 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=94, 
+                        PUSH AD61F191-AE5F-4C0E-B9FA-E869D288C64F
+                        PUSH 26BACCB1-6F42-11D4-BCE7-0080C73C8881
+                        AND
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=ac size=adc4
+                    [SECTION:USER_INTERFACE] offset=ae70 size=26, PciHostBridgeDxe
+                    [SECTION:VERSION] offset=ae98 size=e
+
+                [FFS:DRIVER] offset=6afe8 size=10282 guid=93B80004-9FB3-11D4-9A3A-0090273FC14D free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=10244
+                    [SECTION:USER_INTERFACE] offset=1025c size=18, PciBusDxe
+                    [SECTION:VERSION] offset=10274 size=e
+
+                [FFS:DRIVER] offset=7b270 size=4342 guid=4B28E4C7-FF36-4E10-93CF-A82159E777C5 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=42c4
+                    [SECTION:USER_INTERFACE] offset=4304 size=30, ResetSystemRuntimeDxe
+                    [SECTION:VERSION] offset=4334 size=e
+
+                [FFS:DRIVER] offset=7f5b8 size=2afa guid=C8339973-A563-4561-B858-D8476F9DEFC4 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=2aa4
+                    [SECTION:USER_INTERFACE] offset=2ad4 size=18, Metronome
+                    [SECTION:VERSION] offset=2aec size=e
+
+                [FFS:DRIVER] offset=820b8 size=4f66 guid=378D7B65-8DA9-4773-B6E4-A47826A833E1 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=4c, 
+                        PUSH 1E5668E2-8481-11D4-BCF1-0080C73C8881
+                        PUSH 6441F818-6362-4E44-B570-7DBA31DD2453
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=64 size=4ee4
+                    [SECTION:USER_INTERFACE] offset=4f48 size=10, PcRtc
+                    [SECTION:VERSION] offset=4f58 size=e
+
+                [FFS:DRIVER] offset=87020 size=3b56 guid=83DD3B39-7CAF-4FAC-A542-E050B767E3A7 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=3b04
+                    [SECTION:USER_INTERFACE] offset=3b1c size=2a, VirtioPciDeviceDxe
+                    [SECTION:VERSION] offset=3b48 size=e
+
+                [FFS:DRIVER] offset=8ab78 size=57e2 guid=0170F60C-1D40-4651-956D-F0BD9879D527 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=57a4
+                    [SECTION:USER_INTERFACE] offset=57bc size=16, Virtio10
+                    [SECTION:VERSION] offset=57d4 size=e
+
+                [FFS:DRIVER] offset=90360 size=408a guid=11D92DFB-3CA9-4F93-BA2E-4780ED3E03B5 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=4044
+                    [SECTION:USER_INTERFACE] offset=405c size=1e, VirtioBlkDxe
+                    [SECTION:VERSION] offset=407c size=e
+
+                [FFS:DRIVER] offset=943f0 size=452a guid=FAB5D4F4-83C0-4AAF-8480-442D11DF6CEA free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=44e4
+                    [SECTION:USER_INTERFACE] offset=44fc size=20, VirtioScsiDxe
+                    [SECTION:VERSION] offset=451c size=e
+
+                [FFS:DRIVER] offset=98920 size=3b8a guid=58E26F0D-CBAC-4BBA-B70F-18221415665A free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=3b44
+                    [SECTION:USER_INTERFACE] offset=3b5c size=1e, VirtioRngDxe
+                    [SECTION:VERSION] offset=3b7c size=e
+
+                [FFS:DRIVER] offset=9c4b0 size=2f86 guid=CF569F50-DE44-4F54-B4D7-F4AE25CDA599 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=2f44
+                    [SECTION:USER_INTERFACE] offset=2f5c size=1c, XenIoPciDxe
+                    [SECTION:VERSION] offset=2f78 size=e
+
+                [FFS:DRIVER] offset=9f438 size=9be2 guid=565EC8BA-A484-11E3-802B-B8AC6F7D65E6 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=9ba4
+                    [SECTION:USER_INTERFACE] offset=9bbc size=18, XenBusDxe
+                    [SECTION:VERSION] offset=9bd4 size=e
+
+                [FFS:DRIVER] offset=a9020 size=5586 guid=8C2487EA-9AF3-11E3-B966-B8AC6F7D65E6 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=5544
+                    [SECTION:USER_INTERFACE] offset=555c size=1c, XenPvBlkDxe
+                    [SECTION:VERSION] offset=5578 size=e
+
+                [FFS:DRIVER] offset=ae5a8 size=28e6 guid=F099D67F-71AE-4C36-B2A3-DCEB0EB2B7D8 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=3a, 
+                        PUSH 26BACCB3-6F42-11D4-BCE7-0080C73C8881
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=2864
+                    [SECTION:USER_INTERFACE] offset=28b8 size=20, WatchdogTimer
+                    [SECTION:VERSION] offset=28d8 size=e
+
+                [FFS:DRIVER] offset=b0e90 size=2b42 guid=AD608272-D07F-4964-801E-7BD3B7888652 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=3a, 
+                        PUSH 1E5668E2-8481-11D4-BCF1-0080C73C8881
+                        PUSH 6441F818-6362-4E44-B570-7DBA31DD2453
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=2aa4
+                    [SECTION:USER_INTERFACE] offset=2af8 size=3a, MonotonicCounterRuntimeDxe
+                    [SECTION:VERSION] offset=2b34 size=e
+
+                [FFS:DRIVER] offset=b39d8 size=2c8e guid=42857F0A-13F2-4B21-8A23-53D3F714B840 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=3a, 
+                        PUSH 6441F818-6362-4E44-B570-7DBA31DD2453
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=2c04
+                    [SECTION:USER_INTERFACE] offset=2c58 size=28, CapsuleRuntimeDxe
+                    [SECTION:VERSION] offset=2c80 size=e
+
+                [FFS:DRIVER] offset=b6668 size=462e guid=51CCF399-4FDF-4E55-A45B-E123F84D456A free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=45e4
+                    [SECTION:USER_INTERFACE] offset=45fc size=22, ConPlatformDxe
+                    [SECTION:VERSION] offset=4620 size=e
+
+                [FFS:DRIVER] offset=bac98 size=866e guid=408EDCEC-CF6D-477C-A5A8-B4844E3DE281 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=8624
+                    [SECTION:USER_INTERFACE] offset=863c size=22, ConSplitterDxe
+                    [SECTION:VERSION] offset=8660 size=e
+
+                [FFS:DRIVER] offset=c3308 size=6a96 guid=CCCB0C28-4B24-11D5-9A5A-0090273FC14D free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=6a44
+                    [SECTION:USER_INTERFACE] offset=6a5c size=2a, GraphicsConsoleDxe
+                    [SECTION:VERSION] offset=6a88 size=e
+
+                [FFS:DRIVER] offset=c9da0 size=8946 guid=9E863906-A40F-4875-977F-5B93FF237FC6 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=8904
+                    [SECTION:USER_INTERFACE] offset=891c size=1c, TerminalDxe
+                    [SECTION:VERSION] offset=8938 size=e
+
+                [FFS:DRIVER] offset=d26e8 size=667a guid=EBF8ED7C-0DD1-4787-84F1-F48D537DCACF free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=70, 
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH B9D4C360-BCFB-4F9B-9298-53C136982258
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 0FD96974-23AA-4CDC-B9CB-98D17750322A
+                        PUSH 587E72D7-CC50-4F79-8209-CA291FC1A10F
+                        AND
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:RAW] offset=88 size=4c
+                    [SECTION:PE32] offset=d4 size=6564
+                    [SECTION:USER_INTERFACE] offset=6638 size=32, DriverHealthManagerDxe
+                    [SECTION:VERSION] offset=666c size=e
+
+                [FFS:DRIVER] offset=d8d68 size=1af76 guid=6D33944A-EC75-4855-A54D-809C75241F6C free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=96, 
+                        TRUE
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 0FD96974-23AA-4CDC-B9CB-98D17750322A
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH 587E72D7-CC50-4F79-8209-CA291FC1A10F
+                        AND
+                        AND
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        PUSH 6441F818-6362-4E44-B570-7DBA31DD2453
+                        AND
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=b0 size=1aea4
+                    [SECTION:USER_INTERFACE] offset=1af54 size=12, BdsDxe
+                    [SECTION:VERSION] offset=1af68 size=e
+
+                [FFS:APPLICATION] offset=f3ce0 size=24b2e guid=462CAA21-7614-4503-836E-8AB6F4662331 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=24ac4
+                    [SECTION:RAW] offset=24adc size=34
+                    [SECTION:USER_INTERFACE] offset=24b10 size=10, UiApp
+                    [SECTION:VERSION] offset=24b20 size=e
+
+                [FFS:DRIVER] offset=118810 size=c1f2 guid=9B680FCE-AD6B-4F3A-B60B-F59899003443 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=6, 
+                        TRUE
+                        END
+
+                    [SECTION:PE32] offset=20 size=c1a4
+                    [SECTION:USER_INTERFACE] offset=c1c4 size=20, DevicePathDxe
+                    [SECTION:VERSION] offset=c1e4 size=e
+
+                [FFS:DRIVER] offset=124a08 size=2f7a guid=79E4A61C-ED73-4312-94FE-E3E7563362A9 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=2f24
+                    [SECTION:USER_INTERFACE] offset=2f54 size=16, PrintDxe
+                    [SECTION:VERSION] offset=2f6c size=e
+
+                [FFS:DRIVER] offset=127988 size=5522 guid=6B38F7B4-AD98-40E9-9093-ACA2B5A253C4 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=54e4
+                    [SECTION:USER_INTERFACE] offset=54fc size=18, DiskIoDxe
+                    [SECTION:VERSION] offset=5514 size=e
+
+                [FFS:DRIVER] offset=12ceb0 size=702a guid=1FA1F39E-FEFF-4AAE-BD7B-38A070A3B609 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=6fe4
+                    [SECTION:USER_INTERFACE] offset=6ffc size=1e, PartitionDxe
+                    [SECTION:VERSION] offset=701c size=e
+
+                [FFS:DRIVER] offset=133ee0 size=b6ec guid=28A03FF4-12B3-4305-A417-BB1A4F94081E free_space=4 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=70, 
+                        PUSH 587E72D7-CC50-4F79-8209-CA291FC1A10F
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 0FD96974-23AA-4CDC-B9CB-98D17750322A
+                        PUSH B9D4C360-BCFB-4F9B-9298-53C136982258
+                        AND
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:RAW] offset=88 size=34
+                    [SECTION:PE32] offset=bc size=b584
+                    [SECTION:USER_INTERFACE] offset=b640 size=1a, RamDiskDxe
+                    [SECTION:VERSION] offset=b65c size=e
+                    [SECTION:RAW] offset=b66c size=80
+
+                [FFS:DRIVER] offset=13f5d0 size=2ba6 guid=CD3BAFB6-50FB-4FE8-8E4E-AB74D2C1A600 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=2b64
+                    [SECTION:USER_INTERFACE] offset=2b7c size=1a, EnglishDxe
+                    [SECTION:VERSION] offset=2b98 size=e
+
+                [FFS:DRIVER] offset=142178 size=4b3e guid=0167CCC4-D0F7-4F21-A3EF-9E64B7CDCE8B free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=4b04
+                    [SECTION:USER_INTERFACE] offset=4b1c size=14, ScsiBus
+                    [SECTION:VERSION] offset=4b30 size=e
+
+                [FFS:DRIVER] offset=146cb8 size=aba2 guid=0A66E322-3740-4CCE-AD62-BD172CECCA35 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=ab64
+                    [SECTION:USER_INTERFACE] offset=ab7c size=16, ScsiDisk
+                    [SECTION:VERSION] offset=ab94 size=e
+
+                [FFS:DRIVER] offset=151860 size=3dee guid=021722D8-522B-4079-852A-FE44C2C13F49 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=3da4
+                    [SECTION:USER_INTERFACE] offset=3dbc size=22, SataController
+                    [SECTION:VERSION] offset=3de0 size=e
+
+                [FFS:DRIVER] offset=155650 size=bef6 guid=5E523CB4-D397-4986-87BD-A6DD8B22F455 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=bea4
+                    [SECTION:USER_INTERFACE] offset=bebc size=2c, AtaAtapiPassThruDxe
+                    [SECTION:VERSION] offset=bee8 size=e
+
+                [FFS:DRIVER] offset=161548 size=7482 guid=19DF145A-B1D4-453F-8507-38816676D7F6 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=7444
+                    [SECTION:USER_INTERFACE] offset=745c size=18, AtaBusDxe
+                    [SECTION:VERSION] offset=7474 size=e
+
+                [FFS:DRIVER] offset=1689d0 size=a54a guid=5BE3BDF4-53CF-46A3-A6A9-73C34A6E5EE3 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=a504
+                    [SECTION:USER_INTERFACE] offset=a51c size=20, NvmExpressDxe
+                    [SECTION:VERSION] offset=a53c size=e
+
+                [FFS:DRIVER] offset=172f20 size=1da6e guid=348C4D62-BFBD-4882-9ECE-C80BB1C4783B free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=1da04
+                    [SECTION:USER_INTERFACE] offset=1da44 size=1c, HiiDatabase
+                    [SECTION:VERSION] offset=1da60 size=e
+
+                [FFS:DRIVER] offset=190990 size=185ea guid=EBF342FE-B1D3-4EF8-957C-8048606FF671 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=5e, 
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH 587E72D7-CC50-4F79-8209-CA291FC1A10F
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 0FD96974-23AA-4CDC-B9CB-98D17750322A
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=78 size=18544
+                    [SECTION:USER_INTERFACE] offset=185bc size=1e, SetupBrowser
+                    [SECTION:VERSION] offset=185dc size=e
+
+                [FFS:DRIVER] offset=1a8f80 size=14116 guid=E660EA85-058E-4B55-A54B-F02F83A24707 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=70, 
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH 587E72D7-CC50-4F79-8209-CA291FC1A10F
+                        PUSH A770C357-B693-4E6D-A6CF-D21C728E550B
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 0FD96974-23AA-4CDC-B9CB-98D17750322A
+                        AND
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:RAW] offset=88 size=1c
+                    [SECTION:PE32] offset=a4 size=14044
+                    [SECTION:USER_INTERFACE] offset=140e8 size=20, DisplayEngine
+                    [SECTION:VERSION] offset=14108 size=e
+
+                [FFS:DRIVER] offset=1bd098 size=2bba guid=96B5C032-DF4C-4B6E-8232-438DCF448D0E free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=2b44
+                    [SECTION:USER_INTERFACE] offset=2b84 size=28, NullMemoryTestDxe
+                    [SECTION:VERSION] offset=2bac size=e
+
+                [FFS:DRIVER] offset=1bfc58 size=33be guid=38A0EC22-FBE7-4911-8BC1-176E0D6C1DBD free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=3384
+                    [SECTION:USER_INTERFACE] offset=339c size=14, IsaAcpi
+                    [SECTION:VERSION] offset=33b0 size=e
+
+                [FFS:DRIVER] offset=1c3018 size=4a02 guid=240612B5-A063-11D4-9A3A-0090273FC14D free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=49c4
+                    [SECTION:USER_INTERFACE] offset=49dc size=18, IsaBusDxe
+                    [SECTION:VERSION] offset=49f4 size=e
+
+                [FFS:DRIVER] offset=1c7a20 size=5d0a guid=93B80003-9FB3-11D4-9A3A-0090273FC14D free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=5cc4
+                    [SECTION:USER_INTERFACE] offset=5cdc size=1e, IsaSerialDxe
+                    [SECTION:VERSION] offset=5cfc size=e
+
+                [FFS:DRIVER] offset=1cd730 size=692e guid=3DC82376-637B-40A6-A8FC-A565417F2C38 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=68e4
+                    [SECTION:USER_INTERFACE] offset=68fc size=22, Ps2KeyboardDxe
+                    [SECTION:VERSION] offset=6920 size=e
+
+                [FFS:DRIVER] offset=1d4060 size=608a guid=0ABD8284-6DA3-4616-971A-83A5148067BA free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=6044
+                    [SECTION:USER_INTERFACE] offset=605c size=1e, IsaFloppyDxe
+                    [SECTION:VERSION] offset=607c size=e
+
+                [FFS:DRIVER] offset=1da0f0 size=62d2 guid=F9D88642-0737-49BC-81B5-6889CD57D9EA free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=4e, 
+                        TRUE
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=68 size=6244
+                    [SECTION:USER_INTERFACE] offset=62ac size=18, SmbiosDxe
+                    [SECTION:VERSION] offset=62c4 size=e
+
+                [FFS:DRIVER] offset=1e03c8 size=3f92 guid=4110465D-5FF3-4F4B-B580-24ED0D06747A free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=5e, 
+                        PUSH 03583FF6-CB36-4940-947E-B9B39F4AFAF7
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=78 size=3ee4
+                    [SECTION:USER_INTERFACE] offset=3f5c size=28, SmbiosPlatformDxe
+                    [SECTION:VERSION] offset=3f84 size=e
+
+                [FFS:DRIVER] offset=1e4360 size=7f92 guid=9622E42C-8E38-4A08-9E8F-54F784652F6B free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=7f24
+                    [SECTION:USER_INTERFACE] offset=7f64 size=1e, AcpiTableDxe
+                    [SECTION:VERSION] offset=7f84 size=e
+
+                [FFS:DRIVER] offset=1ec2f8 size=890a guid=49970331-E3FA-4637-9ABC-3B7868676970 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=5e, 
+                        PUSH FFE06BDD-6107-46A6-7BB2-5A9C7EC5275C
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=78 size=8864
+                    [SECTION:USER_INTERFACE] offset=88dc size=1e, AcpiPlatform
+                    [SECTION:VERSION] offset=88fc size=e
+
+                [FFS:FREEFORM] offset=1f4c08 size=f30 guid=7E374E25-8E01-4FEE-87F2-390C23C606CD free_space=0 alignment=0
+                    [SECTION:RAW] offset=18 size=f8
+                    [SECTION:RAW] offset=110 size=44
+                    [SECTION:RAW] offset=154 size=58
+                    [SECTION:RAW] offset=1ac size=d5b
+                    [SECTION:RAW] offset=f08 size=28
+
+                [FFS:DRIVER] offset=1f5b38 size=7b1e guid=BDCE85BB-FBAA-4F4E-9264-501A2C249581 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=4e, 
+                        TRUE
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=68 size=7a84
+                    [SECTION:USER_INTERFACE] offset=7aec size=22, S3SaveStateDxe
+                    [SECTION:VERSION] offset=7b10 size=e
+
+                [FFS:DRIVER] offset=1fd658 size=f0fa guid=FA20568B-548B-4B2B-81EF-1BA08D4A3CEC free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=5e, 
+                        PUSH BD445D79-B7AD-4F04-9AD8-29BD2040EB3C
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=78 size=f044
+                    [SECTION:USER_INTERFACE] offset=f0bc size=30, BootScriptExecutorDxe
+                    [SECTION:VERSION] offset=f0ec size=e
+
+                [FFS:DRIVER] offset=20c758 size=34aa guid=B8E62775-BB0A-43F0-A843-5BE8B14F8CCD free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=3444
+                    [SECTION:USER_INTERFACE] offset=345c size=3e, BootGraphicsResourceTableDxe
+                    [SECTION:VERSION] offset=349c size=e
+
+                [FFS:DRIVER] offset=20fc08 size=b416 guid=961578FE-B6B7-44C3-AF35-6BC705CD2B1F free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=b3e4
+                    [SECTION:USER_INTERFACE] offset=b3fc size=c, Fat
+                    [SECTION:VERSION] offset=b408 size=e
+
+                [FFS:DRIVER] offset=21b020 size=6c5e guid=905F13B0-8F91-4B0A-BD76-E1E78F9422E4 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=6c24
+                    [SECTION:USER_INTERFACE] offset=6c3c size=12, UdfDxe
+                    [SECTION:VERSION] offset=6c50 size=e
+
+                [FFS:APPLICATION] offset=221c80 size=e85fa guid=7C04A583-9E3E-4F1C-AD65-E05268D0B4D1 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=e85c4
+                    [SECTION:USER_INTERFACE] offset=e85dc size=10, Shell
+                    [SECTION:VERSION] offset=e85ec size=e
+
+                [FFS:DRIVER] offset=30a280 size=54fa guid=F74D20EE-37E7-48FC-97F7-9B1047749C69 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=3a, 
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH 1A1241E6-8F19-41A9-BC0E-E8EF39E06546
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=54 size=5484
+                    [SECTION:USER_INTERFACE] offset=54d8 size=14, LogoDxe
+                    [SECTION:VERSION] offset=54ec size=e
+
+                [FFS:DRIVER] offset=30f780 size=7efe guid=A2F436EA-A127-4EF8-957C-8048606FF670 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=7ec4
+                    [SECTION:USER_INTERFACE] offset=7edc size=12, SnpDxe
+                    [SECTION:VERSION] offset=7ef0 size=e
+
+                [FFS:DRIVER] offset=317680 size=2bf6 guid=A210F973-229D-4F4D-AA37-9895E6C9EABA free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=2ba4
+                    [SECTION:USER_INTERFACE] offset=2bd4 size=12, DpcDxe
+                    [SECTION:VERSION] offset=2be8 size=e
+
+                [FFS:DRIVER] offset=31a278 size=b7be guid=025BBFC7-E6A9-4B8B-82AD-6815A1AEAF4A free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=b784
+                    [SECTION:USER_INTERFACE] offset=b79c size=12, MnpDxe
+                    [SECTION:VERSION] offset=b7b0 size=e
+
+                [FFS:DRIVER] offset=325a38 size=7afe guid=E4F61863-FE2C-4B56-A8F4-08519BC439DF free_space=2 alignment=0
+                    [SECTION:RAW] offset=18 size=34
+                    [SECTION:PE32] offset=4c size=7a84
+                    [SECTION:USER_INTERFACE] offset=7ad0 size=20, VlanConfigDxe
+                    [SECTION:VERSION] offset=7af0 size=e
+
+                [FFS:DRIVER] offset=32d538 size=6d1e guid=529D3F93-E8E9-4E73-B1E1-BDF6A9D50113 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=6ce4
+                    [SECTION:USER_INTERFACE] offset=6cfc size=12, ArpDxe
+                    [SECTION:VERSION] offset=6d10 size=e
+
+                [FFS:DRIVER] offset=334258 size=bfe2 guid=94734718-0BBC-47FB-96A5-EE7A5AE6A2AD free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=bfa4
+                    [SECTION:USER_INTERFACE] offset=bfbc size=16, Dhcp4Dxe
+                    [SECTION:VERSION] offset=bfd4 size=e
+
+                [FFS:DRIVER] offset=340240 size=15072 guid=9FB1A1F3-3B71-4324-B39A-745CBB015FFF free_space=6 alignment=0
+                    [SECTION:RAW] offset=18 size=34
+                    [SECTION:PE32] offset=4c size=15004
+                    [SECTION:USER_INTERFACE] offset=15050 size=12, Ip4Dxe
+                    [SECTION:VERSION] offset=15064 size=e
+
+                [FFS:DRIVER] offset=3552b8 size=a2c2 guid=DC3641B8-2FA8-4ED3-BC1F-F9962A03454B free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=a284
+                    [SECTION:USER_INTERFACE] offset=a29c size=18, Mtftp4Dxe
+                    [SECTION:VERSION] offset=a2b4 size=e
+
+                [FFS:DRIVER] offset=35f580 size=a23e guid=6D6963AB-906D-4A65-A7CA-BD40E5D6AF2B free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=a204
+                    [SECTION:USER_INTERFACE] offset=a21c size=14, Udp4Dxe
+                    [SECTION:VERSION] offset=a230 size=e
+
+                [FFS:DRIVER] offset=3697c0 size=117be guid=6D6963AB-906D-4A65-A7CA-BD40E5D6AF4D free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=11784
+                    [SECTION:USER_INTERFACE] offset=1179c size=14, Tcp4Dxe
+                    [SECTION:VERSION] offset=117b0 size=e
+
+                [FFS:DRIVER] offset=37af80 size=b50a guid=3B1DEAB5-C75D-442E-9238-8E2FFB62B0BB free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=b4c4
+                    [SECTION:USER_INTERFACE] offset=b4dc size=20, UefiPxe4BcDxe
+                    [SECTION:VERSION] offset=b4fc size=e
+
+                [FFS:DRIVER] offset=386490 size=13216 guid=4579B72D-7EC4-4DD4-8486-083C86B182A7 free_space=2 alignment=0
+                    [SECTION:RAW] offset=18 size=34
+                    [SECTION:PE32] offset=4c size=131a4
+                    [SECTION:USER_INTERFACE] offset=131f0 size=18, IScsi4Dxe
+                    [SECTION:VERSION] offset=13208 size=e
+
+                [FFS:DRIVER] offset=3996a8 size=624a guid=A92CDB4B-82F1-4E0B-A516-8A655D371524 free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=6204
+                    [SECTION:USER_INTERFACE] offset=621c size=1e, VirtioNetDxe
+                    [SECTION:VERSION] offset=623c size=e
+
+                [FFS:DRIVER] offset=39f8f8 size=80fe guid=2FB92EFA-2EE0-4BAE-9EB6-7464125E1EF7 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=80c4
+                    [SECTION:USER_INTERFACE] offset=80dc size=14, UhciDxe
+                    [SECTION:VERSION] offset=80f0 size=e
+
+                [FFS:DRIVER] offset=3a79f8 size=97be guid=BDFE430E-8F2A-4DB0-9991-6F856594777E free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=9784
+                    [SECTION:USER_INTERFACE] offset=979c size=14, EhciDxe
+                    [SECTION:VERSION] offset=97b0 size=e
+
+                [FFS:DRIVER] offset=3b11b8 size=da5e guid=B7F50E91-A759-412C-ADE4-DCD03E7F7C28 free_space=2 alignment=0
+                    [SECTION:PE32] offset=18 size=da24
+                    [SECTION:USER_INTERFACE] offset=da3c size=14, XhciDxe
+                    [SECTION:VERSION] offset=da50 size=e
+
+                [FFS:DRIVER] offset=3bec18 size=a362 guid=240612B7-A063-11D4-9A3A-0090273FC14D free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=a324
+                    [SECTION:USER_INTERFACE] offset=a33c size=18, UsbBusDxe
+                    [SECTION:VERSION] offset=a354 size=e
+
+                [FFS:DRIVER] offset=3c8f80 size=73c2 guid=2D2E62CF-9ECF-43B7-8219-94E7FC713DFE free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=7384
+                    [SECTION:USER_INTERFACE] offset=739c size=16, UsbKbDxe
+                    [SECTION:VERSION] offset=73b4 size=e
+
+                [FFS:DRIVER] offset=3d0348 size=6a52 guid=9FB4B4A7-42C0-4BCD-8540-9BCC6711F83E free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=6a04
+                    [SECTION:USER_INTERFACE] offset=6a1c size=28, UsbMassStorageDxe
+                    [SECTION:VERSION] offset=6a44 size=e
+
+                [FFS:DRIVER] offset=3d6da0 size=7aea guid=E3752948-B9A1-4770-90C4-DF41C38986BE free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=7aa4
+                    [SECTION:USER_INTERFACE] offset=7abc size=1e, QemuVideoDxe
+                    [SECTION:VERSION] offset=7adc size=e
+
+                [FFS:DRIVER] offset=3de890 size=577a guid=DCE1B094-7DC6-45D0-9FDD-D7FC3CC3E4EF free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=4e, 
+                        TRUE
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 4E939DE9-D948-4B0F-88ED-E6E1CE517C1E
+                        PUSH F8775D50-8ABD-4ADF-92AC-853E51F6C8DC
+                        OR
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=68 size=56e4
+                    [SECTION:USER_INTERFACE] offset=574c size=1e, QemuRamfbDxe
+                    [SECTION:VERSION] offset=576c size=e
+
+                [FFS:DRIVER] offset=3e4010 size=644a guid=D6099B94-CD97-4CC5-8714-7F6312701A8A free_space=6 alignment=0
+                    [SECTION:PE32] offset=18 size=6404
+                    [SECTION:USER_INTERFACE] offset=641c size=1e, VirtioGpuDxe
+                    [SECTION:VERSION] offset=643c size=e
+
+                [FFS:DRIVER] offset=3ea460 size=553e guid=D9DCC5DF-4007-435E-9098-8970935504B2 free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=82, 
+                        PUSH 587E72D7-CC50-4F79-8209-CA291FC1A10F
+                        PUSH EF9FC172-A1B2-4693-B327-6D32FC416042
+                        PUSH 1E5668E2-8481-11D4-BCF1-0080C73C8881
+                        PUSH 6441F818-6362-4E44-B570-7DBA31DD2453
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        PUSH 0FD96974-23AA-4CDC-B9CB-98D17750322A
+                        AND
+                        AND
+                        AND
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:RAW] offset=9c size=34
+                    [SECTION:PE32] offset=d0 size=5444
+                    [SECTION:USER_INTERFACE] offset=5514 size=1c, PlatformDxe
+                    [SECTION:VERSION] offset=5530 size=e
+
+                [FFS:DRIVER] offset=3ef9a0 size=39ca guid=2EC9DA37-EE35-4DE9-86C5-6D9A81DC38A7 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=3964
+                    [SECTION:USER_INTERFACE] offset=39a4 size=18, AmdSevDxe
+                    [SECTION:VERSION] offset=39bc size=e
+
+                [FFS:DRIVER] offset=3f3370 size=477a guid=8657015B-EA43-440D-949A-AF3BE365C0FC free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=16, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        END
+
+                    [SECTION:PE32] offset=30 size=4724
+                    [SECTION:USER_INTERFACE] offset=4754 size=16, IoMmuDxe
+                    [SECTION:VERSION] offset=476c size=e
+
+                [FFS:DRIVER] offset=3f7af0 size=4802 guid=733CBAC2-B23F-4B92-BC8E-FB01CE5907B7 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=4784
+                    [SECTION:USER_INTERFACE] offset=47c4 size=30, FvbServicesRuntimeDxe
+                    [SECTION:VERSION] offset=47f4 size=e
+
+                [FFS:DRIVER] offset=3fc2f8 size=3bca guid=22DC2B60-FE40-42AC-B01F-3AB1FAD9AAD8 free_space=6 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=3b44
+                    [SECTION:USER_INTERFACE] offset=3b84 size=36, EmuVariableFvbRuntimeDxe
+                    [SECTION:VERSION] offset=3bbc size=e
+
+                [FFS:DRIVER] offset=3ffec8 size=6286 guid=FE5CEA76-4F72-49E8-986F-2CD899DFFE5D free_space=2 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=4c, 
+                        PUSH 8F644FA9-E850-4DB1-9CE2-0B44698E8DA4
+                        PUSH B7DFB4E1-052F-449F-87BE-9818FC91B733
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        AND
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=64 size=61e4
+                    [SECTION:USER_INTERFACE] offset=6248 size=30, FaultTolerantWriteDxe
+                    [SECTION:VERSION] offset=6278 size=e
+
+                [FFS:DRIVER] offset=406150 size=ce1e guid=CBD2E4D5-7068-4FF5-B462-9822B4AD8D60 free_space=6ed092 alignment=0
+                    [SECTION:DXE_DEPEX] offset=18 size=28, 
+                        PUSH 13A3F0F6-264A-3EF0-F2E0-DEC512342F34
+                        PUSH 0379BE4E-D706-437D-B037-EDB82FB772A4
+                        AND
+                        END
+
+                    [SECTION:PE32] offset=40 size=cda4
+                    [SECTION:USER_INTERFACE] offset=cde4 size=2a, VariableRuntimeDxe
+                    [SECTION:VERSION] offset=ce10 size=e
+
+
+[FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+[FFS:FFS_PAD] offset=66f8 size=2d610 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:RAW] offset=33d08 size=2f8 guid=1BA0062E-C779-4582-8566-336AE8F78F09 free_space=0 alignment=1
+
+

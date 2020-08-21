@@ -1,0 +1,87 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and uniquely
+  identified as "Intel Mobile Silicon Support Module" and is
+  licensed for Intel Mobile CPUs and chipsets under the terms of your
+  license agreement with Intel or your vendor.  This file may
+  be modified by the user, subject to additional terms of the
+  license agreement
+--*/
+/** @file
+
+Copyright (c) 2011, Intel Corporation. All rights reserved.<BR>
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+**/
+#include <Protocol/PchPlatformPolicy.h>
+
+#include "PchInitPei.h"
+
+
+/**
+
+  Internal function performing initialization of the USB controller on S3 resume
+  or recovery.  This will make sure the USB settings are correct.
+
+  @param PeiServices       General purpose services available to every PEIM.
+  @param NotifyDescriptor  The notification structure this PEIM registered on install.
+  @param Ppi               The memory discovered PPI.  Not used.
+
+  @retval EFI_SUCCESS      The function completed successfully.
+
+**/
+EFI_STATUS
+EFIAPI
+PchInitUsb (
+  IN EFI_PEI_SERVICES             **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR    *NotifyDescriptor,
+  IN VOID                         *Ppi
+  )
+{
+  EFI_STATUS              Status;
+  EFI_BOOT_MODE           BootMode;
+  UINT32                  RootComplexBar;
+  UINT32                  FuncDisableReg;
+
+
+  //
+  // Check to see if the boot mode is set to recovery.  If not in recovery this
+  // driver can just exit.
+  //
+  Status = PeiServicesGetBootMode (&BootMode);
+  if (BootMode != BOOT_IN_RECOVERY_MODE && BootMode != BOOT_ON_S3_RESUME) {
+    return EFI_UNSUPPORTED;
+  }
+
+  //
+  // Collect data for initialization of EHCI controllers.
+  //
+  RootComplexBar = PciRead32 (PCI_LIB_ADDRESS (0, PCI_DEVICE_NUMBER_PCH_LPC, 0, R_PCH_LPC_RCBA)) & ~BIT0;
+  FuncDisableReg = MmioRead32 (RootComplexBar + R_PCH_RCRB_FUNC_DIS);
+
+  //
+  // Perform the common initialization process to get the EHCI controllers to
+  // a functional status.
+  //
+  DEBUG ((EFI_D_INFO, "Running common USB initialization on S3/Recovery path."));
+  Status = CommonUsbInit (
+    &mUsbDefaultConfig,
+    PcdGet32 (PcdEhciRecoveryMmioBase),
+    0,
+    RootComplexBar,
+    &FuncDisableReg
+    );
+
+  //
+  // Deal with changes to the function disable register.
+  //
+  MmioWrite32 (RootComplexBar + R_PCH_RCRB_FUNC_DIS, FuncDisableReg);
+
+  return Status;
+
+}

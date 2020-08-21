@@ -1,0 +1,64 @@
+
+[FFS:FFS_PAD] offset=48 size=2c guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=4 alignment=0
+
+
+[FFS:FFS_PAD] offset=128 size=ec0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=f028 size=fc0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=1a028 size=fc0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=23048 size=fa0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=2c040 size=fa8 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=35058 size=f90 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=3e028 size=fc0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=47020 size=fc8 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=50038 size=fb0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=59030 size=fb8 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=62048 size=fa0 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=6b040 size=fa8 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=75030 size=fb8 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:FFS_PAD] offset=7e050 size=f98 guid=FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF free_space=0 alignment=0
+
+
+[FFS:APPLICATION] offset=bffa0 size=cc78 guid=462CAA21-7614-4503-836E-8AB6F4662331 free_space=0 alignment=0
+    [SECTION:COMPRESSION] offset=18 size=cbc9, algorithm=1 uncompressed=1d03e
+        [SECTION:GUID_DEFINED] offset=0 size=1d03e, guid=FC1BCDB0-7D31-49AA-936A-A4600D9DD083
+            [SECTION:PE32] offset=18 size=1d004
+            [SECTION:USER_INTERFACE] offset=1d01c size=10, UiApp
+            [SECTION:VERSION] offset=1d02c size=e
+    [SECTION:RAW] offset=cbe4 size=94
+
+[FFS:APPLICATION] offset=1867d8 size=44b4c guid=7C04A583-9E3E-4F1C-AD65-E05268D0B4D1 free_space=4 alignment=0
+    [SECTION:COMPRESSION] offset=18 size=44b34, algorithm=1 uncompressed=c3c5e
+        [SECTION:GUID_DEFINED] offset=0 size=c3c5e, guid=FC1BCDB0-7D31-49AA-936A-A4600D9DD083
+            [SECTION:PE32] offset=18 size=c3c24
+            [SECTION:USER_INTERFACE] offset=c3c3c size=10, Shell
+            [SECTION:VERSION] offset=c3c4c size=e
+
+[FFS:FREEFORM] offset=1ce7a8 size=30ba guid=7BB28B99-61BB-11D5-9A5D-0090273FC14D free_space=ae79e alignment=0
+    [SECTION:RAW] offset=18 size=30a2
+

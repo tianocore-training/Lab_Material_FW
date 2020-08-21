@@ -1,0 +1,56 @@
+//// @file
+//
+// TODO: Brief Description of UEFI Driver MyWizardDriver
+//  
+// TODO: Detailed Description of UEFI Driver MyWizardDriver
+//
+// TODO: Copyright for UEFI Driver MyWizardDriver
+//  
+//**/
+
+
+#include "MyWizardDriverNVDataStruc.h"
+
+
+formset
+  guid     = MYWIZARDDRIVER_FORMSET_GUID,
+  title    = STRING_TOKEN(STR_SAMPLE_FORM_SET_TITLE),
+  help     = STRING_TOKEN(STR_SAMPLE_FORM_SET_HELP),
+  classguid = EFI_HII_PLATFORM_SETUP_FORMSET_GUID,
+
+  //
+  // Define a Buffer Storage (EFI_IFR_VARSTORE)
+  //
+    varstore MYWIZARDDRIVER_CONFIGURATION,  // This is the data structure type
+    //varid = CONFIGURATION_VARSTORE_ID,      // Optional VarStore ID
+    name  = MWD_IfrNVData,                  // Define referenced name in vfr
+    guid  = MYWIZARDDRIVER_FORMSET_GUID;    // GUID of this buffer storage
+
+
+
+  form formid = 1, title = STRING_TOKEN(STR_SAMPLE_FORM1_TITLE);
+    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT);
+
+    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT2);
+ 
+  //
+  // Define a checkbox to enable / disable the device
+  //
+ 
+     checkbox varid   = MWD_IfrNVData.MyWizardDriverChooseToEnable,
+                 prompt   = STRING_TOKEN(STR_CHECK_BOX_PROMPT),
+                 help     = STRING_TOKEN(STR_CHECK_BOX_HELP),
+                 //
+                 // CHECKBOX_DEFAULT indicate this checkbox is marked with EFI_IFR_CHECKBOX_DEFAULT
+                 // 
+                 flags    = CHECKBOX_DEFAULT ,
+                 key      = 0,
+                 default  = 1,
+     endcheckbox;
+
+  
+    
+
+  endform;
+
+endformset;

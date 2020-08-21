@@ -1,0 +1,71 @@
+## @file
+#  TODO: Brief Description of UEFI Driver MyWizardDriver
+#  
+#  TODO: Detailed Description of UEFI Driver MyWizardDriver
+#
+#  TODO: Copyright for UEFI Driver MyWizardDriver
+#  
+#  TODO: License for UEFI Driver MyWizardDriver
+#  
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = MyWizardDriver
+  FILE_GUID                 = 1bc07b61-59dd-11e2-8cd6-c01885dc878d
+  MODULE_TYPE               = UEFI_DRIVER
+  VERSION_STRING            = 1.33
+  ENTRY_POINT               = MyWizardDriverDriverEntryPoint
+  UNLOAD_IMAGE              = MyWizardDriverUnload
+  UEFI_HII_RESOURCE_SECTION = TRUE
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[Sources]
+  MyWizardDriverNVDataStruc.h
+  MyWizardDriver.h
+  MyWizardDriver.c
+  ComponentName.c
+  ComponentName.h
+  MyWizardDriver.uni
+  MyWizardDriver.vfr
+  HiiConfigAccess.c
+  HiiConfigAccess.h
+  SimpleTextOutput.c
+  SimpleTextOutput.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  BaseLib
+  UefiLib
+  DevicePathLib
+  DebugLib
+  HiiLib
+
+[Protocols]
+  gEfiDriverBindingProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiDriverSupportedEfiVersionProtocolGuid
+  gEfiHiiPackageListProtocolGuid
+  gEfiHiiDatabaseProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+
+
+  gEfiHiiStringProtocolGuid                     ## CONSUMES
+  gEfiHiiConfigRoutingProtocolGuid              ## CONSUMES
+  gEfiFormBrowser2ProtocolGuid                  ## CONSUMES
+  gEfiHiiDatabaseProtocolGuid                   ## CONSUMES
+
+
+# *** LAB ***
+  gEfiSerialIoProtocolGuid 
+[Guids]
+

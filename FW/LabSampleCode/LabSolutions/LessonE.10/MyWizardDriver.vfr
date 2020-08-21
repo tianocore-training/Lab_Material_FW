@@ -1,0 +1,211 @@
+//// @file
+//
+// TODO: Brief Description of UEFI Driver MyWizardDriver
+//  
+// TODO: Detailed Description of UEFI Driver MyWizardDriver
+//
+// TODO: Copyright for UEFI Driver MyWizardDriver
+//  
+//**/
+
+
+#include "MyWizardDriverNVDataStruc.h"
+
+
+formset
+  guid     = MYWIZARDDRIVER_FORMSET_GUID,
+  title    = STRING_TOKEN(STR_SAMPLE_FORM_SET_TITLE),
+  help     = STRING_TOKEN(STR_SAMPLE_FORM_SET_HELP),
+  classguid = EFI_HII_PLATFORM_SETUP_FORMSET_GUID,
+
+  //
+  // Define a Buffer Storage (EFI_IFR_VARSTORE)
+  //
+    varstore MYWIZARDDRIVER_CONFIGURATION,  // This is the data structure type
+    //varid = CONFIGURATION_VARSTORE_ID,      // Optional VarStore ID
+    name  = MWD_IfrNVData,                  // Define referenced name in vfr
+    guid  = MYWIZARDDRIVER_FORMSET_GUID;    // GUID of this buffer storage
+
+defaultstore MyStandardDefault,
+    prompt      = STRING_TOKEN(STR_STANDARD_DEFAULT_PROMPT),
+    attribute   = 0x0000;                         // Default ID: 0000 standard default
+
+
+  form formid = 1, title = STRING_TOKEN(STR_SAMPLE_FORM1_TITLE);
+    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT);
+
+    subtitle text = STRING_TOKEN(STR_SUBTITLE_TEXT2);
+ 
+  //
+  // Define a checkbox to enable / disable the device
+  //
+ 
+     checkbox varid   = MWD_IfrNVData.MyWizardDriverChooseToEnable,
+                 prompt   = STRING_TOKEN(STR_CHECK_BOX_PROMPT),
+                 help     = STRING_TOKEN(STR_CHECK_BOX_HELP),
+                 //
+                 // CHECKBOX_DEFAULT indicate this checkbox is marked with EFI_IFR_CHECKBOX_DEFAULT
+                 // 
+                 flags    = CHECKBOX_DEFAULT ,
+                 key      = 0,
+                 default  = 1,
+     endcheckbox;
+   //
+    // Define oneof (EFI_IFR_ONE_OF)
+    //
+   grayoutif  ideqval MWD_IfrNVData.MyWizardDriverChooseToEnable == 0x0;
+
+    oneof name = MyOneOf2,                                // Define reference name for Question
+      varid   = MWD_IfrNVData.MyWizardDriverBaseAddress, 
+      // Use "DataStructure.Member" to reference Buffer Storage
+      prompt  = STRING_TOKEN(STR_ONE_OF_PROMPT),
+      help    = STRING_TOKEN(STR_ONE_OF_HELP),
+      //
+      // Define an option (EFI_IFR_ONE_OF_OPTION)
+      //
+      option text = STRING_TOKEN(STR_ONE_OF_TEXT3), value = 0x0, flags = 0;
+      option text = STRING_TOKEN(STR_ONE_OF_TEXT2), value = 0x1, flags = 0;
+      //
+      // DEFAULT indicate this option will be marked with  
+      //  EFI_IFR_OPTION_DEFAULT
+      //
+      option text = STRING_TOKEN(STR_ONE_OF_TEXT1), value = 0x2, 
+          flags = DEFAULT;
+    endoneof;
+   endif;
+
+    //
+// Define a string (EFI_IFR_STRING) to name the configuration in the 
+// NVRAM variable
+    //
+  grayoutif  ideqval MWD_IfrNVData.MyWizardDriverChooseToEnable == 0x0;
+    string    varid    = MWD_IfrNVData.MyWizardDriverStringData,
+           questionid  = 0x1001,
+              prompt   = STRING_TOKEN(STR_MY_STRING_PROMPT),
+              help     = STRING_TOKEN(STR_MY_STRING_HELP),
+              flags    = INTERACTIVE,
+              minsize  = 3,
+              maxsize  = 20,
+    endstring;
+  endif;
+
+//
+// Define a numeric free form menu item 
+//
+  suppressif  ideqval MWD_IfrNVData.MyWizardDriverChooseToEnable == 0x0;
+   numeric varid   = MWD_IfrNVData.MyWizardDriverHexData,                          
+           questionid  = 0x1111,
+            prompt  = STRING_TOKEN(STR_DATA_HEX_PROMPT),
+            help    = STRING_TOKEN(STR_NUMERIC_HELP),
+            flags   = DISPLAY_UINT_HEX | INTERACTIVE,     // Display in HEX format (if not specified, default is in decimal format)
+            minimum = 0,
+            maximum = 250,
+	    default = 0x22, defaultstore = MyStandardDefault, 
+
+    endnumeric;
+  endif;
+
+    resetbutton
+      defaultstore = MyStandardDefault,
+      prompt   = STRING_TOKEN(STR_STANDARD_DEFAULT_PROMPT_RESET),
+      help     = STRING_TOKEN(STR_STANDARD_DEFAULT_HELP),
+    endresetbutton;
+
+   grayoutif  ideqval MWD_IfrNVData.MyWizardDriverChooseToEnable == 0x0;
+        goto 2,
+      prompt = STRING_TOKEN(STR_GOTO_FORM2), //SecondSetupPage  
+      help   = STRING_TOKEN(STR_GOTO_HELP);
+   endif;
+
+  endform;
+
+    form formid = 2,               // SecondSetupPage,
+      title = STRING_TOKEN(STR_FORM2_TITLE); 
+
+      grayoutif TRUE; // DATE is the date of the Windows Host so can not change it.;
+      date    year varid  = Date.Year, // Note that it is a member of NULL, 
+                //so the RTC will be the system resource to retrieve and save from
+              prompt      = STRING_TOKEN(STR_DATE_PROMPT),
+              help        = STRING_TOKEN(STR_DATE_HELP),
+              minimum     = 1998,
+              maximum     = 2099,
+              step        = 1,
+              default     = 2010,
+
+              month varid = Date.Month, // Note that it is a member of NULL, 
+                 //so the RTC will be the system resource to retrieve and save from
+              prompt      = STRING_TOKEN(STR_DATE_PROMPT),
+              help        = STRING_TOKEN(STR_DATE_HELP),
+              minimum     = 1,
+              maximum     = 12,
+              step        = 1,
+              default     = 1,
+
+              day varid   = Date.Day, // Note that it is a member of NULL, 
+                //so the RTC will be the system resource to retrieve and save from
+              prompt      = STRING_TOKEN(STR_DATE_PROMPT),
+              help        = STRING_TOKEN(STR_DATE_HELP),
+              minimum     = 1,
+              maximum     = 31,
+              step        = 0x1,
+              default     = 1,
+      enddate;
+    endif;  //grayoutif TRUE DATE
+    grayoutif TRUE;  // TIME – WINDOWS TIME
+      time    hour varid  = Time.Hour, // Note that it is a member of NULL, 
+                //so the RTC will be the system resource to retrieve and save from
+              prompt      = STRING_TOKEN(STR_TIME_PROMPT),
+              help        = STRING_TOKEN(STR_TIME_HELP),
+              minimum     = 0,
+              maximum     = 23,
+              step        = 1,
+              default     = 0,
+
+              minute varid  = Time.Minute, // Note that it is a member of NULL, 
+                 //so the RTC will be the system resource to retrieve and save from
+              prompt        = STRING_TOKEN(STR_TIME_PROMPT),
+              help          = STRING_TOKEN(STR_TIME_HELP),
+              minimum       = 0,
+              maximum       = 59,
+              step          = 1,
+              default       = 0,
+
+              second varid  = Time.Second, // Note that it is a member of NULL, 
+                 //so the RTC will be the system resource to retrieve and save from
+              prompt        = STRING_TOKEN(STR_TIME_PROMPT),
+              help          = STRING_TOKEN(STR_TIME_HELP),
+	          minimum       = 0,
+              maximum       = 59,
+              step          = 1,
+              default       = 0,
+
+      endtime;
+    endif; //grayoutif TRUE  TIME 
+      
+      
+	  date // My Wizard Driver Date
+	        varid = MWD_IfrNVData.Date ,
+			prompt = STRING_TOKEN(STR_MY_DATE_PROMPT),
+			help = STRING_TOKEN(STR_DATE_HELP),
+			flags = STORAGE_NORMAL,
+			default = 2013/01/01,
+	  enddate;
+
+	  time // My Wizard Driver Time
+            name    = MyTimeMWD, 
+            varid   = MWD_IfrNVData.Time, 
+            prompt  = STRING_TOKEN(STR_MY_TIME_PROMPT), 
+            help    = STRING_TOKEN(STR_TIME_HELP), 
+            flags   = STORAGE_NORMAL ,
+            default = 15:33:33, 
+      endtime;
+
+	  goto 1,
+        prompt = STRING_TOKEN(STR_GOTO_FORM1), //MainSetupPage  
+         // this too has no end-op and basically it's a jump to a form ONLY
+        help   = STRING_TOKEN(STR_GOTO_HELP);
+
+
+   endform;
+
+endformset;

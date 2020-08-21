@@ -1,0 +1,31 @@
+This directory contains a collection of executable Python scripts that
+are useful while building, extending or managing Python.
+
+See also the Demo/scripts directory!
+
+byext.py          Print lines/words/chars stats of files by extension
+byteyears.py      Print product of a file's size and age
+crlf.py           Change CRLF line endings to LF (Windows to Unix)
+diff.py           Print file diffs in context, unified, or ndiff formats
+finddiv.py        A grep-like tool that looks for division operators
+findnocoding.py   Find source files which need an encoding declaration
+fixcid.py         Massive identifier substitution on C source files
+fixdiv.py         Tool to fix division operators.
+fixnotice.py      Fix the copyright notice in source files
+ftpmirror.py      FTP mirror script
+h2py.py           Translate #define's into Python assignments
+ifdef.py          Remove #if(n)def groups from C sources
+lfcr.py           Change LF line endings to CRLF (Unix to Windows)
+mailerdaemon.py   parse error messages from mailer daemons (Sjoerd&Jack)
+md5sum.py         Print MD5 checksums of argument files.
+methfix.py        Fix old method syntax def f(self, (a1, ..., aN)):
+ndiff.py          Intelligent diff between text files (Tim Peters)
+parseentities.py  Utility for parsing HTML entity definitions
+pdeps.py          Print dependencies between Python modules
+pindent.py        Indent Python code, giving block-closing comments
+pysource.py       Find Python source files
+reindent.py       Change .py files to use 4-space indents.
+rgrep.py          Reverse grep through a file (useful for big logfiles)
+texi2html.py      Convert GNU texinfo files into HTML
+untabify.py       Replace tabs with spaces in argument files
+which.py          Find a program in $PATH

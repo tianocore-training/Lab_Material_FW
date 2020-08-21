@@ -1,0 +1,105 @@
+//
+// This file contains an 'Intel Pre-EFI Module' and is licensed
+// for Intel CPUs and Chipsets under the terms of your license 
+// agreement with Intel or your vendor.  This file may be      
+// modified by the user, subject to additional terms of the    
+// license agreement                                           
+//
+/** @file
+  This file contains the SIO initialization register tables for PEI phase.
+  The implementation is compliant with Port Angeles 3.0 and 
+  Intel(R) 945G Customer Reference Schematics r2p0.
+  
+  Include these register tables in Platformstage2 is a compromise of both 
+  modularity and code size efficiency.  Our current PCD implementation put a 
+  limitation that the library global data can only be initializaed by extern variable. 
+  On the other hand, C language can does not allow static array data to be initialized
+  by non constant value.  This means if we want to include following register 
+  table in SmscLpc47m17x library, we have to use local variable, which will occupy 
+  more code size. Because PCD is used to initialize table value.  Since Platform PEIM 
+  is going to be modified when porting platform, include those register table here is 
+  a reasonable compromise.
+  After Wizard supports editing VOID* value of PCD, all following register table can be 
+  converted by Wizard.
+  
+Copyright (c) 1999 - 2006 Intel Corporation.<BR>
+All rights reserved.  This software and associated documentation
+(if any) is furnished under a license and may only be used or
+copied in accordance with the terms of the license.  Except as
+permitted by such license, no part of this software or
+documentation may be reproduced, stored in a retrieval system, or transmitted 
+in any form or by any means without the express written consent of Intel Corporation.  
+
+**/
+
+#define HIGH_8(Address16) ((UINT8) (((UINT16) Address16) >> 8))
+#define LOW_8(Address16) ((UINT8) ((UINT16) Address16 & 0x00FF))
+
+
+SIO_REG_TABLE_8_8 mSioTable_8[] = {
+
+  { SIO_CONFIG_PORT, 0x55 },
+
+  //
+  // Init GPIO
+  //
+  { SIO_INDEX_PORT, R_SIO_LOGICAL_DEVICE },
+  { SIO_DATA_PORT, V_SIO_GPIO },
+  { SIO_INDEX_PORT, R_SIO_BASE_ADDRESS_HIGH },
+  { SIO_DATA_PORT, HIGH_8 (FixedPcdGet16 (PcdSioGpioIoBase)) },    
+  { SIO_INDEX_PORT, R_SIO_BASE_ADDRESS_LOW },
+  { SIO_DATA_PORT, LOW_8 (FixedPcdGet16 (PcdSioGpioIoBase)) },  
+  { SIO_INDEX_PORT, R_SIO_ACTIVATE },
+  { SIO_DATA_PORT, 0x01 },
+
+  //
+  // Init Power Control Base
+  //
+  { SIO_INDEX_PORT, R_SIO_LOGICAL_DEVICE },
+  { SIO_DATA_PORT, V_SIO_POWER_CONTROL },
+  { SIO_INDEX_PORT, R_SIO_BASE_ADDRESS_HIGH },
+  { SIO_DATA_PORT, HIGH_8 (FixedPcdGet16 (PcdSioPowerControlIoBase)) },
+  { SIO_INDEX_PORT, R_SIO_BASE_ADDRESS_LOW },
+  { SIO_DATA_PORT, LOW_8 (FixedPcdGet16 (PcdSioPowerControlIoBase)) },  
+  { SIO_INDEX_PORT, R_SIO_ACTIVATE },
+  { SIO_DATA_PORT, 0x01 },
+  
+  { SIO_CONFIG_PORT, 0xAA }
+};
+
+SIO_REG_TABLE_16_8 mSioTable_16[] = {
+
+  { SIO_CONFIG_PORT, 0x55 },
+  
+  //
+  // Enable power to the Floppy, COM, LPT
+  //
+  { SIO_INDEX_PORT, R_SIO_POWER_CONTROL},
+  { SIO_DATA_PORT, (V_SIO_FLOPPY_POWER + V_SIO_PARA_POWER + V_SIO_SERIAL_PORT_1_POWER + V_SIO_SERIAL_PORT_2_POWER) },
+
+  //
+  // Make sure the Power LED is green
+  //
+  { (FixedPcdGet16 (PcdSioPowerControlIoBase) + R_SIO_LED), 0x0F },
+  
+  { SIO_CONFIG_PORT, 0xAA }  
+};
+
+
+SIO_REG_TABLE_8_8 mSioFloppy[] = {
+  { SIO_CONFIG_PORT, 0x55 },
+  
+  //
+  // Init floppy disk controller
+  //
+  { SIO_INDEX_PORT, R_SIO_LOGICAL_DEVICE },
+  { SIO_DATA_PORT, V_SIO_FLOPPY },
+  { SIO_INDEX_PORT, R_SIO_BASE_ADDRESS_HIGH },
+  { SIO_DATA_PORT, HIGH_8 (FixedPcdGet16 (PcdSioFloppyControllerIoBase)) },
+  { SIO_INDEX_PORT, R_SIO_BASE_ADDRESS_LOW },
+  { SIO_DATA_PORT, LOW_8 (FixedPcdGet16 (PcdSioFloppyControllerIoBase)) },
+  { SIO_INDEX_PORT, R_SIO_ACTIVATE },
+  { SIO_DATA_PORT, 0x01 },
+  
+  { SIO_CONFIG_PORT, 0xAA }
+};

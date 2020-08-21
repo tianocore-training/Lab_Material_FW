@@ -1,0 +1,3877 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Execution Order Tool Report</title>
+<meta http-equiv="Content-Type" content="text/html">
+<style type="text/css">
+<!--
+.styleFfs {
+    color: #006600;
+    font-weight: bold;
+}
+.styleDepex {
+    color: #FF0066;
+    font-weight: bold;
+}
+.styleProduced {
+    color: #0000FF;
+    font-weight: bold;
+}
+.styleConsumed {
+    color: #FF00FF;
+    font-weight: bold;
+}
+-->
+</style>
+<Script type="text/javascript">
+function Display(ParentID, SubID)
+{
+    SubItem = document.getElementById(SubID);
+    ParentItem = document.getElementById(ParentID);
+    if (SubItem.style.display == 'none')
+    {
+        SubItem.style.display = ''
+        ParentItem.style.fontWeight = 'normal'
+    }
+    else
+    {
+        SubItem.style.display = 'none'
+        ParentItem.style.fontWeight = 'bold'
+    }
+
+}
+
+function funOnMouseOver()
+{
+    document.body.style.cursor = "hand";
+}
+
+function funOnMouseOut()
+{
+    document.body.style.cursor = "";
+}
+
+</Script>
+</head>
+
+<body>
+<table width="100%%"  border="1">
+  <tr>
+    <td width="20%%"><strong>Name</strong></td>
+    <td width="60%%"><strong>Guid</strong></td>
+    <td width="20%%"><strong>Size</strong></td>
+  </tr>
+  <tr>
+    <td>FvRecovery</td>
+    <td>8C8CE578-8A3D-4F1C-9935-896185C32DD3</td>
+    <td>2621440</td>
+  </tr>
+    <td colspan="3"><table width="100%%"  border="1">
+      <tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader1'>
+        <td width="55%"><span onclick="Display('FfsHeader1', 'Ffs1')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Core\Pei\PeiMain.inf</span></td>
+        <td width="15%">PeiCore</td>
+        <!--<td width="20%">52C05B14-0B98-496C-BC3B-04B50211D680</td>-->
+        <!--<td width="20%">4072</td>-->
+        <td width="10%">PEI_CORE</td>
+      </tr>
+      <tr id='Ffs1' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader1' class="styleConsumed" onclick="Display('ConsumedHeader1', 'Consumed1')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (13)</span></td>
+          </tr>
+          <tr id='Consumed1' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">BfvHeader->FileSystemGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">GuidedSectionGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">PpiGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiDxeIplPpiGuid</td>
+                  <!-- 0ae8ce5d-e448-4437-a8d7-ebf5f194f731 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiFirmwareFileSystem2Guid</td>
+                  <!-- 8c8ce578-8a3d-4f1c-9935-896185c32dd3 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiFirmwareFileSystem3Guid</td>
+                  <!-- 5473c07a-3dcb-4dca-bd6f-1e9689e7349a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiDecompressPpiGuid</td>
+                  <!-- 1a36e4e7-fab6-476a-8e75-695a0576fdd7 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiLoadFilePpiGuid</td>
+                  <!-- b9e0abfe-5979-4914-977f-6dee78c278a6 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiReset2PpiGuid</td>
+                  <!-- 6cc45765-cce4-42fd-bc56-011aaac6c9a8 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiResetPpiGuid</td>
+                  <!-- ef398d58-9dfd-4103-bf94-78c6f4fe712f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiStatusCodePpiGuid</td>
+                  <!-- 229832d3-7a30-4b36-b827-f40cb7d45436 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiTemporaryRamDonePpiGuid</td>
+                  <!-- ceab683c-ec56-4a2d-a906-4053fa4e9c16 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiTemporaryRamSupportPpiGuid</td>
+                  <!-- dbe23aa9-a345-4b97-85b6-b226f1617389 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader1' class="styleProduced" onclick="Display('ProducedHeader1', 'Produced1')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced1' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiFirmwareFileSystem2Guid</td>
+                  <!-- 8c8ce578-8a3d-4f1c-9935-896185c32dd3 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiFirmwareFileSystem3Guid</td>
+                  <!-- 5473c07a-3dcb-4dca-bd6f-1e9689e7349a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiLoadFilePpiGuid</td>
+                  <!-- b9e0abfe-5979-4914-977f-6dee78c278a6 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiMemoryDiscoveredPpiGuid</td>
+                  <!-- f894643d-c449-42d1-8ea8-85bdd8c65bde -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader2'>
+        <td width="55%"><span onclick="Display('FfsHeader2', 'Ffs2')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\PCD\Pei\Pcd.inf</span></td>
+        <td width="15%">PcdPeim</td>
+        <!--<td width="20%">9B3ADA4F-AE56-4C24-8DEA-F03B7558AE50</td>-->
+        <!--<td width="20%">65512</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs2' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader2' class="styleConsumed" onclick="Display('ConsumedHeader2', 'Consumed2')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed2' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiReadOnlyVariable2PpiGuid</td>
+                  <!-- 2ab86ef5-ecb5-4134-b556-3854ca1fe1b4 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader2' class="styleProduced" onclick="Display('ProducedHeader2', 'Produced2')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced2' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiGetPcdInfoPpiGuid</td>
+                  <!-- a60c6b59-e459-425d-9c69-0bcc9cb27d81 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiPcdPpiGuid</td>
+                  <!-- 01f34d25-4de2-23ad-3ff3-36353ff323f1 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gGetPcdInfoPpiGuid</td>
+                  <!-- 4d8b155b-c059-4c8f-8926-06fd4331db8a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gPcdPpiGuid</td>
+                  <!-- 06e81c58-4ad7-44bc-8390-f10265f72480 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader3'>
+        <td width="55%"><span onclick="Display('FfsHeader3', 'Ffs3')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\ReportStatusCodeRouter\Pei\ReportStatusCodeRouterPei.inf</span></td>
+        <td width="15%">ReportStatusCodeRouterPei</td>
+        <!--<td width="20%">A3610442-E69F-4DF3-82CA-2360C4031A23</td>-->
+        <!--<td width="20%">110568</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs3' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader3' class="styleConsumed" onclick="Display('ConsumedHeader3', 'Consumed3')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed3' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiStatusCodePpiGuid</td>
+                  <!-- 229832d3-7a30-4b36-b827-f40cb7d45436 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader3' class="styleProduced" onclick="Display('ProducedHeader3', 'Produced3')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced3' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiRscHandlerPpiGuid</td>
+                  <!-- 0065d394-9951-4144-82a3-0afc8579c251 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiStatusCodePpiGuid</td>
+                  <!-- 229832d3-7a30-4b36-b827-f40cb7d45436 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader4'>
+        <td width="55%"><span onclick="Display('FfsHeader4', 'Ffs4')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\StatusCodeHandler\Pei\StatusCodeHandlerPei.inf</span></td>
+        <td width="15%">StatusCodeHandlerPei</td>
+        <!--<td width="20%">9D225237-FA01-464C-A949-BAABC02D31D0</td>-->
+        <!--<td width="20%">147432</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs4' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader4' class="styleConsumed" onclick="Display('ConsumedHeader4', 'Consumed4')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed4' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiRscHandlerPpiGuid</td>
+                  <!-- 0065d394-9951-4144-82a3-0afc8579c251 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader5'>
+        <td width="55%"><span onclick="Display('FfsHeader5', 'Ffs5')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtOemHookStatusCodeHandlerPei\WinNtOemHookStatusCodeHandlerPei.inf</span></td>
+        <td width="15%">WinNtOemHookStatusCodeHandlerPei</td>
+        <!--<td width="20%">D233D6BD-F1B1-425A-BF45-5CAF2B88EDDC</td>-->
+        <!--<td width="20%">184296</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs5' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader5' class="styleConsumed" onclick="Display('ConsumedHeader5', 'Consumed5')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed5' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiRscHandlerPpiGuid</td>
+                  <!-- 0065d394-9951-4144-82a3-0afc8579c251 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader6'>
+        <td width="55%"><span onclick="Display('FfsHeader6', 'Ffs6')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\BootModePei\BootModePei.inf</span></td>
+        <td width="15%">BootMode</td>
+        <!--<td width="20%">B7611005-1F26-45BA-A3DB-01F39DDB2785</td>-->
+        <!--<td width="20%">221160</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs6' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader6' class="styleDepex" onclick="Display('DepexHeader6', 'Depex6')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex6' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader6' class="styleProduced" onclick="Display('ProducedHeader6', 'Produced6')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced6' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiBootInRecoveryModePpiGuid</td>
+                  <!-- 17ee496a-d8e4-4b9a-94d1-ce8272300850 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiMasterBootModePpiGuid</td>
+                  <!-- 7408d748-fc8c-4ee6-9288-c4bec092a410 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader7'>
+        <td width="55%"><span onclick="Display('FfsHeader7', 'Ffs7')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\StallPei\StallPei.inf</span></td>
+        <td width="15%">Stall</td>
+        <!--<td width="20%">6807217E-E8DE-42D0-91D9-60AECED7420D</td>-->
+        <!--<td width="20%">258024</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs7' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader7' class="styleDepex" onclick="Display('DepexHeader7', 'Depex7')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex7' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader7' class="styleConsumed" onclick="Display('ConsumedHeader7', 'Consumed7')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed7' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gPeiNtThunkPpiGuid</td>
+                  <!-- 98c281e5-f906-43dd-a92b-b003bf2765da -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader7' class="styleProduced" onclick="Display('ProducedHeader7', 'Produced7')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced7' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiStallPpiGuid</td>
+                  <!-- 1f4c6f90-b06b-48d8-a201-bae5f1cd7d56 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader8'>
+        <td width="55%"><span onclick="Display('FfsHeader8', 'Ffs8')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtFlashMapPei\WinNtFlashMapPei.inf</span></td>
+        <td width="15%">WinNtFlashMapPei</td>
+        <!--<td width="20%">681F3771-6F1D-42DE-9AA2-F82BBCDBC5F9</td>-->
+        <!--<td width="20%">294888</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs8' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader8' class="styleDepex" onclick="Display('DepexHeader8', 'Depex8')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex8' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid AND gNtFwhPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader8' class="styleConsumed" onclick="Display('ConsumedHeader8', 'Consumed8')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed8' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gNtFwhPpiGuid</td>
+                  <!-- 4e76928f-50ad-4334-b06b-a84213108a57 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader9'>
+        <td width="55%"><span onclick="Display('FfsHeader9', 'Ffs9')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtFirmwareVolumePei\WinNtFirmwareVolumePei.inf</span></td>
+        <td width="15%">WinNtFirmwareVolumePei</td>
+        <!--<td width="20%">F0384FFD-8633-452F-9010-F6B7D2EAE2F1</td>-->
+        <!--<td width="20%">368616</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs9' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader9' class="styleDepex" onclick="Display('DepexHeader9', 'Depex9')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex9' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid AND gEfiPeiMemoryDiscoveredPpiGuid AND gNtFwhPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader9' class="styleConsumed" onclick="Display('ConsumedHeader9', 'Consumed9')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed9' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gNtFwhPpiGuid</td>
+                  <!-- 4e76928f-50ad-4334-b06b-a84213108a57 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader10'>
+        <td width="55%"><span onclick="Display('FfsHeader10', 'Ffs10')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\FaultTolerantWritePei\FaultTolerantWritePei.inf</span></td>
+        <td width="15%">FaultTolerantWritePei</td>
+        <!--<td width="20%">AAC33064-9ED0-4B89-A5AD-3EA767960B22</td>-->
+        <!--<td width="20%">405480</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs10' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader10' class="styleDepex" onclick="Display('DepexHeader10', 'Depex10')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex10' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader10' class="styleProduced" onclick="Display('ProducedHeader10', 'Produced10')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced10' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEdkiiFaultTolerantWriteGuid</td>
+                  <!-- 1d3e9cb8-43af-490b-830a-3516aa532047 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader11'>
+        <td width="55%"><span onclick="Display('FfsHeader11', 'Ffs11')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Variable\Pei\VariablePei.inf</span></td>
+        <td width="15%">PeiVariable</td>
+        <!--<td width="20%">34C8C28F-B61C-45A2-8F2E-89E46BECC63B</td>-->
+        <!--<td width="20%">442344</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs11' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader11' class="styleDepex" onclick="Display('DepexHeader11', 'Depex11')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex11' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid AND gEdkiiFaultTolerantWriteGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader11' class="styleProduced" onclick="Display('ProducedHeader11', 'Produced11')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced11' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiReadOnlyVariable2PpiGuid</td>
+                  <!-- 2ab86ef5-ecb5-4134-b556-3854ca1fe1b4 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader12'>
+        <td width="55%"><span onclick="Display('FfsHeader12', 'Ffs12')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtThunkPPIToProtocolPei\WinNtThunkPPIToProtocolPei.inf</span></td>
+        <td width="15%">WinNtThunkPPIToProtocolPei</td>
+        <!--<td width="20%">D3AAD8DC-3A48-46AC-B1C7-28A9D3CF6755</td>-->
+        <!--<td width="20%">483304</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs12' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader12' class="styleDepex" onclick="Display('DepexHeader12', 'Depex12')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex12' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid AND gEfiPeiMemoryDiscoveredPpiGuid AND gPeiNtThunkPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader12' class="styleConsumed" onclick="Display('ConsumedHeader12', 'Consumed12')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed12' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gPeiNtThunkPpiGuid</td>
+                  <!-- 98c281e5-f906-43dd-a92b-b003bf2765da -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader13'>
+        <td width="55%"><span onclick="Display('FfsHeader13', 'Ffs13')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Core\DxeIplPeim\DxeIpl.inf</span></td>
+        <td width="15%">DxeIpl</td>
+        <!--<td width="20%">86D70125-BAA3-4296-A62F-602BEBBB9081</td>-->
+        <!--<td width="20%">520168</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs13' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader13' class="styleDepex" onclick="Display('DepexHeader13', 'Depex13')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex13' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid AND gEfiPeiMasterBootModePpiGuid AND gEfiPeiLoadFilePpiGuid AND gEfiPeiMemoryDiscoveredPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader13' class="styleConsumed" onclick="Display('ConsumedHeader13', 'Consumed13')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (5)</span></td>
+          </tr>
+          <tr id='Consumed13' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiLoadFilePpiGuid</td>
+                  <!-- b9e0abfe-5979-4914-977f-6dee78c278a6 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiReadOnlyVariable2PpiGuid</td>
+                  <!-- 2ab86ef5-ecb5-4134-b556-3854ca1fe1b4 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiRecoveryModulePpiGuid</td>
+                  <!-- fb6d9542-612d-4f45-872f-5cff52e93dcf -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiS3Resume2PpiGuid</td>
+                  <!-- 6d582dbc-db85-4514-8fcc-5adf6227b147 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiVectorHandoffInfoPpiGuid</td>
+                  <!-- 3cd652b4-6d33-4dce-89db-83df9766fcca -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader13' class="styleProduced" onclick="Display('ProducedHeader13', 'Produced13')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced13' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiDxeIplPpiGuid</td>
+                  <!-- 0ae8ce5d-e448-4437-a8d7-ebf5f194f731 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiDecompressPpiGuid</td>
+                  <!-- 1a36e4e7-fab6-476a-8e75-695a0576fdd7 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader14'>
+        <td width="55%"><span onclick="Display('FfsHeader14', 'Ffs14')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtAutoScanPei\WinNtAutoScanPei.inf</span></td>
+        <td width="15%">WinNtAutoScan</td>
+        <!--<td width="20%">BE0FEABA-3443-4919-9F3A-2D4216329EA9</td>-->
+        <!--<td width="20%">331752</td>-->
+        <td width="10%">PEIM</td>
+      </tr>
+      <tr id='Ffs14' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader14' class="styleDepex" onclick="Display('DepexHeader14', 'Depex14')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex14' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiPeiPcdPpiGuid AND gEfiPeiReadOnlyVariable2PpiGuid AND gEfiPeiMasterBootModePpiGuid AND gPeiNtAutoScanPpiGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader14' class="styleConsumed" onclick="Display('ConsumedHeader14', 'Consumed14')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed14' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gEfiPeiReadOnlyVariable2PpiGuid</td>
+                  <!-- 2ab86ef5-ecb5-4134-b556-3854ca1fe1b4 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Ppi</td>
+                  <td width="85%" colspan="3">gPeiNtAutoScanPpiGuid</td>
+                  <!-- 0dce384d-007c-4ba5-94bd-0f6eb64d2aa9 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader15'>
+        <td width="55%"><span onclick="Display('FfsHeader15', 'Ffs15')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Core\Dxe\DxeMain.inf</span></td>
+        <td width="15%">DxeCore</td>
+        <!--<td width="20%">D6A2CB7F-6A18-4E2F-B43B-9920A733700A</td>-->
+        <!--<td width="20%">565288</td>-->
+        <td width="10%">DXE_CORE</td>
+      </tr>
+      <tr id='Ffs15' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader15' class="styleProduced" onclick="Display('ProducedHeader15', 'Produced15')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (10)</span></td>
+          </tr>
+          <tr id='Produced15' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiMemoryProfileGuid</td>
+                  <!-- 821c9a09-541a-40f6-9f43-0ad193a12cfe -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDecompress</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDecompressProtocolGuid</td>
+                  <!-- d8117cfe-94a6-11d4-9a3a-0090273fc14d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolume2ProtocolGuid</td>
+                  <!-- 220e73b6-6bdb-4413-8405-b974b108619a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolumeBlockProtocolGuid</td>
+                  <!-- 8f644fa9-e850-4db1-9ce2-0b44698e8da4 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiPackageListProtocolGuid</td>
+                  <!-- 6a1ee763-d47a-43b4-aabe-ef1de2ab56fc -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadPeImageProtocolGuid</td>
+                  <!-- 5cb5c776-60d5-45ee-883c-452708cd743f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadedImageDevicePathProtocolGuid</td>
+                  <!-- bc62157e-3e33-4fec-9920-2d3b36d750df -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadedImageProtocolGuid</td>
+                  <!-- 5b1b31a1-9562-11d2-8e3f-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader16'>
+        <td width="55%"><span onclick="Display('FfsHeader16', 'Ffs16')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\DevicePathDxe\DevicePathDxe.inf</span></td>
+        <td width="15%">DevicePathDxe</td>
+        <!--<td width="20%">9B680FCE-AD6B-4F3A-B60B-F59899003443</td>-->
+        <!--<td width="20%">974792</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs16' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader16' class="styleProduced" onclick="Display('ProducedHeader16', 'Produced16')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced16' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathFromTextProtocolGuid</td>
+                  <!-- 05c99a21-c70f-4ad2-8a5f-35df3343f51e -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathToTextProtocolGuid</td>
+                  <!-- 8b843e20-8132-4852-90cc-551a4e4a7f1c -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathUtilitiesProtocolGuid</td>
+                  <!-- 0379be4e-d706-437d-b037-edb82fb772a4 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader17'>
+        <td width="55%"><span onclick="Display('FfsHeader17', 'Ffs17')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\PCD\Dxe\Pcd.inf</span></td>
+        <td width="15%">PcdDxe</td>
+        <!--<td width="20%">80CF7257-87AB-47F9-A3FE-D50B76D89541</td>-->
+        <!--<td width="20%">622544</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs17' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader17' class="styleConsumed" onclick="Display('ConsumedHeader17', 'Consumed17')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed17' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiVariableLockProtocolGuid</td>
+                  <!-- cd3d0a05-9e24-437c-a891-1ee053db7638 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader17' class="styleProduced" onclick="Display('ProducedHeader17', 'Produced17')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced17' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiGetPcdInfoProtocolGuid</td>
+                  <!-- fd0f4478-0efd-461d-ba2d-e58c45fd5f5e -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPcdProtocolGuid</td>
+                  <!-- 13a3f0f6-264a-3ef0-f2e0-dec512342f34 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gGetPcdInfoProtocolGuid</td>
+                  <!-- 5be40f57-fa68-4610-bbbf-e9c5fcdad365 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gPcdProtocolGuid</td>
+                  <!-- 11b34006-d85b-4d0a-a290-d5a571310ef7 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader18'>
+        <td width="55%"><span onclick="Display('FfsHeader18', 'Ffs18')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\MetronomeDxe\MetronomeDxe.inf</span></td>
+        <td width="15%">Metronome</td>
+        <!--<td width="20%">154CAB4A-52B5-46CD-99C3-4368ABBACFFD</td>-->
+        <!--<td width="20%">634440</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs18' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader18' class="styleProduced" onclick="Display('ProducedHeader18', 'Produced18')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced18' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiMetronomeArchProtocolGuid</td>
+                  <!-- 26baccb2-6f42-11d4-bce7-0080c73c8881 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader19'>
+        <td width="55%"><span onclick="Display('FfsHeader19', 'Ffs19')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\RealTimeClockRuntimeDxe\RealTimeClockRuntimeDxe.inf</span></td>
+        <td width="15%">RealTimeClock</td>
+        <!--<td width="20%">27F05AF5-1644-4EF4-8944-48C4F75675A0</td>-->
+        <!--<td width="20%">638376</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs19' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader19' class="styleDepex" onclick="Display('DepexHeader19', 'Depex19')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex19' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader19' class="styleProduced" onclick="Display('ProducedHeader19', 'Produced19')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced19' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiRealTimeClockArchProtocolGuid</td>
+                  <!-- 27cfac87-46cc-11d4-9a38-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader20'>
+        <td width="55%"><span onclick="Display('FfsHeader20', 'Ffs20')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\ResetRuntimeDxe\ResetRuntimeDxe.inf</span></td>
+        <td width="15%">Reset</td>
+        <!--<td width="20%">BA929954-35B0-4DD3-90CD-9634BD7E1CF1</td>-->
+        <!--<td width="20%">642768</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs20' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader20' class="styleDepex" onclick="Display('DepexHeader20', 'Depex20')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex20' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader20' class="styleProduced" onclick="Display('ProducedHeader20', 'Produced20')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced20' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiResetArchProtocolGuid</td>
+                  <!-- 27cfac88-46cc-11d4-9a38-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader21'>
+        <td width="55%"><span onclick="Display('FfsHeader21', 'Ffs21')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Core\RuntimeDxe\RuntimeDxe.inf</span></td>
+        <td width="15%">RuntimeDxe</td>
+        <!--<td width="20%">B601F8C4-43B7-4784-95B1-F4226CB40CEE</td>-->
+        <!--<td width="20%">646720</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs21' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader21' class="styleDepex" onclick="Display('DepexHeader21', 'Depex21')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex21' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader21' class="styleConsumed" onclick="Display('ConsumedHeader21', 'Consumed21')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed21' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadedImageProtocolGuid</td>
+                  <!-- 5b1b31a1-9562-11d2-8e3f-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader21' class="styleProduced" onclick="Display('ProducedHeader21', 'Produced21')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced21' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiRuntimeArchProtocolGuid</td>
+                  <!-- b7dfb4e1-052f-449f-87be-9818fc91b733 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader22'>
+        <td width="55%"><span onclick="Display('FfsHeader22', 'Ffs22')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\FvbServicesRuntimeDxe\FvbServicesRuntimeDxe.inf</span></td>
+        <td width="15%">FvbServicesRuntimeDxe</td>
+        <!--<td width="20%">BDFE5FAA-2A35-44BB-B17A-8084D4E2B9E9</td>-->
+        <!--<td width="20%">651992</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs22' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader22' class="styleDepex" onclick="Display('DepexHeader22', 'Depex22')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex22' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader22' class="styleConsumed" onclick="Display('ConsumedHeader22', 'Consumed22')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed22' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolumeBlockProtocolGuid</td>
+                  <!-- 8f644fa9-e850-4db1-9ce2-0b44698e8da4 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader22' class="styleProduced" onclick="Display('ProducedHeader22', 'Produced22')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced22' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolumeBlockProtocolGuid</td>
+                  <!-- 8f644fa9-e850-4db1-9ce2-0b44698e8da4 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader23'>
+        <td width="55%"><span onclick="Display('FfsHeader23', 'Ffs23')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\SecurityStubDxe\SecurityStubDxe.inf</span></td>
+        <td width="15%">SecurityStubDxe</td>
+        <!--<td width="20%">F80697E9-7FD6-4665-8646-88E33EF71DFC</td>-->
+        <!--<td width="20%">659024</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs23' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader23' class="styleDepex" onclick="Display('DepexHeader23', 'Depex23')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex23' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader23' class="styleProduced" onclick="Display('ProducedHeader23', 'Produced23')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced23' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSecurity2ArchProtocolGuid</td>
+                  <!-- 94ab2f58-1438-4ef1-9152-18941a3a0e68 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSecurityArchProtocolGuid</td>
+                  <!-- a46423e3-4617-49f1-b9ff-d1bfa9115839 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader24'>
+        <td width="55%"><span onclick="Display('FfsHeader24', 'Ffs24')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\SmbiosDxe\SmbiosDxe.inf</span></td>
+        <td width="15%">SmbiosDxe</td>
+        <!--<td width="20%">F9D88642-0737-49BC-81B5-6889CD57D9EA</td>-->
+        <!--<td width="20%">664400</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs24' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader24' class="styleDepex" onclick="Display('DepexHeader24', 'Depex24')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex24' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader24' class="styleProduced" onclick="Display('ProducedHeader24', 'Produced24')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced24' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSmbiosProtocolGuid</td>
+                  <!-- 03583ff6-cb36-4940-947e-b9b39f4afaf7 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader25'>
+        <td width="55%"><span onclick="Display('FfsHeader25', 'Ffs25')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\EbcDxe\EbcDxe.inf</span></td>
+        <td width="15%">EbcDxe</td>
+        <!--<td width="20%">13AC6DD0-73D0-11D4-B06B-00AA00BD6DE7</td>-->
+        <!--<td width="20%">672368</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs25' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader25' class="styleDepex" onclick="Display('DepexHeader25', 'Depex25')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex25' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader25' class="styleConsumed" onclick="Display('ConsumedHeader25', 'Consumed25')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed25' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiEbcProtocolGuid</td>
+                  <!-- 13ac6dd1-73d0-11d4-b06b-00aa00bd6de7 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiEbcSimpleDebuggerProtocolGuid</td>
+                  <!-- 2a72d11e-7376-40f6-9c68-23fa2fe363f1 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader25' class="styleProduced" onclick="Display('ProducedHeader25', 'Produced25')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced25' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDebugSupportProtocolGuid</td>
+                  <!-- 2755590c-6f3c-42fa-9ea4-a3ba543cda25 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiEbcProtocolGuid</td>
+                  <!-- 13ac6dd1-73d0-11d4-b06b-00aa00bd6de7 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiEbcVmTestProtocolGuid</td>
+                  <!-- aaeaccfd-f27b-4c17-b610-75ca1f2dfb52 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader26'>
+        <td width="55%"><span onclick="Display('FfsHeader26', 'Ffs26')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\MemoryTest\NullMemoryTestDxe\NullMemoryTestDxe.inf</span></td>
+        <td width="15%">NullMemoryTestDxe</td>
+        <!--<td width="20%">96B5C032-DF4C-4B6E-8232-438DCF448D0E</td>-->
+        <!--<td width="20%">684360</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs26' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader26' class="styleDepex" onclick="Display('DepexHeader26', 'Depex26')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex26' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader26' class="styleProduced" onclick="Display('ProducedHeader26', 'Produced26')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced26' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiGenericMemTestProtocolGuid</td>
+                  <!-- 309de7f1-7f5e-4ace-b49c-531be5aa95ef -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader27'>
+        <td width="55%"><span onclick="Display('FfsHeader27', 'Ffs27')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\HiiDatabaseDxe\HiiDatabaseDxe.inf</span></td>
+        <td width="15%">HiiDatabase</td>
+        <!--<td width="20%">348C4D62-BFBD-4882-9ECE-C80BB1C4783B</td>-->
+        <!--<td width="20%">688704</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs27' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader27' class="styleDepex" onclick="Display('DepexHeader27', 'Depex27')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex27' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader27' class="styleConsumed" onclick="Display('ConsumedHeader27', 'Consumed27')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed27' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader27' class="styleProduced" onclick="Display('ProducedHeader27', 'Produced27')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (7)</span></td>
+          </tr>
+          <tr id='Produced27' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiConfigKeywordHandlerProtocolGuid</td>
+                  <!-- 0a8badd5-03b8-4d19-b128-7b8f0edaa596 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigRoutingProtocolGuid</td>
+                  <!-- 587e72d7-cc50-4f79-8209-ca291fc1a10f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiDatabaseProtocolGuid</td>
+                  <!-- ef9fc172-a1b2-4693-b327-6d32fc416042 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiFontProtocolGuid</td>
+                  <!-- e9ca4775-8657-47fc-97e7-7ed65a084324 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiImageProtocolGuid</td>
+                  <!-- 31a6406a-6bdf-4e46-b2a2-ebaa89c40920 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiStringProtocolGuid</td>
+                  <!-- 0fd96974-23aa-4cdc-b9cb-98d17750322a -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader28'>
+        <td width="55%"><span onclick="Display('FfsHeader28', 'Ffs28')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtThunkDxe\WinNtThunkDxe.inf</span></td>
+        <td width="15%">WinNtThunkDxe</td>
+        <!--<td width="20%">0C95A916-A006-11D4-BCFA-0080C73C8881</td>-->
+        <!--<td width="20%">739192</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs28' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader28' class="styleDepex" onclick="Display('DepexHeader28', 'Depex28')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex28' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader28' class="styleProduced" onclick="Display('ProducedHeader28', 'Produced28')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced28' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiWinNtThunkProtocolGuid</td>
+                  <!-- 58c518b1-76f3-11d4-bcea-0080c73c8881 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader29'>
+        <td width="55%"><span onclick="Display('FfsHeader29', 'Ffs29')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\ReportStatusCodeRouter\RuntimeDxe\ReportStatusCodeRouterRuntimeDxe.inf</span></td>
+        <td width="15%">ReportStatusCodeRouterRuntimeDxe</td>
+        <!--<td width="20%">D93CE3D8-A7EB-4730-8C8E-CC466A9ECC3C</td>-->
+        <!--<td width="20%">877304</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs29' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader29' class="styleDepex" onclick="Display('DepexHeader29', 'Depex29')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex29' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader29' class="styleProduced" onclick="Display('ProducedHeader29', 'Produced29')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced29' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiRscHandlerProtocolGuid</td>
+                  <!-- 86212936-0e76-41c8-a03a-2af2fc1c39e2 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiStatusCodeRuntimeProtocolGuid</td>
+                  <!-- d2b2b828-0826-48a7-b3df-983c006024f0 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader30'>
+        <td width="55%"><span onclick="Display('FfsHeader30', 'Ffs30')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Variable\RuntimeDxe\VariableRuntimeDxe.inf</span></td>
+        <td width="15%">VariableRuntimeDxe</td>
+        <!--<td width="20%">CBD2E4D5-7068-4FF5-B462-9822B4AD8D60</td>-->
+        <!--<td width="20%">894792</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs30' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader30' class="styleDepex" onclick="Display('DepexHeader30', 'Depex30')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex30' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader30' class="styleConsumed" onclick="Display('ConsumedHeader30', 'Consumed30')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed30' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFaultTolerantWriteProtocolGuid</td>
+                  <!-- 3ebd9e82-2c78-4de6-9786-8d4bfcb7c881 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolumeBlockProtocolGuid</td>
+                  <!-- 8f644fa9-e850-4db1-9ce2-0b44698e8da4 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader30' class="styleProduced" onclick="Display('ProducedHeader30', 'Produced30')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced30' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiVarCheckProtocolGuid</td>
+                  <!-- af23b340-97b4-4685-8d4f-a3f28169b21d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiVariableLockProtocolGuid</td>
+                  <!-- cd3d0a05-9e24-437c-a891-1ee053db7638 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiVariableArchProtocolGuid</td>
+                  <!-- 1e5668e2-8481-11d4-bcf1-0080c73c8881 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiVariableWriteArchProtocolGuid</td>
+                  <!-- 6441f818-6362-4e44-b570-7dba31dd2453 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader31'>
+        <td width="55%"><span onclick="Display('FfsHeader31', 'Ffs31')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\PrintDxe\PrintDxe.inf</span></td>
+        <td width="15%">PrintDxe</td>
+        <!--<td width="20%">79E4A61C-ED73-4312-94FE-E3E7563362A9</td>-->
+        <!--<td width="20%">1101304</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs31' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader31' class="styleDepex" onclick="Display('DepexHeader31', 'Depex31')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex31' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader31' class="styleProduced" onclick="Display('ProducedHeader31', 'Produced31')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced31' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPrint2ProtocolGuid</td>
+                  <!-- f05976ef-83f1-4f3d-8619-f7595d41e538 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader32'>
+        <td width="55%"><span onclick="Display('FfsHeader32', 'Ffs32')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\DpcDxe\DpcDxe.inf</span></td>
+        <td width="15%">DpcDxe</td>
+        <!--<td width="20%">A210F973-229D-4F4D-AA37-9895E6C9EABA</td>-->
+        <!--<td width="20%">1280968</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs32' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader32' class="styleDepex" onclick="Display('DepexHeader32', 'Depex32')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex32' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader32' class="styleProduced" onclick="Display('ProducedHeader32', 'Produced32')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced32' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDpcProtocolGuid</td>
+                  <!-- 480f8ae9-0c46-4aa9-bc89-db9fba619806 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader33'>
+        <td width="55%"><span onclick="Display('FfsHeader33', 'Ffs33')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\NetworkPkg\HttpUtilitiesDxe\HttpUtilitiesDxe.inf</span></td>
+        <td width="15%">HttpUtilitiesDxe</td>
+        <!--<td width="20%">22EA234F-E72A-11E4-91F9-28D2447C4829</td>-->
+        <!--<td width="20%">1594008</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs33' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader33' class="styleDepex" onclick="Display('DepexHeader33', 'Depex33')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex33' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader33' class="styleProduced" onclick="Display('ProducedHeader33', 'Produced33')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced33' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHttpUtilitiesProtocolGuid</td>
+                  <!-- 3e35c163-4074-45dd-431e-23989dd86b32 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader34'>
+        <td width="55%"><span onclick="Display('FfsHeader34', 'Ffs34')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\CpuRuntimeDxe\CpuRuntimeDxe.inf</span></td>
+        <td width="15%">Cpu</td>
+        <!--<td width="20%">EE993080-5197-4D4E-B63C-F1F7413E33CE</td>-->
+        <!--<td width="20%">743056</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs34' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader34' class="styleDepex" onclick="Display('DepexHeader34', 'Depex34')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex34' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiDatabaseProtocolGuid AND gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiSmbiosProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader34' class="styleConsumed" onclick="Display('ConsumedHeader34', 'Consumed34')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed34' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSmbiosProtocolGuid</td>
+                  <!-- 03583ff6-cb36-4940-947e-b9b39f4afaf7 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader34' class="styleProduced" onclick="Display('ProducedHeader34', 'Produced34')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced34' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCpuArchProtocolGuid</td>
+                  <!-- 26baccb1-6f42-11d4-bce7-0080c73c8881 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCpuIo2ProtocolGuid</td>
+                  <!-- ad61f191-ae5f-4c0e-b9fa-e869d288c64f -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader35'>
+        <td width="55%"><span onclick="Display('FfsHeader35', 'Ffs35')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\BdsDxe\BdsDxe.inf</span></td>
+        <td width="15%">BdsDxe</td>
+        <!--<td width="20%">6D33944A-EC75-4855-A54D-809C75241F6C</td>-->
+        <!--<td width="20%">750224</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs35' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader35' class="styleDepex" onclick="Display('DepexHeader35', 'Depex35')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex35' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiDatabaseProtocolGuid AND gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader35' class="styleConsumed" onclick="Display('ConsumedHeader35', 'Consumed35')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed35' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiVariableLockProtocolGuid</td>
+                  <!-- cd3d0a05-9e24-437c-a891-1ee053db7638 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBlockIoProtocolGuid</td>
+                  <!-- 964e5b21-6459-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader35' class="styleProduced" onclick="Display('ProducedHeader35', 'Produced35')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced35' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBdsArchProtocolGuid</td>
+                  <!-- 665e3ff6-46cc-11d4-9a38-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader36'>
+        <td width="55%"><span onclick="Display('FfsHeader36', 'Ffs36')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\FaultTolerantWriteDxe\FaultTolerantWriteDxe.inf</span></td>
+        <td width="15%">FaultTolerantWriteDxe</td>
+        <!--<td width="20%">FE5CEA76-4F72-49E8-986F-2CD899DFFE5D</td>-->
+        <!--<td width="20%">851976</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs36' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader36' class="styleDepex" onclick="Display('DepexHeader36', 'Depex36')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex36' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiRuntimeArchProtocolGuid AND gEfiFirmwareVolumeBlockProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader36' class="styleConsumed" onclick="Display('ConsumedHeader36', 'Consumed36')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Consumed36' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFaultTolerantWriteProtocolGuid</td>
+                  <!-- 3ebd9e82-2c78-4de6-9786-8d4bfcb7c881 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolumeBlockProtocolGuid</td>
+                  <!-- 8f644fa9-e850-4db1-9ce2-0b44698e8da4 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSwapAddressRangeProtocolGuid</td>
+                  <!-- 1259f60d-b754-468e-a789-4db85d55e87e -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader36' class="styleProduced" onclick="Display('ProducedHeader36', 'Produced36')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced36' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFaultTolerantWriteProtocolGuid</td>
+                  <!-- 3ebd9e82-2c78-4de6-9786-8d4bfcb7c881 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader37'>
+        <td width="55%"><span onclick="Display('FfsHeader37', 'Ffs37')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\MiscSubClassPlatformDxe\MiscSubClassPlatformDxe.inf</span></td>
+        <td width="15%">MiscSubclass</td>
+        <!--<td width="20%">4A9B9DB8-EC62-4A92-818F-8AA0246D246E</td>-->
+        <!--<td width="20%">862808</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs37' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader37' class="styleDepex" onclick="Display('DepexHeader37', 'Depex37')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex37' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiDatabaseProtocolGuid AND gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiSmbiosProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader37' class="styleConsumed" onclick="Display('ConsumedHeader37', 'Consumed37')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed37' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSmbiosProtocolGuid</td>
+                  <!-- 03583ff6-cb36-4940-947e-b9b39f4afaf7 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader38'>
+        <td width="55%"><span onclick="Display('FfsHeader38', 'Ffs38')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\StatusCodeHandler\RuntimeDxe\StatusCodeHandlerRuntimeDxe.inf</span></td>
+        <td width="15%">StatusCodeHandlerRuntimeDxe</td>
+        <!--<td width="20%">6C2004EF-4E0E-4BE4-B14C-340EB4AA5891</td>-->
+        <!--<td width="20%">883176</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs38' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader38' class="styleDepex" onclick="Display('DepexHeader38', 'Depex38')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex38' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiRscHandlerProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader38' class="styleConsumed" onclick="Display('ConsumedHeader38', 'Consumed38')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed38' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiRscHandlerProtocolGuid</td>
+                  <!-- 86212936-0e76-41c8-a03a-2af2fc1c39e2 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader39'>
+        <td width="55%"><span onclick="Display('FfsHeader39', 'Ffs39')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtOemHookStatusCodeHandlerDxe\WinNtOemHookStatusCodeHandlerDxe.inf</span></td>
+        <td width="15%">WinNtOemHookStatusCodeHandlerDxe</td>
+        <!--<td width="20%">CA4233AD-847E-4E5D-AD3F-21CABFE5E23C</td>-->
+        <!--<td width="20%">887488</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs39' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader39' class="styleDepex" onclick="Display('DepexHeader39', 'Depex39')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex39' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiRscHandlerProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader39' class="styleConsumed" onclick="Display('ConsumedHeader39', 'Consumed39')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed39' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiRscHandlerProtocolGuid</td>
+                  <!-- 86212936-0e76-41c8-a03a-2af2fc1c39e2 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader40'>
+        <td width="55%"><span onclick="Display('FfsHeader40', 'Ffs40')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\MonotonicCounterRuntimeDxe\MonotonicCounterRuntimeDxe.inf</span></td>
+        <td width="15%">MonotonicCounterRuntimeDxe</td>
+        <!--<td width="20%">AD608272-D07F-4964-801E-7BD3B7888652</td>-->
+        <!--<td width="20%">919976</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs40' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader40' class="styleDepex" onclick="Display('DepexHeader40', 'Depex40')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex40' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiVariableWriteArchProtocolGuid AND gEfiVariableArchProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader40' class="styleProduced" onclick="Display('ProducedHeader40', 'Produced40')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced40' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiMonotonicCounterArchProtocolGuid</td>
+                  <!-- 1da97072-bddc-4b30-99f1-72a0b56fff2a -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader41'>
+        <td width="55%"><span onclick="Display('FfsHeader41', 'Ffs41')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\CapsuleRuntimeDxe\CapsuleRuntimeDxe.inf</span></td>
+        <td width="15%">CapsuleRuntimeDxe</td>
+        <!--<td width="20%">42857F0A-13F2-4B21-8A23-53D3F714B840</td>-->
+        <!--<td width="20%">924688</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs41' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader41' class="styleDepex" onclick="Display('DepexHeader41', 'Depex41')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex41' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiVariableWriteArchProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader41' class="styleProduced" onclick="Display('ProducedHeader41', 'Produced41')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced41' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCapsuleArchProtocolGuid</td>
+                  <!-- 5053697e-2cbc-4819-90d9-0580deee5754 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader42'>
+        <td width="55%"><span onclick="Display('FfsHeader42', 'Ffs42')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\SetupBrowserDxe\SetupBrowserDxe.inf</span></td>
+        <td width="15%">SetupBrowser</td>
+        <!--<td width="20%">EBF342FE-B1D3-4EF8-957C-8048606FF671</td>-->
+        <!--<td width="20%">1052720</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs42' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader42' class="styleDepex" onclick="Display('DepexHeader42', 'Depex42')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex42' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiDatabaseProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader42' class="styleConsumed" onclick="Display('ConsumedHeader42', 'Consumed42')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (8)</span></td>
+          </tr>
+          <tr id='Consumed42' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiFormDisplayEngineProtocolGuid</td>
+                  <!-- 9bbe29e9-fda1-41ec-ad52-452213742d2e -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathFromTextProtocolGuid</td>
+                  <!-- 05c99a21-c70f-4ad2-8a5f-35df3343f51e -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigRoutingProtocolGuid</td>
+                  <!-- 587e72d7-cc50-4f79-8209-ca291fc1a10f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiDatabaseProtocolGuid</td>
+                  <!-- ef9fc172-a1b2-4693-b327-6d32fc416042 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiRegularExpressionProtocolGuid</td>
+                  <!-- b3f79d9a-436c-dc11-b052-cd85df524ce6 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUnicodeCollation2ProtocolGuid</td>
+                  <!-- a4c751fc-23ae-4c3e-92e9-4964cf63f349 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUserManagerProtocolGuid</td>
+                  <!-- 6fd5b00c-d426-4283-9887-6cf5cf1cb1fe -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader42' class="styleProduced" onclick="Display('ProducedHeader42', 'Produced42')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced42' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiFormBrowserEx2ProtocolGuid</td>
+                  <!-- a770c357-b693-4e6d-a6cf-d21c728e550b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFormBrowser2ProtocolGuid</td>
+                  <!-- b9d4c360-bcfb-4f9b-9298-53c136982258 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFormBrowserExProtocolGuid</td>
+                  <!-- 1f73b18d-4630-43c1-a1de-6f80855d7da4 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader43'>
+        <td width="55%"><span onclick="Display('FfsHeader43', 'Ffs43')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\DriverHealthManagerDxe\DriverHealthManagerDxe.inf</span></td>
+        <td width="15%">DriverHealthManagerDxe</td>
+        <!--<td width="20%">EBF8ED7C-0DD1-4787-84F1-F48D537DCACF</td>-->
+        <!--<td width="20%">838680</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs43' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader43' class="styleDepex" onclick="Display('DepexHeader43', 'Depex43')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex43' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiFormBrowser2ProtocolGuid AND gEfiHiiDatabaseProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader43' class="styleConsumed" onclick="Display('ConsumedHeader43', 'Consumed43')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed43' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiDatabaseProtocolGuid</td>
+                  <!-- ef9fc172-a1b2-4693-b327-6d32fc416042 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader43' class="styleProduced" onclick="Display('ProducedHeader43', 'Produced43')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced43' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader44'>
+        <td width="55%"><span onclick="Display('FfsHeader44', 'Ffs44')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\TimerDxe\TimerDxe.inf</span></td>
+        <td width="15%">Timer</td>
+        <!--<td width="20%">C3811036-710B-4E39-8CF1-0AF9BE3A8198</td>-->
+        <!--<td width="20%">872672</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs44' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader44' class="styleDepex" onclick="Display('DepexHeader44', 'Depex44')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex44' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiCpuArchProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader44' class="styleConsumed" onclick="Display('ConsumedHeader44', 'Consumed44')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed44' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCpuArchProtocolGuid</td>
+                  <!-- 26baccb1-6f42-11d4-bce7-0080c73c8881 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader44' class="styleProduced" onclick="Display('ProducedHeader44', 'Produced44')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced44' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiTimerArchProtocolGuid</td>
+                  <!-- 26baccb3-6f42-11d4-bce7-0080c73c8881 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader45'>
+        <td width="55%"><span onclick="Display('FfsHeader45', 'Ffs45')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\DisplayEngineDxe\DisplayEngineDxe.inf</span></td>
+        <td width="15%">DisplayEngine</td>
+        <!--<td width="20%">E660EA85-058E-4B55-A54B-F02F83A24707</td>-->
+        <!--<td width="20%">1016184</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs45' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader45' class="styleDepex" onclick="Display('DepexHeader45', 'Depex45')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex45' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEdkiiFormBrowserEx2ProtocolGuid AND gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiDatabaseProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader45' class="styleConsumed" onclick="Display('ConsumedHeader45', 'Consumed45')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed45' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiFormBrowserEx2ProtocolGuid</td>
+                  <!-- a770c357-b693-4e6d-a6cf-d21c728e550b -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader45' class="styleProduced" onclick="Display('ProducedHeader45', 'Produced45')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced45' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEdkiiFormDisplayEngineProtocolGuid</td>
+                  <!-- 9bbe29e9-fda1-41ec-ad52-452213742d2e -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader46'>
+        <td width="55%"><span onclick="Display('FfsHeader46', 'Ffs46')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\PlatformDriOverrideDxe\PlatformDriOverrideDxe.inf</span></td>
+        <td width="15%">PlatDriOverrideDxe</td>
+        <!--<td width="20%">35034CE2-A6E5-4FB4-BABE-A0156E9B2549</td>-->
+        <!--<td width="20%">1227504</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs46' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader46' class="styleDepex" onclick="Display('DepexHeader46', 'Depex46')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex46' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiDatabaseProtocolGuid AND gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiHiiConfigRoutingProtocolGuid AND gEfiFormBrowser2ProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader46' class="styleConsumed" onclick="Display('ConsumedHeader46', 'Consumed46')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (8)</span></td>
+          </tr>
+          <tr id='Consumed46' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBusSpecificDriverOverrideProtocolGuid</td>
+                  <!-- 3bc1b285-8a15-4a82-aabf-4d7d13fb3265 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFirmwareVolume2ProtocolGuid</td>
+                  <!-- 220e73b6-6bdb-4413-8405-b974b108619a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFormBrowser2ProtocolGuid</td>
+                  <!-- b9d4c360-bcfb-4f9b-9298-53c136982258 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigRoutingProtocolGuid</td>
+                  <!-- 587e72d7-cc50-4f79-8209-ca291fc1a10f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadedImageDevicePathProtocolGuid</td>
+                  <!-- bc62157e-3e33-4fec-9920-2d3b36d750df -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadedImageProtocolGuid</td>
+                  <!-- 5b1b31a1-9562-11d2-8e3f-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPlatformDriverOverrideProtocolGuid</td>
+                  <!-- 6b30c738-a391-11d4-9a3b-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader46' class="styleProduced" onclick="Display('ProducedHeader46', 'Produced46')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced46' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPlatformDriverOverrideProtocolGuid</td>
+                  <!-- 6b30c738-a391-11d4-9a3b-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader47'>
+        <td width="55%"><span onclick="Display('FfsHeader47', 'Ffs47')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\WatchdogTimerDxe\WatchdogTimer.inf</span></td>
+        <td width="15%">WatchdogTimer</td>
+        <!--<td width="20%">F099D67F-71AE-4C36-B2A3-DCEB0EB2B7D8</td>-->
+        <!--<td width="20%">915840</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs47' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader47' class="styleDepex" onclick="Display('DepexHeader47', 'Depex47')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex47' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiDevicePathUtilitiesProtocolGuid AND gEfiPcdProtocolGuid AND gEfiTimerArchProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader47' class="styleProduced" onclick="Display('ProducedHeader47', 'Produced47')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced47' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiWatchdogTimerArchProtocolGuid</td>
+                  <!-- 665e3ff5-46cc-11d4-9a38-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader48'>
+        <td width="55%"><span onclick="Display('FfsHeader48', 'Ffs48')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Console\ConPlatformDxe\ConPlatformDxe.inf</span></td>
+        <td width="15%">ConPlatformDxe</td>
+        <!--<td width="20%">51CCF399-4FDF-4E55-A45B-E123F84D456A</td>-->
+        <!--<td width="20%">929240</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs48' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader48' class="styleProduced" onclick="Display('ProducedHeader48', 'Produced48')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced48' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiConsoleInDeviceGuid</td>
+                  <!-- d3b36f2b-d551-11d4-9a46-0090273fc14d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiConsoleOutDeviceGuid</td>
+                  <!-- d3b36f2c-d551-11d4-9a46-0090273fc14d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiStandardErrorDeviceGuid</td>
+                  <!-- d3b36f2d-d551-11d4-9a46-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader49'>
+        <td width="55%"><span onclick="Display('FfsHeader49', 'Ffs49')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Console\ConSplitterDxe\ConSplitterDxe.inf</span></td>
+        <td width="15%">ConSplitterDxe</td>
+        <!--<td width="20%">408EDCEC-CF6D-477C-A5A8-B4844E3DE281</td>-->
+        <!--<td width="20%">935616</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs49' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader49' class="styleProduced" onclick="Display('ProducedHeader49', 'Produced49')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (7)</span></td>
+          </tr>
+          <tr id='Produced49' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiAbsolutePointerProtocolGuid</td>
+                  <!-- 8d59d32b-c655-4ae9-9b15-f25904992a43 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiGraphicsOutputProtocolGuid</td>
+                  <!-- 9042a9de-23dc-4a38-96fb-7aded080516a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimplePointerProtocolGuid</td>
+                  <!-- 31878c87-0b75-11d5-9a4f-0090273fc14d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInProtocolGuid</td>
+                  <!-- 387477c1-69c7-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInputExProtocolGuid</td>
+                  <!-- dd9e7534-7762-4698-8c14-f58517a625aa -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextOutProtocolGuid</td>
+                  <!-- 387477c2-69c7-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUgaDrawProtocolGuid</td>
+                  <!-- 982c298b-f4fa-41cb-b838-77aa688fb839 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader50'>
+        <td width="55%"><span onclick="Display('FfsHeader50', 'Ffs50')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Console\GraphicsConsoleDxe\GraphicsConsoleDxe.inf</span></td>
+        <td width="15%">GraphicsConsoleDxe</td>
+        <!--<td width="20%">CCCB0C28-4B24-11D5-9A5A-0090273FC14D</td>-->
+        <!--<td width="20%">949384</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs50' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader50' class="styleConsumed" onclick="Display('ConsumedHeader50', 'Consumed50')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed50' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiDatabaseProtocolGuid</td>
+                  <!-- ef9fc172-a1b2-4693-b327-6d32fc416042 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiFontProtocolGuid</td>
+                  <!-- e9ca4775-8657-47fc-97e7-7ed65a084324 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader50' class="styleProduced" onclick="Display('ProducedHeader50', 'Produced50')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced50' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextOutProtocolGuid</td>
+                  <!-- 387477c2-69c7-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader51'>
+        <td width="55%"><span onclick="Display('FfsHeader51', 'Ffs51')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Console\TerminalDxe\TerminalDxe.inf</span></td>
+        <td width="15%">TerminalDxe</td>
+        <!--<td width="20%">9E863906-A40F-4875-977F-5B93FF237FC6</td>-->
+        <!--<td width="20%">960496</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs51' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader51' class="styleConsumed" onclick="Display('ConsumedHeader51', 'Consumed51')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed51' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader51' class="styleProduced" onclick="Display('ProducedHeader51', 'Produced51')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (5)</span></td>
+          </tr>
+          <tr id='Produced51' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInProtocolGuid</td>
+                  <!-- 387477c1-69c7-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInputExProtocolGuid</td>
+                  <!-- dd9e7534-7762-4698-8c14-f58517a625aa -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextOutProtocolGuid</td>
+                  <!-- 387477c2-69c7-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader52'>
+        <td width="55%"><span onclick="Display('FfsHeader52', 'Ffs52')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Disk\DiskIoDxe\DiskIoDxe.inf</span></td>
+        <td width="15%">DiskIoDxe</td>
+        <!--<td width="20%">6B38F7B4-AD98-40E9-9093-ACA2B5A253C4</td>-->
+        <!--<td width="20%">996008</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs52' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader52' class="styleProduced" onclick="Display('ProducedHeader52', 'Produced52')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced52' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDiskIo2ProtocolGuid</td>
+                  <!-- 151c8eae-7f2c-472c-9e54-9828194f6a88 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDiskIoProtocolGuid</td>
+                  <!-- ce345171-ba0b-11d2-8e4f-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader53'>
+        <td width="55%"><span onclick="Display('FfsHeader53', 'Ffs53')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Disk\PartitionDxe\PartitionDxe.inf</span></td>
+        <td width="15%">PartitionDxe</td>
+        <!--<td width="20%">1FA1F39E-FEFF-4AAE-BD7B-38A070A3B609</td>-->
+        <!--<td width="20%">1005008</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs53' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader53' class="styleProduced" onclick="Display('ProducedHeader53', 'Produced53')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced53' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBlockIo2ProtocolGuid</td>
+                  <!-- a77b2472-e282-4e9f-a245-c2c0e27bbcc1 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBlockIoProtocolGuid</td>
+                  <!-- 964e5b21-6459-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader54'>
+        <td width="55%"><span onclick="Display('FfsHeader54', 'Ffs54')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Disk\UnicodeCollation\EnglishDxe\EnglishDxe.inf</span></td>
+        <td width="15%">EnglishDxe</td>
+        <!--<td width="20%">CD3BAFB6-50FB-4FE8-8E4E-AB74D2C1A600</td>-->
+        <!--<td width="20%">1108512</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs54' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader54' class="styleProduced" onclick="Display('ProducedHeader54', 'Produced54')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced54' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUnicodeCollation2ProtocolGuid</td>
+                  <!-- a4c751fc-23ae-4c3e-92e9-4964cf63f349 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUnicodeCollationProtocolGuid</td>
+                  <!-- 1d85cd7f-f43d-11d2-9a0c-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader55'>
+        <td width="55%"><span onclick="Display('FfsHeader55', 'Ffs55')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Bus\Pci\PciBusDxe\PciBusDxe.inf</span></td>
+        <td width="15%">PciBusDxe</td>
+        <!--<td width="20%">93B80004-9FB3-11D4-9A3A-0090273FC14D</td>-->
+        <!--<td width="20%">1113016</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs55' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader55' class="styleConsumed" onclick="Display('ConsumedHeader55', 'Consumed55')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (7)</span></td>
+          </tr>
+          <tr id='Consumed55' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDecompressProtocolGuid</td>
+                  <!-- d8117cfe-94a6-11d4-9a3a-0090273fc14d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIncompatiblePciDeviceSupportProtocolGuid</td>
+                  <!-- eb23f55a-7863-4ac2-8d3d-956535de0375 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadedImageProtocolGuid</td>
+                  <!-- 5b1b31a1-9562-11d2-8e3f-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciHotPlugInitProtocolGuid</td>
+                  <!-- aa0e8bc1-dabc-46b0-a844-37b8169b2bea -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciOverrideProtocolGuid</td>
+                  <!-- b5b35764-460c-4a06-99fc-77a17c1b5ceb -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciPlatformProtocolGuid</td>
+                  <!-- 07d75280-27d4-4d69-90d0-5643e238b341 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciRootBridgeIoProtocolGuid</td>
+                  <!-- 2f707ebb-4a1a-11d4-9a38-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader55' class="styleProduced" onclick="Display('ProducedHeader55', 'Produced55')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (6)</span></td>
+          </tr>
+          <tr id='Produced55' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBusSpecificDriverOverrideProtocolGuid</td>
+                  <!-- 3bc1b285-8a15-4a82-aabf-4d7d13fb3265 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadFile2ProtocolGuid</td>
+                  <!-- 4006c0c1-fcb3-403e-996d-4a6c8724e06d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciEnumerationCompleteProtocolGuid</td>
+                  <!-- 30cfe3e7-3de1-4586-be20-deaba1b3b793 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciHotPlugRequestProtocolGuid</td>
+                  <!-- 19cb87ab-2cb9-4665-8360-ddcf6054f79d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciIoProtocolGuid</td>
+                  <!-- 4cf5b200-68b8-4ca5-9eec-b23e3f50029a -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader56'>
+        <td width="55%"><span onclick="Display('FfsHeader56', 'Ffs56')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Bus\Scsi\ScsiBusDxe\ScsiBusDxe.inf</span></td>
+        <td width="15%">ScsiBus</td>
+        <!--<td width="20%">0167CCC4-D0F7-4F21-A3EF-9E64B7CDCE8B</td>-->
+        <!--<td width="20%">1142424</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs56' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader56' class="styleProduced" onclick="Display('ProducedHeader56', 'Produced56')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced56' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiScsiIoProtocolGuid</td>
+                  <!-- 932f47e6-2362-4002-803e-3cd54b138f85 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader57'>
+        <td width="55%"><span onclick="Display('FfsHeader57', 'Ffs57')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Bus\Scsi\ScsiDiskDxe\ScsiDiskDxe.inf</span></td>
+        <td width="15%">ScsiDisk</td>
+        <!--<td width="20%">0A66E322-3740-4CCE-AD62-BD172CECCA35</td>-->
+        <!--<td width="20%">1150152</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs57' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader57' class="styleConsumed" onclick="Display('ConsumedHeader57', 'Consumed57')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed57' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">ProtocolGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader57' class="styleProduced" onclick="Display('ProducedHeader57', 'Produced57')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced57' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBlockIoProtocolGuid</td>
+                  <!-- 964e5b21-6459-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDiskInfoProtocolGuid</td>
+                  <!-- d432a67f-14dc-484b-b3bb-3f0291849327 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader58'>
+        <td width="55%"><span onclick="Display('FfsHeader58', 'Ffs58')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\IntelFrameworkModulePkg\Bus\Pci\IdeBusDxe\IdeBusDxe.inf</span></td>
+        <td width="15%">IdeBusDxe</td>
+        <!--<td width="20%">69FD8E47-A161-4550-B01A-5594CEB2B2B2</td>-->
+        <!--<td width="20%">1162120</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs58' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader58' class="styleProduced" onclick="Display('ProducedHeader58', 'Produced58')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced58' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBlockIoProtocolGuid</td>
+                  <!-- 964e5b21-6459-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDiskInfoProtocolGuid</td>
+                  <!-- d432a67f-14dc-484b-b3bb-3f0291849327 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader59'>
+        <td width="55%"><span onclick="Display('FfsHeader59', 'Ffs59')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtBusDriverDxe\WinNtBusDriverDxe.inf</span></td>
+        <td width="15%">WinNtBusDriverDxe</td>
+        <!--<td width="20%">BD7E9A27-D6C5-416A-B245-5F507D95B2BD</td>-->
+        <!--<td width="20%">1178856</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs59' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader59' class="styleProduced" onclick="Display('ProducedHeader59', 'Produced59')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced59' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiWinNtIoProtocolGuid</td>
+                  <!-- 96eb4ad6-a32a-11d4-bcfd-0080c73c8881 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gWinNtBusDriverGuid</td>
+                  <!-- 0419f582-0625-4531-8a33-85a9965c95bc -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader60'>
+        <td width="55%"><span onclick="Display('FfsHeader60', 'Ffs60')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtBlockIoDxe\WinNtBlockIoDxe.inf</span></td>
+        <td width="15%">WinNtBlockIo</td>
+        <!--<td width="20%">F479E147-A125-11D4-BCFC-0080C73C8881</td>-->
+        <!--<td width="20%">1186296</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs60' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader60' class="styleProduced" onclick="Display('ProducedHeader60', 'Produced60')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced60' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiBlockIoProtocolGuid</td>
+                  <!-- 964e5b21-6459-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader61'>
+        <td width="55%"><span onclick="Display('FfsHeader61', 'Ffs61')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtSerialIoDxe\WinNtSerialIoDxe.inf</span></td>
+        <td width="15%">WinNtSerialIoDxe</td>
+        <!--<td width="20%">6B41B553-A649-11D4-BD02-0080C73C8881</td>-->
+        <!--<td width="20%">1194800</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs61' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader61' class="styleProduced" onclick="Display('ProducedHeader61', 'Produced61')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced61' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSerialIoProtocolGuid</td>
+                  <!-- bb25cf6f-f1d4-11d2-9a0c-0090273fc1fd -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader62'>
+        <td width="55%"><span onclick="Display('FfsHeader62', 'Ffs62')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtGopDxe\WinNtGopDxe.inf</span></td>
+        <td width="15%">WinNtGopDxe</td>
+        <!--<td width="20%">29B3C4C6-E5AA-49E4-8CE0-2772F782DDC2</td>-->
+        <!--<td width="20%">1204408</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs62' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader62' class="styleProduced" onclick="Display('ProducedHeader62', 'Produced62')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced62' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiGraphicsOutputProtocolGuid</td>
+                  <!-- 9042a9de-23dc-4a38-96fb-7aded080516a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInProtocolGuid</td>
+                  <!-- 387477c1-69c7-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInputExProtocolGuid</td>
+                  <!-- dd9e7534-7762-4698-8c14-f58517a625aa -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader63'>
+        <td width="55%"><span onclick="Display('FfsHeader63', 'Ffs63')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\WinNtSimpleFileSystemDxe\WinNtSimpleFileSystemDxe.inf</span></td>
+        <td width="15%">WinNtSimpleFileSystemDxe</td>
+        <!--<td width="20%">9C25E18B-76BA-43DA-A132-DBB0997CEFEF</td>-->
+        <!--<td width="20%">1215424</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs63' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader63' class="styleProduced" onclick="Display('ProducedHeader63', 'Produced63')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Produced63' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleFileSystemProtocolGuid</td>
+                  <!-- 964e5b22-6459-11d2-8e39-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader64'>
+        <td width="55%"><span onclick="Display('FfsHeader64', 'Ffs64')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\ArpDxe\ArpDxe.inf</span></td>
+        <td width="15%">ArpDxe</td>
+        <!--<td width="20%">529D3F93-E8E9-4E73-B1E1-BDF6A9D50113</td>-->
+        <!--<td width="20%">1285576</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs64' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader64' class="styleProduced" onclick="Display('ProducedHeader64', 'Produced64')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced64' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiArpProtocolGuid</td>
+                  <!-- f4b427bb-ba21-4f16-bc4e-43e416ab619c -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiArpServiceBindingProtocolGuid</td>
+                  <!-- f44c00ee-1f2c-4a00-aa09-1c9f3e0800a3 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader65'>
+        <td width="55%"><span onclick="Display('FfsHeader65', 'Ffs65')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\Dhcp4Dxe\Dhcp4Dxe.inf</span></td>
+        <td width="15%">Dhcp4Dxe</td>
+        <!--<td width="20%">94734718-0BBC-47FB-96A5-EE7A5AE6A2AD</td>-->
+        <!--<td width="20%">1297656</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs65' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader65' class="styleProduced" onclick="Display('ProducedHeader65', 'Produced65')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced65' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDhcp4ProtocolGuid</td>
+                  <!-- 8a219718-4ef5-4761-91c8-c0f04bda9e56 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDhcp4ServiceBindingProtocolGuid</td>
+                  <!-- 9d9a39d8-bd42-4a73-a4d5-8ee94be11380 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader66'>
+        <td width="55%"><span onclick="Display('FfsHeader66', 'Ffs66')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\Ip4Dxe\Ip4Dxe.inf</span></td>
+        <td width="15%">Ip4Dxe</td>
+        <!--<td width="20%">9FB1A1F3-3B71-4324-B39A-745CBB015FFF</td>-->
+        <!--<td width="20%">1317568</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs66' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader66' class="styleConsumed" onclick="Display('ConsumedHeader66', 'Consumed66')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed66' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIpSec2ProtocolGuid</td>
+                  <!-- a3979e64-ace8-4ddc-bc07-4d66b8fd0977 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader66' class="styleProduced" onclick="Display('ProducedHeader66', 'Produced66')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (5)</span></td>
+          </tr>
+          <tr id='Produced66' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIp4Config2ProtocolGuid</td>
+                  <!-- 5b446ed1-e30b-4faa-871a-3654eca36080 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIp4ProtocolGuid</td>
+                  <!-- 41d94cd2-35b6-455a-8258-d4e51334aadd -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIp4ServiceBindingProtocolGuid</td>
+                  <!-- c51711e7-b4bf-404a-bfb8-0a048ef1ffe4 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader67'>
+        <td width="55%"><span onclick="Display('FfsHeader67', 'Ffs67')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\MnpDxe\MnpDxe.inf</span></td>
+        <td width="15%">MnpDxe</td>
+        <!--<td width="20%">025BBFC7-E6A9-4B8B-82AD-6815A1AEAF4A</td>-->
+        <!--<td width="20%">1357624</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs67' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader67' class="styleProduced" onclick="Display('ProducedHeader67', 'Produced67')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced67' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiManagedNetworkProtocolGuid</td>
+                  <!-- 7ab33a91-ace5-4326-b572-e7ee33d39f16 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiManagedNetworkServiceBindingProtocolGuid</td>
+                  <!-- f36ff770-a7e1-42cf-9ed2-56f0f271f44c -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiVlanConfigProtocolGuid</td>
+                  <!-- 9e23d768-d2f3-4366-9fc3-3a7aba864374 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader68'>
+        <td width="55%"><span onclick="Display('FfsHeader68', 'Ffs68')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\VlanConfigDxe\VlanConfigDxe.inf</span></td>
+        <td width="15%">VlanConfigDxe</td>
+        <!--<td width="20%">E4F61863-FE2C-4B56-A8F4-08519BC439DF</td>-->
+        <!--<td width="20%">1379600</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs68' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader68' class="styleConsumed" onclick="Display('ConsumedHeader68', 'Consumed68')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed68' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigRoutingProtocolGuid</td>
+                  <!-- 587e72d7-cc50-4f79-8209-ca291fc1a10f -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader68' class="styleProduced" onclick="Display('ProducedHeader68', 'Produced68')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced68' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader69'>
+        <td width="55%"><span onclick="Display('FfsHeader69', 'Ffs69')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\Mtftp4Dxe\Mtftp4Dxe.inf</span></td>
+        <td width="15%">Mtftp4Dxe</td>
+        <!--<td width="20%">DC3641B8-2FA8-4ED3-BC1F-F9962A03454B</td>-->
+        <!--<td width="20%">1395008</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs69' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader69' class="styleProduced" onclick="Display('ProducedHeader69', 'Produced69')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced69' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiMtftp4ProtocolGuid</td>
+                  <!-- 78247c57-63db-4708-99c2-a8b4a9a61f6b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiMtftp4ServiceBindingProtocolGuid</td>
+                  <!-- 2fe800be-8f01-4aa6-946b-d71388e1833f -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader70'>
+        <td width="55%"><span onclick="Display('FfsHeader70', 'Ffs70')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\Tcp4Dxe\Tcp4Dxe.inf</span></td>
+        <td width="15%">Tcp4Dxe</td>
+        <!--<td width="20%">6D6963AB-906D-4A65-A7CA-BD40E5D6AF4D</td>-->
+        <!--<td width="20%">1415520</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs70' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader70' class="styleProduced" onclick="Display('ProducedHeader70', 'Produced70')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced70' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiTcp4ProtocolGuid</td>
+                  <!-- 65530bc7-a359-410f-b010-5aadc7ec2b62 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiTcp4ServiceBindingProtocolGuid</td>
+                  <!-- 00720665-67eb-4a99-baf7-d3c33a1c7cc9 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader71'>
+        <td width="55%"><span onclick="Display('FfsHeader71', 'Ffs71')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\Udp4Dxe\Udp4Dxe.inf</span></td>
+        <td width="15%">Udp4Dxe</td>
+        <!--<td width="20%">6D6963AB-906D-4A65-A7CA-BD40E5D6AF2B</td>-->
+        <!--<td width="20%">1449624</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs71' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader71' class="styleProduced" onclick="Display('ProducedHeader71', 'Produced71')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced71' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUdp4ProtocolGuid</td>
+                  <!-- 3ad9df29-4501-478d-b1f8-7f7fe70e50f3 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiUdp4ServiceBindingProtocolGuid</td>
+                  <!-- 83f01464-99bd-45e5-b383-af6305d8e9e6 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader72'>
+        <td width="55%"><span onclick="Display('FfsHeader72', 'Ffs72')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\Nt32Pkg\SnpNt32Dxe\SnpNt32Dxe.inf</span></td>
+        <td width="15%">SnpNt32Dxe</td>
+        <!--<td width="20%">D0893F05-B06D-4161-B947-9BE9B85AC3A1</td>-->
+        <!--<td width="20%">1469752</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs72' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader72' class="styleConsumed" onclick="Display('ConsumedHeader72', 'Consumed72')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed72' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiWinNtThunkProtocolGuid</td>
+                  <!-- 58c518b1-76f3-11d4-bcea-0080c73c8881 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader72' class="styleProduced" onclick="Display('ProducedHeader72', 'Produced72')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced72' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleNetworkProtocolGuid</td>
+                  <!-- a19832b9-ac25-11d3-9a2d-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader73'>
+        <td width="55%"><span onclick="Display('FfsHeader73', 'Ffs73')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\UefiPxeBcDxe\UefiPxeBcDxe.inf</span></td>
+        <td width="15%">UefiPxe4BcDxe</td>
+        <!--<td width="20%">3B1DEAB5-C75D-442E-9238-8E2FFB62B0BB</td>-->
+        <!--<td width="20%">1476696</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs73' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader73' class="styleConsumed" onclick="Display('ConsumedHeader73', 'Consumed73')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed73' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIp4Config2ProtocolGuid</td>
+                  <!-- 5b446ed1-e30b-4faa-871a-3654eca36080 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPxeBaseCodeCallbackProtocolGuid</td>
+                  <!-- 245dca21-fb7b-11d3-8f01-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader73' class="styleProduced" onclick="Display('ProducedHeader73', 'Produced73')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced73' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadFileProtocolGuid</td>
+                  <!-- 56ec3091-954c-11d2-8e3f-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPxeBaseCodeCallbackProtocolGuid</td>
+                  <!-- 245dca21-fb7b-11d3-8f01-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPxeBaseCodeProtocolGuid</td>
+                  <!-- 03c4e603-ac28-11d3-9a2d-0090273fc14d -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader74'>
+        <td width="55%"><span onclick="Display('FfsHeader74', 'Ffs74')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\Network\IScsiDxe\IScsiDxe.inf</span></td>
+        <td width="15%">IScsi4Dxe</td>
+        <!--<td width="20%">4579B72D-7EC4-4DD4-8486-083C86B182A7</td>-->
+        <!--<td width="20%">1499128</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs74' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader74' class="styleConsumed" onclick="Display('ConsumedHeader74', 'Consumed74')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (9)</span></td>
+          </tr>
+          <tr id='Consumed74' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiAcpiTableProtocolGuid</td>
+                  <!-- ffe06bdd-6107-46a6-7bb2-5a9c7ec5275c -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiComponentName2ProtocolGuid</td>
+                  <!-- 6a7a5cff-e8d9-4f70-bada-75ab3025ce14 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiComponentNameProtocolGuid</td>
+                  <!-- 107a772c-d5e1-11d4-9a46-0090273fc14d -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigRoutingProtocolGuid</td>
+                  <!-- 587e72d7-cc50-4f79-8209-ca291fc1a10f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiDatabaseProtocolGuid</td>
+                  <!-- ef9fc172-a1b2-4693-b327-6d32fc416042 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIScsiInitiatorNameProtocolGuid</td>
+                  <!-- 59324945-ec44-4c0d-b1cd-9db139df070c -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiPciIoProtocolGuid</td>
+                  <!-- 4cf5b200-68b8-4ca5-9eec-b23e3f50029a -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader74' class="styleProduced" onclick="Display('ProducedHeader74', 'Produced74')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (5)</span></td>
+          </tr>
+          <tr id='Produced74' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiExtScsiPassThruProtocolGuid</td>
+                  <!-- 143b7632-b81b-4cb7-abd3-b625a5b9bffe -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIScsiInitiatorNameProtocolGuid</td>
+                  <!-- 59324945-ec44-4c0d-b1cd-9db139df070c -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader75'>
+        <td width="55%"><span onclick="Display('FfsHeader75', 'Ffs75')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\NetworkPkg\HttpBootDxe\HttpBootDxe.inf</span></td>
+        <td width="15%">HttpBootDxe</td>
+        <!--<td width="20%">ECEBCB00-D9C8-11E4-AF3D-8CDCD426C973</td>-->
+        <!--<td width="20%">1536632</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs75' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ProducedHeader75' class="styleProduced" onclick="Display('ProducedHeader75', 'Produced75')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (3)</span></td>
+          </tr>
+          <tr id='Produced75' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiCallerIdGuid</td>
+                  <!--  -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiLoadFileProtocolGuid</td>
+                  <!-- 56ec3091-954c-11d2-8e3f-00a0c969723b -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader76'>
+        <td width="55%"><span onclick="Display('FfsHeader76', 'Ffs76')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\NetworkPkg\DnsDxe\DnsDxe.inf</span></td>
+        <td width="15%">DnsDxe</td>
+        <!--<td width="20%">B219E140-DFFC-11E3-B956-0022681E6906</td>-->
+        <!--<td width="20%">1554160</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs76' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader76' class="styleConsumed" onclick="Display('ConsumedHeader76', 'Consumed76')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (1)</span></td>
+          </tr>
+          <tr id='Consumed76' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIp4Config2ProtocolGuid</td>
+                  <!-- 5b446ed1-e30b-4faa-871a-3654eca36080 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader76' class="styleProduced" onclick="Display('ProducedHeader76', 'Produced76')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (4)</span></td>
+          </tr>
+          <tr id='Produced76' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDns4ProtocolGuid</td>
+                  <!-- ae3d28cc-e05b-4fa1-a011-7eb55a3f1401 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDns4ServiceBindingProtocolGuid</td>
+                  <!-- b625b186-e063-44f7-8905-6a74dc6f52b4 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDns6ProtocolGuid</td>
+                  <!-- ca37bc1f-a327-4ae9-828a-8c40d8506a17 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDns6ServiceBindingProtocolGuid</td>
+                  <!-- 7f1647c8-b76e-44b2-a565-f70ff19cd19e -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader77'>
+        <td width="55%"><span onclick="Display('FfsHeader77', 'Ffs77')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\NetworkPkg\HttpDxe\HttpDxe.inf</span></td>
+        <td width="15%">HttpDxe</td>
+        <!--<td width="20%">2366C20F-E15A-11E3-8BF1-E4115B28BC50</td>-->
+        <!--<td width="20%">1578288</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs77' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='ConsumedHeader77' class="styleConsumed" onclick="Display('ConsumedHeader77', 'Consumed77')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Consumed77' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHttpUtilitiesProtocolGuid</td>
+                  <!-- 3e35c163-4074-45dd-431e-23989dd86b32 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiIp4Config2ProtocolGuid</td>
+                  <!-- 5b446ed1-e30b-4faa-871a-3654eca36080 -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader77' class="styleProduced" onclick="Display('ProducedHeader77', 'Produced77')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced77' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHttpProtocolGuid</td>
+                  <!-- 7a59b29b-910b-4171-8242-a85a0df25b5b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHttpServiceBindingProtocolGuid</td>
+                  <!-- bdc8e6af-d9bc-4379-a72a-e0c4e75dae1c -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader78'>
+        <td width="55%"><span onclick="Display('FfsHeader78', 'Ffs78')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">961578FE-B6B7-44C3-AF35-6BC705CD2B1F</span></td>
+        <td width="15%">Fat</td>
+        <!--<td width="20%">961578FE-B6B7-44C3-AF35-6BC705CD2B1F</td>-->
+        <!--<td width="20%">1880872</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs78' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+        </table></td>
+        </tr>
+  <tr>
+      <tr class='styleFfs' id='FfsHeader79'>
+        <td width="55%"><span onclick="Display('FfsHeader79', 'Ffs79')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">r:\myworkspace\MdeModulePkg\Universal\DriverSampleDxe\DriverSampleDxe.inf</span></td>
+        <td width="15%">DriverSample</td>
+        <!--<td width="20%">FE3542FE-C1D3-4EF8-657C-8048606FF671</td>-->
+        <!--<td width="20%">1250944</td>-->
+        <td width="10%">DRIVER</td>
+      </tr>
+      <tr id='Ffs79' style='display:none;'>
+        <td colspan="4"><table width="100%"  border="1">
+          <tr>
+            <td><span id='DepexHeader79' class="styleDepex" onclick="Display('DepexHeader79', 'Depex79')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspDEPEX expression</span></td>
+          </tr>
+          <tr id='Depex79' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="95%">gEfiHiiConfigRoutingProtocolGuid AND gEfiHiiStringProtocolGuid AND gEfiDevicePathUtilitiesProtocolGuid AND gEfiVariableWriteArchProtocolGuid AND gEfiVariableArchProtocolGuid AND gEfiHiiDatabaseProtocolGuid AND gEfiSimpleTextOutProtocolGuid </td>
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ConsumedHeader79' class="styleConsumed" onclick="Display('ConsumedHeader79', 'Consumed79')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspConsumed Ppis/Protocols List (7)</span></td>
+          </tr>
+          <tr id='Consumed79' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiConfigKeywordHandlerProtocolGuid</td>
+                  <!-- 0a8badd5-03b8-4d19-b128-7b8f0edaa596 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFormBrowser2ProtocolGuid</td>
+                  <!-- b9d4c360-bcfb-4f9b-9298-53c136982258 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiFormBrowserExProtocolGuid</td>
+                  <!-- 1f73b18d-4630-43c1-a1de-6f80855d7da4 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigRoutingProtocolGuid</td>
+                  <!-- 587e72d7-cc50-4f79-8209-ca291fc1a10f -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiDatabaseProtocolGuid</td>
+                  <!-- ef9fc172-a1b2-4693-b327-6d32fc416042 -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiStringProtocolGuid</td>
+                  <!-- 0fd96974-23aa-4cdc-b9cb-98d17750322a -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiSimpleTextInputExProtocolGuid</td>
+                  <!-- dd9e7534-7762-4698-8c14-f58517a625aa -->
+                </tr>
+            </table></td>
+          </tr>
+          <tr>
+            <td><span id='ProducedHeader79' class="styleProduced" onclick="Display('ProducedHeader79', 'Produced79')" onMouseOver="funOnMouseOver()" onMouseOut="funOnMouseOut()">&nbsp&nbspProduced Ppis/Protocols List (2)</span></td>
+          </tr>
+          <tr id='Produced79' style='display:none;'>
+            <td><table width="100%"  border="1">
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiDevicePathProtocolGuid</td>
+                  <!-- 09576e91-6d3f-11d2-8e39-00a0c969723b -->
+                </tr>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="10%">Protocol</td>
+                  <td width="85%" colspan="3">gEfiHiiConfigAccessProtocolGuid</td>
+                  <!-- 330d4706-f2a0-4e4f-a369-b66fa8d54385 -->
+                </tr>
+            </table></td>
+          </tr>
+        </table></td>
+        </tr>
+     </table></td>
+  </tr>
+    <td colspan="3"><table width="100%%"  border="1">
+      <tr>
+        <tr><strong>UnDispatched</strong></tr>
+     </table></td>
+  </tr>
+</table>
+</body>
+</html>

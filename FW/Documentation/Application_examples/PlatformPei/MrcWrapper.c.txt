@@ -1,0 +1,1881 @@
+/*++
+  This file contains an 'Intel Pre-EFI Module' and is licensed  
+  for Intel CPUs and Chipsets under the terms of your license   
+  agreement with Intel or your vendor.  This file may be        
+  modified by the user, subject to additional terms of the      
+  license agreement                                             
+--*/
+/*++
+
+Copyright (c) 2006 - 2010 Intel Corporation. All rights reserved
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+
+Module Name:
+
+    MemoryWrapper.c
+
+Abstract:
+
+    Framework PEIM to initialize memory on a 945G Memory Controller.
+
+
+--*/
+
+
+#include "CommonHeader.h"
+
+#include "MrcWrapper.h"
+
+static PEI_DUAL_CHANNEL_DDR_ROW_INFO mMcRowInfo = {
+  MAX_MEMORY,
+  PEI_DUAL_CHANNEL_DDR_ECC_TYPE_NONE,
+  (
+    PEI_DUAL_CHANNEL_DDR_DATA_TYPE_DDR +
+    PEI_DUAL_CHANNEL_DDR_DATA_TYPE_UNREGISTERED +
+    PEI_DUAL_CHANNEL_DDR_DATA_TYPE_UNBUFFERED
+  ),
+  MAX_ROWS,
+  MAX_RANGES,
+  MAX_CHANNELS,
+  PEI_DUAL_CHANNEL_DDR_ROW_DATA_BL_04 + PEI_DUAL_CHANNEL_DDR_ROW_DATA_BL_08
+};
+
+
+EFI_MEMORY_TYPE_INFORMATION mDefault945GMemoryTypeInformation[] = {
+  { EfiACPIReclaimMemory,   0x40 },     // 0x40 pages = 256k for ASL
+  { EfiACPIMemoryNVS,       0x300 },    // 0x100 pages = 1024k for S3, SMM, etc
+  { EfiReservedMemoryType,  0x10 },     // 16k for BIOS Reserved
+  { EfiRuntimeServicesData, 0x60 },
+  { EfiRuntimeServicesCode, 0x60 },
+//  { EfiBootServicesCode,    0x100 },    // Bugbug. Preallocate since current memmgr does not
+//                                        // diffentiate between fixed location (non-TOM)
+  { EfiBootServicesCode,    0 },    // Bugbug. Preallocate since current memmgr does not
+                                        // diffentiate between fixed location (non-TOM)
+  { EfiBootServicesData,    0 },
+  { EfiLoaderCode,          0 },
+  { EfiLoaderData,          0 },
+  { EfiMaxMemoryType,       0 }
+};
+
+VOID
+CHECKPOINT (
+  IN UINT8               Content
+  )
+{
+  IoWrite8 (0x80, Content);
+}
+
+VOID
+DEBUGHOOK (
+  IN const CHAR8  *Format,
+  ...
+  )
+{
+  CHAR8     Buffer[1024];
+  VA_LIST   Marker;
+  UINTN     Return;
+
+  VA_START (Marker, Format);
+  Return = AsciiVSPrint (Buffer, 1024, Format, Marker);
+  VA_END (Marker);
+
+  DEBUG ((EFI_D_INFO, Buffer));
+}
+
+VOID
+POWER_CYCLE_RESET_JMP_DOLLARHOOK(
+  )
+{
+  IoWrite8 ( 0xCF9, 0x0E );
+  //
+  // We should never get here
+  //
+  CpuDeadLoop();
+}
+
+/**
+
+  Do memory initialization for 945G/P DDRII SDRAM Controller
+
+  @param  FfsHeader    Not used.
+  @param  PeiServices  General purpose services available to every PEIM.
+
+  @return EFI_SUCCESS  Memory initialization completed successfully.
+          All other error conditions encountered result in an ASSERT.
+
+**/
+
+EFI_STATUS
+MemoryInit (
+  IN EFI_PEI_SERVICES          **PeiServices
+  )
+{
+  MRC_DATA_STRUCTURE                          MrcData;
+  EFI_BOOT_MODE                               BootMode;
+  EFI_STATUS                                  Status;
+  EFI_PEI_READ_ONLY_VARIABLE2_PPI             *VariableServices;
+  PEI_DUAL_CHANNEL_DDR_ROW_INFO               *MchRowInfo;
+  PEI_MEMORY_LOG                              MemoryLog;
+  EFI_STATUS_CODE_VALUE                       ErrorCodeValue;
+  UINTN                                       BufferSize;
+  UINT8                                       DimmSockets;
+  PEI_945G_MEMORY_INIT_PPI                    *D945GMemoryInitPpi;
+
+  MemoryLog.Index = 0;
+  ErrorCodeValue  = 0;
+  MchRowInfo      = NULL;
+  BufferSize      = sizeof( MrcData.MemoryCeiling );
+
+  //
+  // It is critical that both of these data structures are initialized to 0.
+  // This PEIM knows the number of DIMMs in the system and works with that
+  // information.  The MCH PEIM that consumes these data structures does not
+  // know the number of DIMMs so it expects the entire structure to be
+  // properly initialized.  By initializing these to zero, all flags indicating
+  // that the SPD is present or the row should be configured are set to false.
+  //
+  ZeroMem (&MrcData, sizeof(MRC_DATA_STRUCTURE));
+
+  //
+  // Get necessary PPI
+  //
+  Status = PeiServicesLocatePpi (
+             &gEfiPeiReadOnlyVariable2PpiGuid,           // GUID
+             0,                                          // INSTANCE
+             NULL,                                       // EFI_PEI_PPI_DESCRIPTOR
+             (VOID **)&VariableServices                  // PPI
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Determine boot mode
+  //
+  Status = PeiServicesGetBootMode (&BootMode);
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Initialize MrcData Structure
+  //
+  MrcData.CHECKPOINTHOOK                     = CHECKPOINT;
+  DEBUG_CODE (
+    MrcData.DEBUGHOOK                        = DEBUGHOOK;
+  );
+  MrcData.POWER_CYCLE_RESET_JMP_DOLLARHOOK   = POWER_CYCLE_RESET_JMP_DOLLARHOOK;
+  MrcData.DIMMSockets                        = PcdGet8(PcdDimmSockets);
+
+  if (( BootMode == BOOT_ON_S3_RESUME )||( BootMode == BOOT_ON_FLASH_UPDATE )) {
+    MrcData.IsS3Boot = TRUE;
+  } else {
+    MrcData.IsS3Boot = FALSE;
+  }
+
+  //
+  // The PCD is set by PCIHostBridge
+  //
+
+  MrcData.MemoryCeiling = PcdGet32(PcdMchMemoryCeiling);
+
+  if (MrcData.MemoryCeiling == 0x0) {
+    //
+    // If the variable does not exist set it to 2GB for the first boot
+    // The MMIO allocation size will be calculated in PCIHostBridge
+    //
+    MrcData.MemoryCeiling = 0x80000000; //define PCD
+  }
+
+  //
+  // Initialize Error type for reporting status code
+  //
+  switch (BootMode) {
+  case BOOT_ON_FLASH_UPDATE:
+    ErrorCodeValue = EFI_COMPUTING_UNIT_MEMORY + EFI_CU_MEMORY_EC_UPDATE_FAIL;
+
+  case BOOT_ON_S3_RESUME:
+    ErrorCodeValue = EFI_COMPUTING_UNIT_MEMORY + EFI_CU_MEMORY_EC_S3_RESUME_FAIL;
+
+  default:
+    ErrorCodeValue = EFI_COMPUTING_UNIT_MEMORY;
+    break;
+  }
+
+	//
+	// Get Memory configuration data if system boot up from S3
+	//
+	if ( ( BootMode == BOOT_ON_S3_RESUME ) || ( BootMode == BOOT_ON_FLASH_UPDATE ) ){
+    //
+    // Load Memory configuration data saved in previous boot from variable
+    //
+    Status = LoadConfig (
+               PeiServices,
+               VariableServices,
+               &DimmSockets,
+               &MrcData.TimingData,
+               (PEI_DUAL_CHANNEL_DDR_ROW_CONFIG *) MrcData.RowConfArray
+               );
+
+    if (EFI_ERROR (Status)) {
+      REPORT_STATUS_CODE (
+        EFI_ERROR_CODE + EFI_ERROR_UNRECOVERED,
+        ErrorCodeValue
+      );
+
+      switch (BootMode) {
+      case BOOT_ON_S3_RESUME:
+        PeiServicesResetSystem ();
+        break;
+
+      default:
+        break;
+      }
+    }
+  } else {
+
+     DEBUG ((EFI_D_INFO, "Following detection boot path.\n"));
+
+     //
+     // Read info from any SPD devices
+     //
+     DEBUG ((EFI_D_INFO, "GetSpdData.\n"));
+
+     Status = GetSpdData (
+                MrcData.SpdData
+                );
+
+     ASSERT_EFI_ERROR (Status);
+  }
+
+  //
+  // Locate Memory Reference Code PPI
+  //
+  Status = PeiServicesLocatePpi (
+             &g945GMemoryInitPpiGuid,         // GUID
+             0,                               // INSTANCE
+             NULL,                            // EFI_PEI_PPI_DESCRIPTOR
+             (VOID **)&D945GMemoryInitPpi     // PPI
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Call Memory Reference Code's Routines
+  //
+  D945GMemoryInitPpi->MrcStart (&MrcData);
+
+
+  if (BootMode == BOOT_ON_S3_RESUME) {
+    
+    DEBUG ((EFI_D_INFO, "Following BOOT_ON_S3_RESUME boot path.\n"));
+
+    Status = InstallS3Memory (PeiServices, VariableServices);
+    if (EFI_ERROR (Status)) {
+      REPORT_STATUS_CODE (
+        EFI_ERROR_CODE + EFI_ERROR_UNRECOVERED,
+        ErrorCodeValue
+      );
+      PeiServicesResetSystem ();
+    }
+
+    return EFI_SUCCESS;
+  }
+
+  //
+  // Assign physical memory to PEI and DXE
+  //
+  DEBUG ((EFI_D_INFO, "InstallEfiMemory.\n"));
+
+  Status = InstallEfiMemory (
+             PeiServices,
+             BootMode,
+             PcdGet8(PcdDimmSockets),
+             &MrcData.TimingData,
+             (PEI_DUAL_CHANNEL_DDR_ROW_CONFIG *) MrcData.RowConfArray,
+             VariableServices
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  if ((BootMode == BOOT_WITH_FULL_CONFIGURATION) ||
+      (BootMode == BOOT_IN_RECOVERY_MODE)) {
+    //
+    // Find out row configurations supported by MCH
+    //
+    Status = GetRowInfo (&MchRowInfo);
+
+    //
+    // Save current configuration into Hob and will save into Variable later in DXE
+    //
+    DEBUG ((EFI_D_INFO, "SaveConfig.\n"));
+    Status = SaveConfig (
+               MchRowInfo,
+               &MrcData.TimingData,
+               (PEI_DUAL_CHANNEL_DDR_ROW_CONFIG *) MrcData.RowConfArray,
+               (MEMINIT_SPD_DATA *) MrcData.SpdData
+               );
+    ASSERT_EFI_ERROR (Status);
+  }
+  //
+  // Report all memory events detected via Status Codes
+  //
+  DEBUG ((EFI_D_INFO, "ReportEvents.\n"));
+  ReportEvents (PeiServices, &MemoryLog);
+
+  DEBUG ((EFI_D_INFO, "MemoryInit Complete.\n"));
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+  This function saves a config to a HOB.
+
+  @param  RowInfo         The MCH row configuration information.
+  @param  TimingData      Timing data to be saved.
+  @param  RowConfArray    Row configuration information for each row in the system.
+  @param  SpdData         SPD info read for each DIMM slot in the system.
+
+  @return EFI_SUCCESS:    The function completed successfully.
+
+**/
+EFI_STATUS
+SaveConfig (
+  IN      PEI_DUAL_CHANNEL_DDR_ROW_INFO          *RowInfo,
+  IN      PEI_DUAL_CHANNEL_DDR_TIMING_DATA       *TimingData,
+  IN      PEI_DUAL_CHANNEL_DDR_ROW_CONFIG        *RowConfArray,
+  IN      MEMINIT_SPD_DATA                       *SpdData
+  )
+{
+  EFI_MEMINIT_CONFIG_DATA *ConfigData;
+  EFI_PEI_HOB_POINTERS    Hob;
+  UINTN                   BufferSize;
+
+  BufferSize = sizeof (EFI_MEMINIT_CONFIG_DATA);
+
+  Hob.Raw = BuildGuidHob (
+              &gEfiMemoryConfigDataGuid,
+              BufferSize
+              );
+  ASSERT (Hob.Raw);
+
+  ConfigData = (EFI_MEMINIT_CONFIG_DATA *) Hob.Raw;
+
+  CopyMem (
+    &ConfigData->RowInfo,
+    RowInfo,
+    sizeof (PEI_DUAL_CHANNEL_DDR_ROW_INFO)
+    );
+
+  CopyMem (
+    &ConfigData->TimingData,
+    TimingData,
+    sizeof (PEI_DUAL_CHANNEL_DDR_TIMING_DATA)
+    );
+
+  CopyMem (
+    ConfigData->RowConfArray,
+    RowConfArray,
+    sizeof (PEI_DUAL_CHANNEL_DDR_ROW_CONFIG) * ConfigData->RowInfo.MaxRows
+    );
+
+  CopyMem (
+    ConfigData->SpdData,
+    SpdData,
+    sizeof (MEMINIT_SPD_DATA) * MAX_SOCKETS
+    );
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+  This function installs memory.
+
+  @param   PeiServices    PEI Services table.
+  @param   BootMode       The specific boot path that is being followed
+  @param   Mch            Pointer to the DualChannelDdrMemoryInit PPI
+  @param   RowConfArray   Row configuration information for each row in the system.
+
+  @return  EFI_SUCCESS            The function completed successfully.
+           EFI_INVALID_PARAMETER  One of the input parameters was invalid.
+           EFI_ABORTED            An error occurred.
+
+**/
+EFI_STATUS
+InstallEfiMemory (
+  IN      EFI_PEI_SERVICES                           **PeiServices,
+  IN      EFI_BOOT_MODE                              BootMode,
+  IN      UINT8                                      DimmSockets,
+  IN      PEI_DUAL_CHANNEL_DDR_TIMING_DATA           *TimingData,
+  IN      PEI_DUAL_CHANNEL_DDR_ROW_CONFIG            *RowConfArray,
+  IN      EFI_PEI_READ_ONLY_VARIABLE2_PPI            *VariableServices
+  )
+{
+  EFI_DIMM_LAYOUT                       *DimmLayout;
+  EFI_PHYSICAL_ADDRESS                  PeiMemoryBaseAddress;
+  EFI_SMRAM_HOB_DESCRIPTOR_BLOCK2       *SmramHobDescriptorBlock;
+  EFI_STATUS                            Status;
+  PEI_CAPSULE_PPI                       *Capsule;
+  EFI_PEI_HOB_POINTERS                  Hob;
+  PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE MemoryMap[MAX_RANGES];
+  UINT8                                 CurrentSocket;
+  UINT8                                 Index;
+  UINT8                                 NumRanges;
+  UINT8                                 SmramIndex;
+  UINT8                                 SmramRanges;
+  UINT64                                PeiMemoryLength;
+  UINTN                                 BufferSize;
+  UINTN                                 CapsuleBufferLength;
+  UINTN                                 PeiMemoryIndex;
+  VOID                                  *CapsuleBuffer;
+  UINTN                                 RequiredMemSize;
+  EFI_RESOURCE_ATTRIBUTE_TYPE           Attribute;
+  UINT8                                 MorControl;
+  UINTN                                 DataSize;
+  INTN                                  MaxSizeIndex;
+
+  //
+  // Get the Memory Map
+  //
+  NumRanges = MAX_RANGES;
+
+  ZeroMem (MemoryMap, sizeof (PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE) * NumRanges);
+
+  Status = GetMemoryMap (
+             PeiServices,
+             TimingData,
+             (PEI_DUAL_CHANNEL_DDR_ROW_CONFIG *) RowConfArray,
+             (PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE *) MemoryMap,
+             &NumRanges
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Find the highest memory range in processor native address space to give to
+  // PEI. Then take the top.
+  // If this algorithm changes, then we need to fix the capsule memory
+  // selection algorithm below.
+  //
+  PeiMemoryBaseAddress = 0;
+
+  //
+  // Query the platform for the minimum memory size
+  //
+
+  Status = GetPlatformMemorySize (
+             PeiServices,
+             BootMode,
+             &PeiMemoryLength
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Get required memory size for ACPI use. This helps to put ACPI memory on the topest
+  //
+  RequiredMemSize = 0;
+  RetriveRequiredMemorySize (PeiServices, &RequiredMemSize);
+
+  PeiMemoryIndex = 0;
+
+  //
+  // Detect MOR request by the OS
+  //
+  MorControl = 0;
+  if (PcdGetBool (PcdMorEnable)) {
+    DataSize = sizeof (UINT8);
+    Status = VariableServices->GetVariable (
+                                 VariableServices,
+                                 MEMORY_OVERWRITE_REQUEST_VARIABLE_NAME,
+                                 &gEfiMemoryOverwriteControlDataGuid,
+                                 NULL,
+                                 &DataSize,
+                                 &MorControl
+                                 );
+  }
+
+  for (Index = 0; Index < NumRanges; Index++)
+  {
+    DEBUG ((EFI_D_INFO, "Found 0x%x bytes at ", MemoryMap[Index].RangeLength));
+    DEBUG ((EFI_D_INFO, "0x%x.\n", MemoryMap[Index].PhysicalAddress));
+
+    //
+    // Clear memory if there is MOR request
+    // Clear memory usable by OS only, skip SMRAM and reserved memory
+    //
+    if (PcdGetBool (PcdMorEnable)) {
+      if (MOR_CLEAR_MEMORY_VALUE (MorControl) && MemoryMap[Index].Type == DualChannelDdrMainMemory) {
+        DEBUG ((EFI_D_INFO, "Clear memory per MOR request.\n"));
+        if (MemoryMap[Index].PhysicalAddress != 0) {
+          ZeroMem ((VOID *)(UINTN)(MemoryMap[Index].PhysicalAddress), (UINTN) MemoryMap[Index].RangeLength);
+        } else {
+          ZeroMem ((VOID *)(UINTN)(MemoryMap[Index].PhysicalAddress + 1), (UINTN) MemoryMap[Index].RangeLength - 1);
+        }
+      }
+    }
+
+    if ((MemoryMap[Index].Type == DualChannelDdrMainMemory) &&
+        (MemoryMap[Index].PhysicalAddress + MemoryMap[Index].RangeLength < MAX_ADDRESS) &&
+        (MemoryMap[Index].PhysicalAddress >= PeiMemoryBaseAddress) &&
+        (MemoryMap[Index].RangeLength >= PeiMemoryLength)) {
+      PeiMemoryBaseAddress = MemoryMap[Index].PhysicalAddress +
+                             MemoryMap[Index].RangeLength -
+                             PeiMemoryLength;
+      PeiMemoryIndex = Index;
+    }
+  }
+
+  Capsule             = NULL;
+  CapsuleBuffer       = NULL;
+  CapsuleBufferLength = 0;
+  if (BootMode == BOOT_ON_FLASH_UPDATE) {
+    Status = PeiServicesLocatePpi (
+               &gPeiCapsulePpiGuid,  // GUID
+               0,                    // INSTANCE
+               NULL,                 // EFI_PEI_PPI_DESCRIPTOR
+               (VOID **)&Capsule              // PPI
+               );
+    ASSERT_EFI_ERROR (Status);
+
+    if (Status == EFI_SUCCESS) {
+      //
+      // Find the largest memory range excluding that given to PEI
+      //
+      for (Index = 0; Index < NumRanges; Index++) {
+        if ((MemoryMap[Index].Type == DualChannelDdrMainMemory) &&
+            (MemoryMap[Index].PhysicalAddress + MemoryMap[Index].RangeLength < MAX_ADDRESS)) {
+              if (Index != PeiMemoryIndex) {
+                if (MemoryMap[Index].RangeLength > CapsuleBufferLength) {
+                  CapsuleBuffer = (VOID *) ((UINTN) MemoryMap[Index].PhysicalAddress);
+                  CapsuleBufferLength = (UINTN) MemoryMap[Index].RangeLength;
+                }
+              } else {
+                if ((MemoryMap[Index].RangeLength - PeiMemoryLength) >= CapsuleBufferLength) {
+                  CapsuleBuffer = (VOID *) ((UINTN) MemoryMap[Index].PhysicalAddress);
+                  CapsuleBufferLength = (UINTN) (MemoryMap[Index].RangeLength - PeiMemoryLength);
+                }
+              }
+        }
+      }
+      //
+      // Call the Capsule PPI Coalesce function to coalesce the capsule data.
+      //
+      Status = Capsule->Coalesce (
+                          PeiServices,
+                          &CapsuleBuffer,
+                          &CapsuleBufferLength
+                          );
+    }
+    //
+    // If it failed, then NULL out our capsule PPI pointer so that the capsule
+    // HOB does not get created below.
+    //
+    if (Status != EFI_SUCCESS) {
+      Capsule = NULL;
+    }
+  }
+
+  //
+  // Carve out the top memory reserved for ACPI
+  //
+  Status = PeiServicesInstallPeiMemory (
+             PeiMemoryBaseAddress,             // MemoryBegin
+             PeiMemoryLength - RequiredMemSize // MemoryLength
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  BuildResourceDescriptorHob (
+   EFI_RESOURCE_SYSTEM_MEMORY,                       // MemoryType,
+   (
+   EFI_RESOURCE_ATTRIBUTE_PRESENT |
+   EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+   EFI_RESOURCE_ATTRIBUTE_TESTED |
+   EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
+   EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
+   EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
+   EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE
+   ),
+   PeiMemoryBaseAddress,                             // MemoryBegin
+   PeiMemoryLength                                   // MemoryLength
+   );
+
+  //
+  // Install physical memory descriptor hobs for each memory range.
+  //
+  SmramRanges = 0;
+  for (Index = 0; Index < NumRanges; Index++) {
+    Attribute = 0;
+    if (MemoryMap[Index].Type == DualChannelDdrMainMemory)
+    {
+      if (Index == PeiMemoryIndex) {
+        //
+        // This is a partially tested Main Memory range, give it to EFI
+        //
+        BuildResourceDescriptorHob (
+          EFI_RESOURCE_SYSTEM_MEMORY,
+          (
+          EFI_RESOURCE_ATTRIBUTE_PRESENT |
+          EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+          EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
+          EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
+          EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
+          EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE
+          ),
+          MemoryMap[Index].PhysicalAddress,
+          MemoryMap[Index].RangeLength - PeiMemoryLength
+          );
+      } else {
+        //
+        // This is an untested Main Memory range, give it to EFI
+        //
+        BuildResourceDescriptorHob (
+          EFI_RESOURCE_SYSTEM_MEMORY,       // MemoryType,
+          (
+          EFI_RESOURCE_ATTRIBUTE_PRESENT |
+          EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+          EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
+          EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
+          EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
+          EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE
+          ),
+          MemoryMap[Index].PhysicalAddress, // MemoryBegin
+          MemoryMap[Index].RangeLength      // MemoryLength
+          );
+      }
+    } else {
+      if ((MemoryMap[Index].Type == DualChannelDdrSmramCacheable) ||
+          (MemoryMap[Index].Type == DualChannelDdrSmramNonCacheable)) {
+        if (MemoryMap[Index].PhysicalAddress >= BASE_1MB) {
+          //
+          // Exclude A-SEG or H-SEG
+          //
+          SmramRanges++;
+        }
+      }
+      if ((MemoryMap[Index].Type == DualChannelDdrSmramNonCacheable) ||
+          (MemoryMap[Index].Type == DualChannelDdrGraphicsMemoryNonCacheable)) {
+        Attribute |= EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE;
+      }
+      if ((MemoryMap[Index].Type == DualChannelDdrSmramCacheable)         ||
+          (MemoryMap[Index].Type == DualChannelDdrGraphicsMemoryCacheable)) {
+        //
+        // TSEG and HSEG can be used with a write-back(WB) cache policy; however,
+        // the specification requires that the TSEG and HSEG space be cached only
+        // inside of the SMI handler. when using HSEG or TSEG an IA-32 processor
+        // does not automatically write back and invalidate its cache before entering
+        // SMM or before existing SMM therefore any MTRR defined for the active TSEG
+        // or HSEG must be set to un-cacheable(UC) outside of SMM.
+        // 945 BIOS specification 9.3 page 151
+        //
+        Attribute |= EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE | EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE;
+      }
+      if (MemoryMap[Index].Type == DualChannelDdrReservedMemory) {
+        Attribute |= EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
+                     EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE          |
+                     EFI_RESOURCE_ATTRIBUTE_WRITE_PROTECTED;
+      }
+      //
+      // Make sure non-system memory is marked as reserved
+      //
+      BuildResourceDescriptorHob (
+        EFI_RESOURCE_MEMORY_RESERVED,     // MemoryType,
+        Attribute,                        // MemoryAttribute
+        MemoryMap[Index].PhysicalAddress, // MemoryBegin
+        MemoryMap[Index].RangeLength      // MemoryLength
+        );
+    }
+  }
+
+  //
+  // Allocate one extra EFI_SMRAM_DESCRIPTOR to describe a page of SMRAM memory that contains a pointer
+  // to the SMM Services Table that is required on the S3 resume path
+  //
+  BufferSize = sizeof (EFI_SMRAM_HOB_DESCRIPTOR_BLOCK2) + (SmramRanges  * sizeof (EFI_SMRAM_DESCRIPTOR));
+
+  Hob.Raw = BuildGuidHob (
+              &gEfiSmmPeiSmramMemoryReserve2Guid,
+              BufferSize
+              );
+  ASSERT (Hob.Raw);
+
+  SmramHobDescriptorBlock = (EFI_SMRAM_HOB_DESCRIPTOR_BLOCK2 *) (Hob.Raw);
+  SmramHobDescriptorBlock->NumberOfSmmReservedRegions = SmramRanges;
+
+  MaxSizeIndex = -1;
+  SmramIndex = 0;
+  for (Index = 0; Index < NumRanges; Index++) {
+    if ((MemoryMap[Index].Type == DualChannelDdrSmramCacheable) ||
+        (MemoryMap[Index].Type == DualChannelDdrSmramNonCacheable)) {
+          if (MemoryMap[Index].PhysicalAddress < BASE_1MB) {
+            //
+            // Exclude A-SEG or H-SEG
+            //
+            continue;
+          }
+          
+          //
+          // This is an SMRAM range, create an SMRAM descriptor
+          //
+          SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalStart = MemoryMap[Index].PhysicalAddress;
+          SmramHobDescriptorBlock->Descriptor[SmramIndex].CpuStart      = MemoryMap[Index].CpuAddress;
+          SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize  = MemoryMap[Index].RangeLength;
+          if (MemoryMap[Index].Type == DualChannelDdrSmramCacheable) {
+            SmramHobDescriptorBlock->Descriptor[SmramIndex].RegionState = EFI_SMRAM_CLOSED | EFI_CACHEABLE;
+          } else {
+            SmramHobDescriptorBlock->Descriptor[SmramIndex].RegionState = EFI_SMRAM_CLOSED;
+          }
+          //
+          // Find the index of the largest SMRAM region that is between 1MB and 4GB and has a size of al least EFI_PAGE_SIZE
+          //
+          if (SmramHobDescriptorBlock->Descriptor[SmramIndex].CpuStart >= BASE_1MB) {
+            if ((SmramHobDescriptorBlock->Descriptor[SmramIndex].CpuStart + SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize) <= BASE_4GB) {
+              if (MaxSizeIndex < 0) {
+                if (SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize >= EFI_PAGE_SIZE) {
+                  MaxSizeIndex = SmramIndex;
+                }
+              } else if (SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize > SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].PhysicalSize) {
+                MaxSizeIndex = SmramIndex;
+              }
+            }
+          }
+
+      SmramIndex++;
+    }
+  }
+
+  if (MaxSizeIndex >= 0) {
+    //
+    // Increase the number of SMRAM descriptors by 1 to make room for the ALLOCATED descriptor of size EFI_PAGE_SIZE
+    //
+    SmramHobDescriptorBlock->NumberOfSmmReservedRegions = SmramRanges + 1;
+
+    //
+    // Copy the larget SMRAM descriptor to the end of the array
+    // 
+    CopyMem (&SmramHobDescriptorBlock->Descriptor[SmramRanges], &SmramHobDescriptorBlock->Descriptor[MaxSizeIndex], sizeof (EFI_SMRAM_DESCRIPTOR));
+
+    //
+    // Update the last entry in the array with a size of EFI_PAGE_SIZE and put into the ALLOCATED state
+    //
+    SmramHobDescriptorBlock->Descriptor[SmramRanges].PhysicalSize    = EFI_PAGE_SIZE;
+    SmramHobDescriptorBlock->Descriptor[SmramRanges].RegionState    |= EFI_ALLOCATED;
+
+    //
+    // Reduce the size of the largest SMRAM descriptor by EFI_PAGE_SIZE 
+    //
+    SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].PhysicalStart += EFI_PAGE_SIZE;
+    SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].CpuStart      += EFI_PAGE_SIZE;
+    SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].PhysicalSize  -= EFI_PAGE_SIZE;
+    
+    Hob.Raw = BuildGuidHob (
+                &gEfiAcpiVariableGuid,
+                sizeof (EFI_SMRAM_DESCRIPTOR)
+                );
+    ASSERT (Hob.Raw);
+    
+    CopyMem ((VOID *)Hob.Raw, &SmramHobDescriptorBlock->Descriptor[SmramRanges], sizeof (EFI_SMRAM_DESCRIPTOR));
+  }
+
+  //
+  // Build a HOB describing memory layout and state
+  //
+  BufferSize = sizeof (EFI_DIMM_LAYOUT) + sizeof (EFI_DIMM_STATE) * (MAX_SOCKETS);
+
+  Hob.Raw = BuildGuidHob (
+              &gEfiPlatformMemoryLayoutGuid,
+              BufferSize
+              );
+  ASSERT (Hob.Raw);
+
+  DimmLayout = (EFI_DIMM_LAYOUT *) Hob.Raw;
+  //
+  // Initialize the layout structure.
+  // This sets all reserved bits to 0 and all DIMM to not present, not
+  // configured, and not disabled.
+  // Do not remove this as it is required for the following algorithm to behave
+  // correctly.
+  //
+  SetMem (DimmLayout, BufferSize, 0);
+
+  DimmLayout->DimmSets = (UINT8) (MAX_SOCKET_SETS);
+  DimmLayout->DimmsPerSet = MAX_CHANNELS;
+  DimmLayout->RowsPerSet = MAX_SIDES;
+
+  for (CurrentSocket = 0; CurrentSocket < PcdGet8(PcdDimmSockets); CurrentSocket++) {
+
+    if (TimingData->DimmData[CurrentSocket].Present) {
+      //
+      // Basic check for invalid state, where a previous state has not been in conflict
+      //
+      ASSERT (DimmLayout->State[CurrentSocket].Disabled == FALSE);
+      DimmLayout->State[CurrentSocket].Present    = TRUE;
+      DimmLayout->State[CurrentSocket].Configured = TRUE;
+    }
+  }
+
+  //
+  // If we found the capsule PPI (and we didn't have errors), then
+  // call the capsule PEIM to allocate memory for the capsule.
+  //
+  if (Capsule != NULL) {
+    Status = Capsule->CreateState (
+                        PeiServices,
+                        CapsuleBuffer,
+                        CapsuleBufferLength
+                        );
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+  Find memory that is reserved so PEI has some to use.
+
+  @param  PeiServices      PEI Services table.
+  @param  VariableSevices  Variable PPI instance.
+
+  @return EFI_SUCCESS  The function completed successfully.
+                       Error value from LocatePpi()
+                       Error Value from VariableServices->GetVariable()
+
+**/
+EFI_STATUS
+InstallS3Memory (
+  IN      EFI_PEI_SERVICES                      **PeiServices,
+  IN      EFI_PEI_READ_ONLY_VARIABLE2_PPI       *VariableServices
+  )
+
+{
+  EFI_STATUS                            Status;
+  UINTN                                 VarSize;
+  UINT64                                TempAcpiVariableSet;
+  ACPI_VARIABLE_SET                     *AcpiVariableSet;
+  UINTN                                 S3MemoryBase;
+  UINTN                                 S3MemorySize;
+  UINT8                                 SmramRanges;
+  UINT8                                 NumRanges;
+  UINT8                                 Index;
+  UINT8                                 SmramIndex;
+  UINTN                                 BufferSize;
+  EFI_PEI_HOB_POINTERS                  Hob;
+  PEI_DUAL_CHANNEL_DDR_ROW_CONFIG       RowConfArray;
+  EFI_SMRAM_HOB_DESCRIPTOR_BLOCK2       *SmramHobDescriptorBlock;
+  PEI_DUAL_CHANNEL_DDR_TIMING_DATA      TimingData;
+  PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE MemoryMap[MAX_RANGES];
+  INTN                                  MaxSizeIndex;
+
+  VarSize         = sizeof (TempAcpiVariableSet);
+  AcpiVariableSet = NULL;
+
+  //
+  //  BugBug: Set in ProcessorConfig We should use PCD Mechanism for S3 save
+  //
+  Status = VariableServices->GetVariable (
+                               VariableServices,
+                               ACPI_GLOBAL_VARIABLE,
+                               &gEfiAcpiVariableGuid,
+                               NULL,
+                               &VarSize,
+                               &TempAcpiVariableSet
+                               );
+
+  //
+  // The AcpiVariableSet address saved by Dxe is 64-bit,
+  // need to convert it to 32-bit.
+  // An assertion may be added here to check the address
+  // is lower than 4G
+  //
+  AcpiVariableSet = (ACPI_VARIABLE_SET *)(UINTN)TempAcpiVariableSet;
+
+  DEBUG ((EFI_D_INFO, "MemoryInit Get ACPIVariableSet Address 0x%x \n", AcpiVariableSet));
+
+  if (EFI_ERROR (Status) || (AcpiVariableSet == NULL)) {
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  S3MemoryBase  = (UINTN) (AcpiVariableSet->AcpiReservedMemoryBase);
+  S3MemorySize  = (UINTN) (AcpiVariableSet->AcpiReservedMemorySize);
+
+  Status = PeiServicesInstallPeiMemory (S3MemoryBase,S3MemorySize);
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Retrieve the system memory length and build memory hob for the system
+  // memory above 1MB. So Memory Callback can set cache for the system memory
+  // correctly on S3 boot path, just like it does on Normal boot path.
+  //
+  ASSERT ((AcpiVariableSet->SystemMemoryLength - 0x100000) > 0);
+  BuildResourceDescriptorHob (
+    EFI_RESOURCE_SYSTEM_MEMORY,
+    (
+    EFI_RESOURCE_ATTRIBUTE_PRESENT |
+    EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+    EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE |
+    EFI_RESOURCE_ATTRIBUTE_WRITE_COMBINEABLE |
+    EFI_RESOURCE_ATTRIBUTE_WRITE_THROUGH_CACHEABLE |
+    EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE
+    ),
+    0x100000,
+    AcpiVariableSet->SystemMemoryLength - 0x100000
+    );
+
+  //
+  // Get the Memory Map
+  //
+  NumRanges = MAX_RANGES;
+
+  ZeroMem (MemoryMap, sizeof (PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE) * NumRanges);
+
+  Status = GetMemoryMap (
+             PeiServices,
+             &TimingData,
+             &RowConfArray,
+             (PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE *) MemoryMap,
+             &NumRanges
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Install physical memory descriptor hobs for each memory range.
+  //
+  SmramRanges = 0;
+  for (Index = 0; Index < NumRanges; Index++) {
+    if ((MemoryMap[Index].Type == DualChannelDdrSmramCacheable)    ||
+       (MemoryMap[Index].Type == DualChannelDdrSmramNonCacheable)) {
+      if (MemoryMap[Index].PhysicalAddress >= BASE_1MB) {
+        //
+        //  Exclude A-SEG or H-SEG
+        //
+        SmramRanges++;
+      }
+    }  
+  }
+
+  ASSERT (SmramRanges > 0);
+
+  //
+  // Allocate one extra EFI_SMRAM_DESCRIPTOR to describe a page of SMRAM memory that contains a pointer
+  // to the SMM Services Table that is required on the S3 resume path
+  //
+  BufferSize = sizeof (EFI_SMRAM_HOB_DESCRIPTOR_BLOCK2) + (SmramRanges  * sizeof (EFI_SMRAM_DESCRIPTOR));
+
+  Hob.Raw = BuildGuidHob (
+              &gEfiSmmPeiSmramMemoryReserve2Guid,
+              BufferSize
+              );
+  ASSERT (Hob.Raw);
+
+  SmramHobDescriptorBlock = (EFI_SMRAM_HOB_DESCRIPTOR_BLOCK2 *) (Hob.Raw);
+  SmramHobDescriptorBlock->NumberOfSmmReservedRegions = SmramRanges;
+
+  MaxSizeIndex = -1;
+  SmramIndex = 0;
+  for (Index = 0; Index < NumRanges; Index++) {
+    if ((MemoryMap[Index].Type == DualChannelDdrSmramCacheable) ||
+        (MemoryMap[Index].Type == DualChannelDdrSmramNonCacheable)) {
+          if (MemoryMap[Index].PhysicalAddress < BASE_1MB) {
+            //
+            // Exclude A-SEG or H-SEG
+            //
+            continue;
+          }
+        
+          //
+          // This is an SMRAM range, create an SMRAM descriptor
+          //
+          SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalStart = MemoryMap[Index].PhysicalAddress;
+          SmramHobDescriptorBlock->Descriptor[SmramIndex].CpuStart      = MemoryMap[Index].CpuAddress;
+          SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize  = MemoryMap[Index].RangeLength;
+          if (MemoryMap[Index].Type == DualChannelDdrSmramCacheable) {
+            SmramHobDescriptorBlock->Descriptor[SmramIndex].RegionState = EFI_SMRAM_CLOSED | EFI_CACHEABLE;
+          } else {
+            SmramHobDescriptorBlock->Descriptor[SmramIndex].RegionState = EFI_SMRAM_CLOSED;
+          }
+          //
+          // Find the index of the largest SMRAM region that is between 1MB and 4GB and has a size of al least EFI_PAGE_SIZE
+          //
+          if (SmramHobDescriptorBlock->Descriptor[SmramIndex].CpuStart >= BASE_1MB) {
+            if ((SmramHobDescriptorBlock->Descriptor[SmramIndex].CpuStart + SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize) <= BASE_4GB) {
+              if (MaxSizeIndex < 0) {
+                if (SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize >= EFI_PAGE_SIZE) {
+                  MaxSizeIndex = SmramIndex;
+                }
+              } else if (SmramHobDescriptorBlock->Descriptor[SmramIndex].PhysicalSize > SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].PhysicalSize) {
+                MaxSizeIndex = SmramIndex;
+              }
+            }
+          }
+
+      SmramIndex++;
+    }
+  }
+
+  if (MaxSizeIndex >= 0) {
+    //
+    // Increase the number of SMRAM descriptors by 1 to make room for the ALLOCATED descriptor of size EFI_PAGE_SIZE
+    //
+    SmramHobDescriptorBlock->NumberOfSmmReservedRegions = SmramRanges + 1;
+
+    //
+    // Copy the larget SMRAM descriptor to the end of the array
+    // 
+    CopyMem (&SmramHobDescriptorBlock->Descriptor[SmramRanges], &SmramHobDescriptorBlock->Descriptor[MaxSizeIndex], sizeof (EFI_SMRAM_DESCRIPTOR));
+
+    //
+    // Update the last entry in the array with a size of EFI_PAGE_SIZE and put into the ALLOCATED state
+    //
+    SmramHobDescriptorBlock->Descriptor[SmramRanges].PhysicalSize    = EFI_PAGE_SIZE;
+    SmramHobDescriptorBlock->Descriptor[SmramRanges].RegionState    |= EFI_ALLOCATED;
+
+    //
+    // Reduce the size of the largest SMRAM descriptor by EFI_PAGE_SIZE 
+    //
+    SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].PhysicalStart += EFI_PAGE_SIZE;
+    SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].CpuStart      += EFI_PAGE_SIZE;
+    SmramHobDescriptorBlock->Descriptor[MaxSizeIndex].PhysicalSize  -= EFI_PAGE_SIZE;
+
+    Hob.Raw = BuildGuidHob (
+                &gEfiAcpiVariableGuid,
+                sizeof (EFI_SMRAM_DESCRIPTOR)
+                );
+    ASSERT (Hob.Raw);
+    
+    CopyMem ((VOID *)Hob.Raw, &SmramHobDescriptorBlock->Descriptor[SmramRanges], sizeof (EFI_SMRAM_DESCRIPTOR));
+  }
+
+  //
+  // Turn on SMRAM, Set T_EN and G_SMRAME
+  //
+  PciOr8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_SMRAM), (UINT8)(B_MCH_MC_SMRAM_SMRAME | B_MCH_MC_SMRAM_OPEN));
+  PciOr8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_ESMRAMC), (UINT8)B_MCH_MC_ESMRAMC_T_EN);
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+  This function stores information about memory configuration errors.
+
+  @param  Event      Status or error code to be reported during Memory Initialization.
+  @param  Severity   Seriousness of error or status code.
+  @param  EventData  Data to identify where the error occurred, i.e. dimm number, row number
+  @param  MemoryLog  The memory log for storing events
+
+  @return None
+
+**/
+VOID
+LogMemoryEvent (
+  IN      EFI_STATUS_CODE_VALUE Event,
+  IN      EFI_STATUS_CODE_TYPE  Severity,
+  IN      UINT8                 EventData,
+  IN OUT  PEI_MEMORY_LOG        *MemoryLog
+  )
+{
+  switch (MemoryLog->Index) {
+  case PEI_MEMORY_LOG_MAX_INDEX:
+    //
+    // Do nothing, Log is full
+    //
+    break;
+
+  case (PEI_MEMORY_LOG_MAX_INDEX - 1):
+    //
+    // This is the last entry, so report an overflow
+    //
+    MemoryLog->Entry[MemoryLog->Index].Event    = EFI_CU_EC_NON_SPECIFIC;
+    MemoryLog->Entry[MemoryLog->Index].Severity = EFI_ERROR_MINOR;
+    MemoryLog->Entry[MemoryLog->Index].Data     = 0;
+    MemoryLog->Index++;
+    break;
+
+  default:
+    //
+    // There is room left in the log, record error
+    //
+    MemoryLog->Entry[MemoryLog->Index].Event    = Event;
+    MemoryLog->Entry[MemoryLog->Index].Severity = Severity;
+    MemoryLog->Entry[MemoryLog->Index].Data     = EventData;
+    MemoryLog->Index++;
+    break;
+  }
+
+  return ;
+}
+
+
+/**
+
+  This function parses Memory Error Log and report any errors found to the
+  Status Code PPI
+
+  @param  PeiServices    PEI Services table.
+  @param  MemoryLog      The memory log for storing events
+
+  @return  None
+
+**/
+VOID
+ReportEvents (
+  IN      EFI_PEI_SERVICES      **PeiServices,
+  IN      PEI_MEMORY_LOG        *MemoryLog
+  )
+{
+  UINT8 CurrentEntry;
+
+  for (CurrentEntry = 0; CurrentEntry < MemoryLog->Index; CurrentEntry++) {
+    REPORT_STATUS_CODE_EX (
+      MemoryLog->Entry[CurrentEntry].Severity,
+      EFI_COMPUTING_UNIT_MEMORY + MemoryLog->Entry[CurrentEntry].Event,
+      MemoryLog->Entry[CurrentEntry].Data,
+      NULL,
+      NULL,
+      NULL,
+      0
+    );
+  }
+}
+
+/**
+
+  Fix me
+
+  @param  PeiServices    PEI Services table.
+  @param  Size           The memory log for storing events
+
+  @return  None
+
+**/
+VOID
+RetriveRequiredMemorySize (
+  IN      EFI_PEI_SERVICES                  **PeiServices,
+  OUT     UINTN                             *Size
+  )
+{
+  EFI_STATUS                     Status;
+  EFI_PEI_HOB_POINTERS           Hob;
+  EFI_MEMORY_TYPE_INFORMATION    *MemoryData;
+  UINT8                          Index;
+  UINTN                          TempPageNum;
+
+  MemoryData  = NULL;
+  TempPageNum = 0;
+  Index       = 0;
+
+  Status      = PeiServicesGetHobList ((VOID **)&Hob.Raw);
+  while (!END_OF_HOB_LIST (Hob)) {
+    if (Hob.Header->HobType == EFI_HOB_TYPE_GUID_EXTENSION &&
+        CompareGuid (&Hob.Guid->Name, &gEfiMemoryTypeInformationGuid)
+          ) {
+      MemoryData = (EFI_MEMORY_TYPE_INFORMATION *) (Hob.Raw + sizeof (EFI_HOB_GENERIC_HEADER) + sizeof (EFI_GUID));
+      break;
+    }
+
+    Hob.Raw = GET_NEXT_HOB (Hob);
+  }
+  //
+  // Platform PEIM should supply such a information. Generic PEIM doesn't assume any default value
+  //
+  if (!MemoryData) {
+    return ;
+  }
+
+  while (MemoryData[Index].Type != EfiMaxMemoryType) {
+    //
+    // Accumulate default memory size requirements
+    //
+    TempPageNum += MemoryData[Index].NumberOfPages;
+    Index++;
+  }
+
+  if (TempPageNum == 0) {
+    return ;
+  }
+
+  //
+  // Two more pages are used by DXE memory manager
+  //
+  (*Size) = (TempPageNum + 4) * EFI_PAGE_SIZE;
+
+  return ;
+}
+
+/**
+
+  Describes the row information capabilities of the memory controller.
+
+  @param   RowInfo       Buffer to be filled.
+
+  @return  Rowinfo      A buffer of the size of EFI_DUAL_CHANNEL_DDR_ROW_INFO that contains the supported row
+                        configuration information of the memory controller.
+           EFI_SUCCESS  The function completed successfully.
+
+**/
+EFI_STATUS
+GetRowInfo (
+  OUT PEI_DUAL_CHANNEL_DDR_ROW_INFO                      **RowInfo
+  )
+{
+  *RowInfo = &mMcRowInfo;
+  return EFI_SUCCESS;
+}
+
+/**
+
+  This function returns the memory ranges to be enabled, along with information
+  describing how the range should be used.
+
+  @param  PeiServices   PEI Services Table.
+  @param  TimingData    Detected DDR timing parameters for installed memory.
+  @param  RowConfArray  Pointer to an array of EFI_DUAL_CHANNEL_DDR_ROW_CONFIG structures. The number
+                        of items in the array must match MaxRows returned by the McGetRowInfo() function.
+  @param  MemoryMap     Buffer to record details of the memory ranges tobe enabled.
+  @param  NumRanges     On input, this contains the maximum number of memory ranges that can be described
+                        in the MemoryMap buffer.
+
+  @return MemoryMap     The buffer will be filled in
+          NumRanges     will contain the actual number of memory ranges that are to be anabled.
+          EFI_SUCCESS   The function completed successfully.
+
+**/
+EFI_STATUS
+GetMemoryMap (
+  IN     EFI_PEI_SERVICES                                    **PeiServices,
+  IN     PEI_DUAL_CHANNEL_DDR_TIMING_DATA                    *TimingData,
+  IN OUT PEI_DUAL_CHANNEL_DDR_ROW_CONFIG                     *RowConfArray,
+  IN OUT PEI_DUAL_CHANNEL_DDR_MEMORY_MAP_RANGE               *MemoryMap,
+  IN OUT UINT8                                               *NumRanges
+  )
+{
+  BOOLEAN                           EnableSmram;
+  EFI_PHYSICAL_ADDRESS              MemorySize;
+  EFI_PHYSICAL_ADDRESS              RowLength;
+  EFI_STATUS                        Status;
+  PEI_MEMORY_RANGE_GRAPHICS_MEMORY  GraphicsMemoryMask;
+  PEI_MEMORY_RANGE_PCI_MEMORY       PciMemoryMask;
+  PEI_MEMORY_RANGE_OPTION_ROM       OptionRomMask;
+  PEI_MEMORY_RANGE_SMRAM            SmramMask;
+  PEI_MEMORY_RANGE_SMRAM            TsegMask;
+  UINT32                            BlockNum;
+  UINT8                             EsmramcRegister;
+  UINT8                             ExtendedMemoryIndex;
+  UINT8                             Index;
+
+  if ((*NumRanges) < MAX_RANGES) {
+    return EFI_BUFFER_TOO_SMALL;
+  }
+
+  *NumRanges = 0;
+
+  //
+  // Always disable the memory hole feature
+  //
+  PciAnd8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_LAC), (UINT8) ~B_MCH_MC_LAC_HEN);
+
+  //
+  // Find out which memory ranges to reserve on this platform
+  //
+  Status = ChooseRanges (
+             &OptionRomMask,
+             &SmramMask,
+             &GraphicsMemoryMask,
+             &PciMemoryMask
+             );
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Generate Memory ranges for the memory map.
+  //
+  EnableSmram = FALSE;
+  EsmramcRegister = 0;
+  MemorySize = 0;
+  for (Index = 0; Index < MAX_ROWS; Index++) {
+    RowLength = RowConfArray[Index].RowLength;
+
+    if ((MemorySize < 0xA0000) && ((MemorySize + RowLength) > 0x100000)) {
+      //
+      // Add memory below 640KB to the memory map. Make sure memory between
+      // 640KB and 1MB are reserved, even if not used for SMRAM
+      //
+      MemoryMap[*NumRanges].RowNumber       = Index;
+      MemoryMap[*NumRanges].PhysicalAddress = MemorySize;
+      MemoryMap[*NumRanges].RangeLength     = 0xA0000;
+      MemoryMap[*NumRanges].Type            = DualChannelDdrMainMemory;
+      (*NumRanges)++;
+
+      //
+      // Reserve ABSEG or HSEG SMRAM if needed
+      //
+      if (SmramMask & (PEI_MR_SMRAM_ABSEG_MASK | PEI_MR_SMRAM_HSEG_MASK)) {//PCD
+        EnableSmram = TRUE;
+        MemoryMap[*NumRanges].PhysicalAddress   = MC_ABSEG_HSEG_PHYSICAL_START;
+        MemoryMap[*NumRanges].RangeLength       = MC_ABSEG_HSEG_LENGTH;
+        if (SmramMask & PEI_MR_SMRAM_ABSEG_MASK) {
+          MemoryMap[*NumRanges].CpuAddress = MC_ABSEG_CPU_START;
+          //
+          // Compatiable SMRAM which is located below 1-MB, is always un-cached.
+          // 945 BIOS specification 9.3, page 151.
+          //
+          MemoryMap[*NumRanges].Type            = DualChannelDdrSmramNonCacheable;
+        } else {
+          MemoryMap[*NumRanges].CpuAddress = MC_HSEG_CPU_START;
+          EsmramcRegister |= B_MCH_MC_ESMRAMC_H_SMRAME;
+          //
+          // TSEG and HSEG can be used with a write-back(WB) cache policy; however,
+          // the specification requires that the TSEG and HSEG space be cached only
+          // inside of the SMI handler. when using HSEG or TSEG an IA-32 processor
+          // does not automatically write back and invalidate its cache before entering
+          // SMM or before existing SMM therefore any MTRR defined for the active TSEG
+          // or HSEG must be set to un-cacheable(UC) outside of SMM.
+          // 945 BIOS specification 9.3 page 151
+          //
+          MemoryMap[*NumRanges].Type            = DualChannelDdrSmramCacheable;
+        }
+
+        MemoryMap[*NumRanges].RowNumber       = Index;
+        (*NumRanges)++;
+
+        //
+        // Add Expand BIOS area to memory map table.
+        //
+        MemoryMap[*NumRanges].PhysicalAddress = 0xC0000;
+        MemoryMap[*NumRanges].RangeLength     = 0x40000;
+        MemoryMap[*NumRanges].Type            = DualChannelDdrReservedMemory;
+
+      } else {
+        //
+        // Mark this range reserved
+        //
+        MemoryMap[*NumRanges].PhysicalAddress = 0xA0000;
+        MemoryMap[*NumRanges].RangeLength     = 0x60000;
+        MemoryMap[*NumRanges].Type            = DualChannelDdrReservedMemory;
+      }
+
+      MemoryMap[*NumRanges].RowNumber = Index;
+      (*NumRanges)++;
+
+      RowLength -= (0x100000 - MemorySize);
+      MemorySize = 0x100000;
+    }
+
+    //
+    // Add remaining memory to the memory map
+    //
+    if ((MemorySize + RowLength) > ((UINT32) PciRead8 (R_MCH_MC_TOLUD) << (27 - 3))) {
+      RowLength = ((UINT32) PciRead8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_TOLUD)) << (27 - 3)) - MemorySize;
+    }
+
+    if (RowLength > 0) {
+      MemoryMap[*NumRanges].RowNumber       = Index;
+      MemoryMap[*NumRanges].PhysicalAddress = MemorySize;
+      MemoryMap[*NumRanges].RangeLength     = RowLength;
+      MemoryMap[*NumRanges].Type            = DualChannelDdrMainMemory;
+      (*NumRanges)++;
+      MemorySize += RowLength;
+    }
+  }
+
+  //
+  // Use the largest Range for Graphics memory since *NumRages > MAX_ROWS
+  //
+  ExtendedMemoryIndex = (UINT8)(*NumRanges - 1);
+
+  //
+  // See if we need to trim Graphics Memory out of the highest memory range.
+  //
+  if (GraphicsMemoryMask != PEI_MR_GRAPHICS_MEMORY_NONE) {
+    //
+    // Create the new range for Graphics Memory from the previous SdrDdrMainMemory range
+    //
+    MemoryMap[*NumRanges].RowNumber = MemoryMap[ExtendedMemoryIndex].RowNumber;
+
+    MemorySize -= ((GraphicsMemoryMask & PEI_MR_GRAPHICS_MEMORY_SIZE_MASK)
+                    * 512 * 1024);
+    MemoryMap[*NumRanges].PhysicalAddress = MemorySize;
+    MemoryMap[*NumRanges].CpuAddress      = MemorySize;
+    MemoryMap[*NumRanges].RangeLength     =
+      (
+        (GraphicsMemoryMask & PEI_MR_GRAPHICS_MEMORY_SIZE_MASK) * 512 * 1024
+      );
+    MemoryMap[ExtendedMemoryIndex].RangeLength -=
+      (
+        (GraphicsMemoryMask & PEI_MR_GRAPHICS_MEMORY_SIZE_MASK) * 512 * 1024
+      );
+
+    if (GraphicsMemoryMask & PEI_MR_GRAPHICS_MEMORY_CACHEABLE) {
+      MemoryMap[*NumRanges].Type = DualChannelDdrGraphicsMemoryCacheable;
+    } else {
+      MemoryMap[*NumRanges].Type = DualChannelDdrGraphicsMemoryNonCacheable;
+    }
+
+    (*NumRanges)++;
+  }
+
+  //
+  // See if we need to trim TSEG out of the highest memory range
+  //
+  if (SmramMask & PEI_MR_SMRAM_TSEG_MASK) {//pcd
+    //
+    // Create the new range for TSEG and remove that range from the previous SdrDdrMainMemory range
+    //
+    TsegMask  = (SmramMask & PEI_MR_SMRAM_SIZE_MASK);
+
+    BlockNum  = 1;
+    while (TsegMask) {
+      TsegMask >>= 1;
+      BlockNum <<= 1;
+    }
+
+    BlockNum >>= 1;
+
+    switch (BlockNum) {
+    case PEI_MR_SMRAM_SIZE_1024K_MASK:
+      EsmramcRegister |= ((V_MCH_MC_ESMRAMC_TSEG_SZ_1M << 1) | B_MCH_MC_ESMRAMC_T_EN);
+      break;
+
+    case PEI_MR_SMRAM_SIZE_2048K_MASK:
+      EsmramcRegister |= ((V_MCH_MC_ESMRAMC_TSEG_SZ_2M << 1) | B_MCH_MC_ESMRAMC_T_EN);
+      break;
+
+    case PEI_MR_SMRAM_SIZE_8192K_MASK:
+      EsmramcRegister |= ((V_MCH_MC_ESMRAMC_TSEG_SZ_8M << 1) | B_MCH_MC_ESMRAMC_T_EN);
+      break;
+
+    default:
+      //
+      // Non supported size. Set to 0.
+      //
+      BlockNum = 0;
+    }
+
+    if (BlockNum) {
+
+      EnableSmram = TRUE;
+      MemoryMap[*NumRanges].RowNumber = MemoryMap[ExtendedMemoryIndex].RowNumber;
+
+      MemorySize -= (BlockNum * 128 * 1024);
+      MemoryMap[*NumRanges].PhysicalAddress = MemorySize;
+      MemoryMap[*NumRanges].CpuAddress      = MemorySize;
+      MemoryMap[*NumRanges].RangeLength     = (BlockNum * 128 * 1024);
+      MemoryMap[ExtendedMemoryIndex].RangeLength -= (BlockNum * 128 * 1024);
+    }
+    //
+    // Chipset only supports cacheable SMRAM
+    //
+    MemoryMap[*NumRanges].Type = DualChannelDdrSmramCacheable;
+
+    (*NumRanges)++;
+  }
+  //
+  // Turn on SMRAM if required
+  //
+  if (EnableSmram) {
+    PciOr8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_SMRAM), (UINT8)B_MCH_MC_SMRAM_SMRAME);
+    PciOr8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_ESMRAMC), EsmramcRegister);
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+  Load a configuration stored in a variable.
+
+  @param  TimingData          Timing data to be loaded from NVRAM.
+  @param  RowConfArray        Row configuration information for each row in the system.
+
+  @return EFI_SUCCESS         The function completed successfully.
+          Other               Could not read variable.
+
+**/
+EFI_STATUS
+LoadConfig (
+  IN      EFI_PEI_SERVICES                        **PeiServices,
+  IN      EFI_PEI_READ_ONLY_VARIABLE2_PPI         *VariableServices,
+  IN OUT  UINT8                                   *DimmSockets,
+  IN OUT  PEI_DUAL_CHANNEL_DDR_TIMING_DATA        *TimingData,
+  IN OUT  PEI_DUAL_CHANNEL_DDR_ROW_CONFIG         *RowConfArray
+  )
+{
+
+  EFI_STATUS                             Status;
+  EFI_MEMINIT_CONFIG_DATA                ConfigData;
+  UINTN                                  BufferSize;
+//  EFI_MEMINIT_CONFIG_DATA            *ConfigData;
+  BufferSize = sizeof (ConfigData);
+
+  Status = VariableServices->GetVariable (
+                               VariableServices,
+                               EFI_MEMORY_CONFIG_DATA_NAME,
+                               &gEfiMemoryConfigDataGuid,
+                               NULL,
+                               &BufferSize,
+                               &ConfigData
+                               );
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  *DimmSockets            = (UINT8)(ConfigData.RowInfo.MaxRows / MAX_SIDES);
+
+  //
+  // Copy Timing data from NVRAM
+  //
+  CopyMem (
+    TimingData,
+    &ConfigData.TimingData,
+    sizeof (PEI_DUAL_CHANNEL_DDR_TIMING_DATA)
+    );
+  CopyMem (
+    RowConfArray,
+    ConfigData.RowConfArray,
+    sizeof (PEI_DUAL_CHANNEL_DDR_ROW_CONFIG) * ConfigData.RowInfo.MaxRows
+    );
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+Routine Description:
+
+  This function reads SPD information from a DIMM.
+
+Arguments:
+
+  Dimm          DIMM to read from
+  Offset        Offset in DIMM
+  Count         Number of bytes
+  Buffer        Return buffer
+
+Returns:
+
+  EFI_SUCCESS              The function completed successfully.
+  EFI_DEVICE_ERROR         The DIMM being accessed reported a device error,
+                           does not have an SPD module, or is not installed in the system.
+  EFI_TIMEOUT              Time out trying to read the SPD module.
+  EFI_INVALID_PARAMETER    A parameter was outside the legal limits.
+
+**/
+EFI_STATUS
+ReadDimmSpd(
+  IN      UINT8                 Dimm,
+  IN      UINT8                 Offset,
+  IN      UINTN                 Count,
+  IN OUT  UINT8                 *Buffer
+  )
+{
+  EFI_STATUS                Status;
+  UINTN                     Index;
+  UINTN                     SmbusLibAddress;
+  EFI_SMBUS_DEVICE_ADDRESS  SlaveAddress;
+  EFI_SMBUS_DEVICE_COMMAND  Command;
+
+  switch (Dimm) {
+
+  case 0:
+    SlaveAddress.SmbusDeviceAddress = PcdGet8(PcdSmbusADDRCHA1) >> 1;
+    break;
+
+  case 1:
+    SlaveAddress.SmbusDeviceAddress = PcdGet8(PcdSmbusADDRCHA2) >> 1;
+    break;
+
+  case 2:
+    SlaveAddress.SmbusDeviceAddress = PcdGet8(PcdSmbusADDRCHB1) >> 1;
+    break;
+
+  case 3:
+    SlaveAddress.SmbusDeviceAddress = PcdGet8(PcdSmbusADDRCHB2) >> 1;
+    break;
+
+  default:
+    return EFI_INVALID_PARAMETER;
+  };
+
+  for (Index = 0; Index < Count; Index++) {
+    Command = Offset + Index;
+    SmbusLibAddress = SMBUS_LIB_ADDRESS (
+                        SlaveAddress.SmbusDeviceAddress,
+                        Command,
+                        0,
+                        FALSE
+                        );
+    Buffer[Index] = SmBusReadDataByte (SmbusLibAddress, &Status);
+    if (EFI_ERROR(Status)) {
+      return Status;
+    }
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+Routine Description:
+
+  This function reads SPD data and determines which slots are populated.
+
+Arguments:
+
+  SpdData:        Pointer to an array for storing SPD for each socket.
+
+Returns:
+
+  EFI_SUCCESS:          The function completed successfully.
+  EFI_BUFFER_TOO_SMALL: Then number of SpdData entries is too small for the
+                        number of sockets supported by the platform
+
+**/
+EFI_STATUS
+GetSpdData (
+  IN OUT  MEMINIT_SPD_DATA      *SpdData
+  )
+{
+  EFI_STATUS              Status;
+  UINT8                   CurrentDimmSocket;
+  UINT8                   SpdByte;
+
+  //
+  // Examine each socket
+  //
+  for (CurrentDimmSocket = 0; CurrentDimmSocket < PcdGet8(PcdDimmSockets); CurrentDimmSocket++) {
+    //
+    // Collect the 1st 44 bytes
+    //
+    Status = ReadDimmSpd (
+               (UINT8) (CurrentDimmSocket),
+               0,
+               44,
+               SpdData[CurrentDimmSocket].Buffer
+               );
+    if (EFI_ERROR (Status)) {
+      SpdData[CurrentDimmSocket].SpdPresent = FALSE;
+    } else {
+      SpdData[CurrentDimmSocket].SpdPresent = TRUE;
+      for (SpdByte = 0; SpdByte < 44; SpdByte++) {
+        DEBUG ((EFI_D_INFO, "Dimm %d SPD Byte %d = 0x%x.\n",
+                (CurrentDimmSocket), SpdByte, SpdData[CurrentDimmSocket].Buffer[SpdByte]));
+      }
+    }
+    //
+    // Determine if we want the DIMM be disabled based on Platform policy or setup
+    //
+
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+
+Routine Description:
+
+  Fill in bit masks to specify reserved memory ranges on the Lakeport platform
+
+Arguments:
+
+Returns:
+
+  OptionRomMask - Bit mask specifying memory regions reserved for Legacy option
+                  ROM use (if any)
+
+  SmramMask - Bit mask specifying memory regions reserved for SMM use (if any)
+
+**/
+EFI_STATUS
+ChooseRanges (
+  IN OUT   PEI_MEMORY_RANGE_OPTION_ROM           *OptionRomMask,
+  IN OUT   PEI_MEMORY_RANGE_SMRAM                *SmramMask,
+  IN OUT   PEI_MEMORY_RANGE_SMRAM                *GraphicsMemoryMask,
+  IN OUT   PEI_MEMORY_RANGE_PCI_MEMORY           *PciMemoryMask
+  )
+{
+  UINT8                 GraphicsControlRegister;
+
+  //
+  // Choose regions to reserve for Option ROM use
+  //
+  *OptionRomMask = PEI_MR_OPTION_ROM_NONE;
+
+  //
+  // Choose regions to reserve for SMM use (AB/H SEG and TSEG)
+  //   PEI_MR_SMRAM_ABSEG_128K_NOCACHE
+  //   PEI_MR_SMRAM_HSEG_128K_CACHE
+  //   PEI_MR_SMRAM_HSEG_128K_NOCACHE
+  //   PEI_MR_SMRAM_TSEG_512K_CACHE
+  //   PEI_MR_SMRAM_TSEG_512K_NOCACHE
+  //   PEI_MR_SMRAM_TSEG_1024K_CACHE
+  //   PEI_MR_SMRAM_TSEG_1024K_NOCACHE
+  //
+  *SmramMask = PEI_MR_SMRAM_NONE | PEI_MR_SMRAM_ABSEG_128K_NOCACHE | PEI_MR_SMRAM_TSEG_8192K_CACHE;
+  // Andrew/Ken use PCD in SmramMask check with PCD doc
+
+  //
+  // If HSEG is selected, build ResourceDescriptorHob
+  //
+
+  if(*SmramMask & PEI_MR_SMRAM_HSEG_MASK) {
+    BuildResourceDescriptorHob  (
+      EFI_RESOURCE_FIRMWARE_DEVICE,
+      (EFI_RESOURCE_ATTRIBUTE_PRESENT    |
+      EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+      EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE),
+      0xFEDA0000,
+      0x20000
+      );
+  }
+
+  //
+  // Choose regions to reserve for Graphics Memory use
+  // Choose one or none of the following:
+  //   PEI_MR_GRAPHICS_MEMORY_1M_NOCACHE    0x00000001
+  //   PEI_MR_GRAPHICS_MEMORY_4M_NOCACHE    0x00000004
+  //   PEI_MR_GRAPHICS_MEMORY_8M_NOCACHE    0x00000008
+  //   PEI_MR_GRAPHICS_MEMORY_16M_NOCACHE   0x00000010
+  //   PEI_MR_GRAPHICS_MEMORY_32M_NOCACHE   0x00000020
+  //
+  GraphicsControlRegister = PciRead8 (PCI_MCH_MC_ADDRESS (R_MCH_MC_GGC));
+
+  if ((GraphicsControlRegister & B_MCH_MC_GGC_IVD) == 0) {
+    switch (GraphicsControlRegister & B_MCH_MC_GGC_GMS) {
+
+    case B_MCH_MC_GGC_GMS_64MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_64M_NOCACHE;
+      break;
+
+    case B_MCH_MC_GGC_GMS_48MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_48M_NOCACHE;
+      break;
+
+    case B_MCH_MC_GGC_GMS_32MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_32M_NOCACHE;
+      break;
+
+    case B_MCH_MC_GGC_GMS_16MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_16M_NOCACHE;
+      break;
+
+    case B_MCH_MC_GGC_GMS_8MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_8M_NOCACHE;
+      break;
+
+    case B_MCH_MC_GGC_GMS_4MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_4M_NOCACHE;
+      break;
+
+    case B_MCH_MC_GGC_GMS_1MB:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_1M_NOCACHE;
+      break;
+
+    default:
+      *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_NONE;
+      break;
+    };
+  } else {
+    *GraphicsMemoryMask = PEI_MR_GRAPHICS_MEMORY_NONE;
+  }
+
+  *PciMemoryMask = 0;
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+GetPlatformMemorySize (
+  IN       EFI_PEI_SERVICES                       **PeiServices,
+  IN       EFI_BOOT_MODE                          BootMode,
+  IN OUT   UINT64                                 *MemorySize
+  )
+{
+  EFI_STATUS                            Status;
+  EFI_PEI_READ_ONLY_VARIABLE2_PPI       *Variable;
+  UINTN                                 DataSize;
+  EFI_MEMORY_TYPE_INFORMATION           MemoryData [EfiMaxMemoryType + 1];
+  UINTN                                 Index;
+
+  if (BootMode == BOOT_IN_RECOVERY_MODE) {
+    *MemorySize = PEI_RECOVERY_MIN_MEMORY_SIZE;
+
+    for (Index = 0; Index < sizeof(mDefault945GMemoryTypeInformation) / sizeof (EFI_MEMORY_TYPE_INFORMATION); Index++) {
+        *MemorySize += mDefault945GMemoryTypeInformation[Index].NumberOfPages * EFI_PAGE_SIZE;
+    }
+
+    //
+    // Build the GUID'd HOB for DXE
+    //
+//    BuildGuidDataHob (
+//      &gEfiMemoryTypeInformationGuid,
+//      mDefault945GMemoryTypeInformation,
+//      sizeof(mDefault945GMemoryTypeInformation)
+//      );
+
+    return EFI_SUCCESS;
+  }
+
+  Status = PeiServicesLocatePpi (
+             &gEfiPeiReadOnlyVariable2PpiGuid,
+             0,
+             NULL,
+             (VOID **)&Variable
+             );
+
+  ASSERT_EFI_ERROR (Status);
+
+  DataSize = sizeof (MemoryData);
+
+  Status = Variable->GetVariable (
+                       Variable,
+                       EFI_MEMORY_TYPE_INFORMATION_VARIABLE_NAME,
+                       &gEfiMemoryTypeInformationGuid,
+                       NULL,
+                       &DataSize,
+                       &MemoryData
+                       );
+
+  //
+  // Accumulate maximum amount of memory needed
+  //
+  if (EFI_ERROR (Status)) {
+    //
+    // Start with minimum memory
+    //
+    *MemorySize = PEI_MIN_MEMORY_SIZE;
+
+    for (Index = 0; Index < sizeof(mDefault945GMemoryTypeInformation) / sizeof (EFI_MEMORY_TYPE_INFORMATION); Index++) {
+        *MemorySize += mDefault945GMemoryTypeInformation[Index].NumberOfPages * EFI_PAGE_SIZE;
+    }
+    //
+    // Build the GUID'd HOB for DXE
+    //
+//    BuildGuidDataHob (
+//      &gEfiMemoryTypeInformationGuid,
+//      mDefault945GMemoryTypeInformation,
+//      sizeof(mDefault945GMemoryTypeInformation)
+//      );
+  } else {
+    //
+    // Start with at least PEI_MIN_MEMORY_SIZE pages of memory for the DXE Core and the DXE Stack
+    //
+
+    *MemorySize = PEI_MIN_MEMORY_SIZE;
+    for (Index = 0; Index < DataSize / sizeof (EFI_MEMORY_TYPE_INFORMATION); Index++) {
+      DEBUG ((EFI_D_INFO, "Index %d, Page: %d\n", Index, MemoryData[Index].NumberOfPages));
+      *MemorySize += MemoryData[Index].NumberOfPages * EFI_PAGE_SIZE;
+    }
+
+    //
+    // Build the GUID'd HOB for DXE
+    //
+//    BuildGuidDataHob (
+//      &gEfiMemoryTypeInformationGuid,
+//      MemoryData,
+//      DataSize
+//      );
+  }
+
+  return EFI_SUCCESS;
+}

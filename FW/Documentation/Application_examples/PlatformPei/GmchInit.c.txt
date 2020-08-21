@@ -1,0 +1,143 @@
+/*++
+  This file contains an 'Intel Pre-EFI Module' and is licensed  
+  for Intel CPUs and Chipsets under the terms of your license   
+  agreement with Intel or your vendor.  This file may be        
+  modified by the user, subject to additional terms of the      
+  license agreement                                             
+--*/
+/** @file
+  GMCH Init.
+
+Copyright (c) 1999 - 2006 Intel Corporation.<BR>
+All rights reserved.  This software and associated documentation
+(if any) is furnished under a license and may only be used or
+copied in accordance with the terms of the license.  Except as
+permitted by such license, no part of this software or
+documentation may be reproduced, stored in a retrieval system, or transmitted 
+in any form or by any means without the express written consent of Intel Corporation.
+
+**/
+
+
+#include "CommonHeader.h"
+
+/**
+  Detect video adapter to decide DVMT allocation
+  PcdPrimaryVideoAdapter is used to determine the policy 
+    0 - Auto, Disable Internal if PCIE or PCI is present
+    1 - Internal Graphics, Disable PEG
+    2 - PCI, Disable Internal if PCI is present
+    3 - PCIE, Disable Internal if PCIE is present
+  The function will ASSERT or hard reset when fail.
+**/
+VOID
+GraphicsInit (
+  IN EFI_PEI_SERVICES          **PeiServices
+  )
+{
+  BOOLEAN                              PegPresent;
+  BOOLEAN                              PciPresent;
+  UINT8                                PrimaryVideoAdapter;
+  UINT8                                PcigSlotNumber;
+  EFI_BOOT_MODE                        BootMode;
+  EFI_STATUS                           Status;
+  EFI_VIDEO_ADAPTER_PRESENCE           NormalBootVideoAdaptyerPresence;
+  UINTN                                VarSize;
+  EFI_PEI_READ_ONLY_VARIABLE2_PPI      *VariableServices;  
+
+  Status = PeiServicesGetBootMode (&BootMode);
+  ASSERT_EFI_ERROR (Status);
+  
+  PegPresent          = FALSE;
+  PciPresent          = FALSE;
+  PcigSlotNumber      = 255;
+
+  if (!GmchIsAdd2CardInstalled()) {
+    DEBUG((EFI_D_INFO, "No ADD2 card\n"));
+  
+    GmchDisableIgdFunction1();   
+    DEBUG((EFI_D_INFO, "IGD Function 1 disabled\n"));
+
+    if (BootMode == BOOT_ON_S3_RESUME) {
+      Status = PeiServicesLocatePpi (
+                 &gEfiPeiReadOnlyVariable2PpiGuid,
+                 0,
+                 NULL,
+                 (VOID **)&VariableServices
+                 );
+      ASSERT_EFI_ERROR (Status);
+      
+      VarSize = sizeof (EFI_VIDEO_ADAPTER_PRESENCE);
+      Status = VariableServices->GetVariable (
+                                   VariableServices,
+                                   L"VideoAdapterPresence",
+                                   &gEfiVideoAdapterPresenceGuid,
+                                   NULL,
+                                   &VarSize,
+                                   &NormalBootVideoAdaptyerPresence
+                                   );      
+      ASSERT_EFI_ERROR (Status); 
+
+      PegPresent = (BOOLEAN) (NormalBootVideoAdaptyerPresence.PegPresent);      
+      PciPresent = (BOOLEAN) (NormalBootVideoAdaptyerPresence.PciVideoAdapterPresent);
+
+      DEBUG((EFI_D_INFO, "S3 PegPresent = %x\n", PegPresent));
+      DEBUG((EFI_D_INFO, "S3 PciPresent = %x\n", PciPresent));
+
+    } else {
+      DEBUG((EFI_D_INFO, "No ADD2 card\n"));
+    
+      GmchDisableIgdFunction1();   
+      DEBUG((EFI_D_INFO, "IGD Function 1 disabled\n"));
+
+      PegPresent = GmchIsOffboardPegInstalled ();
+      DEBUG((EFI_D_INFO, "Normal boot PegPresent = %x\n", PegPresent));
+      
+      PciPresent = IchIsOffboardPciInstalled(&PcigSlotNumber);
+      DEBUG((EFI_D_INFO, "Nornmal boot PciPresent = %x\n", PciPresent));  
+
+      NormalBootVideoAdaptyerPresence.PegPresent = PegPresent;
+      NormalBootVideoAdaptyerPresence.PciVideoAdapterPresent = PciPresent;
+
+      BuildGuidDataHob (
+        &gEfiVideoAdapterPresenceGuid,
+        &NormalBootVideoAdaptyerPresence,
+        sizeof (EFI_VIDEO_ADAPTER_PRESENCE)
+        );      
+    }
+  }
+
+  PrimaryVideoAdapter = PcdGet8 (PcdPrimaryVideoAdapter);
+  DEBUG((EFI_D_INFO, "PcdPrimaryVideoAdapter = %x\n", PrimaryVideoAdapter));
+
+  DEBUG((EFI_D_INFO, 
+    "PcdDisableOnboardVideo = %x \n", 
+    FeaturePcdGet (PcdDisableOnboardVideo)
+    ));
+
+  if (FeaturePcdGet (PcdDisableOnboardVideo)) {
+    //
+    // If we always want to disable internal graphic, do it here
+    //
+    GmchDisableIgd();
+    DEBUG((EFI_D_INFO, "Onboard Video disabled\n"));
+  } else { 
+    if (((PrimaryVideoAdapter == 3) || (PrimaryVideoAdapter == 0)) && PegPresent) {
+      GmchDisableIgd();
+      DEBUG ((EFI_D_INFO, "PEG found, IGD disabled\n"));
+    } else if (((PrimaryVideoAdapter == 2) || (PrimaryVideoAdapter == 0)) && PciPresent) {
+      IchEnablePcig (PcigSlotNumber);
+      GmchDisableIgd ();
+      DEBUG ((EFI_D_INFO, "PCIG enabled, IGD disabled\n"));
+    } else {
+      GmchEnableIgd ();       
+      DEBUG ((EFI_D_INFO, "IGD enabled\n"));
+    }
+  }
+
+  if (PegPresent && ((PrimaryVideoAdapter == 1) || ( PrimaryVideoAdapter == 2))) {
+    //Disable PEG
+    GmchDisablePeg ();
+    DEBUG ((EFI_D_INFO, "PEG disabled\n"));
+  }
+}

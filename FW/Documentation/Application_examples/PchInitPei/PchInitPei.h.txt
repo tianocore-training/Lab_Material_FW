@@ -1,0 +1,296 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and uniquely
+  identified as "Intel Mobile Silicon Support Module" and is
+  licensed for Intel Mobile CPUs and chipsets under the terms of your
+  license agreement with Intel or your vendor.  This file may
+  be modified by the user, subject to additional terms of the
+  license agreement
+--*/
+/*++
+
+Copyright (c) 2004 - 2011, Intel Corporation. All rights reserved.<BR>
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+Module Name:
+
+  PchInitPeim.h
+
+Abstract:
+
+  Header file for the PCH Init PEIM
+
+--*/
+#ifndef _PCH_INIT_PEIM_H_
+#define _PCH_INIT_PEIM_H_
+
+#include <Base.h>
+#include <PchAccess.h>
+
+#include <Ppi/PchInit.h>
+#include <Ppi/MasterBootMode.h>
+#include <Ppi/MemoryDiscovered.h>
+
+#include <Library/IoLib.h>
+#include <Library/HobLib.h>
+#include <Library/PciLib.h>
+#include <Library/DebugLib.h>
+#include <Library/IoComplexLib.h>
+#include <Library/PeiServicesLib.h>
+#include <Library/UsbCommonLib.h>
+
+#define CPUID_FULL_FAMILY_MODEL             0x0FFF0FF0
+#define CPUID_FULL_FAMILY_MODEL_STEPPING    0x0FFF0FFF
+#define CPUID_FULL_FAMILY_MODEL_DALES       0x000106F0  // Auburndale and Heavendale
+#define CPUID_FULL_FAMILY_MODEL_FIELDS      0x000106E0  // Clarksfield and Lynnfield
+#define CPUID_FULL_FAMILY_MODEL_DALES_32NM  0x00020650  // Arrandale and Clarksdale
+
+
+/**
+  This function performs basic initialization for PCH in PEI phase.
+
+  ** This function must be called once for EACH PCH device on the platform with BusNumber indicating
+     the PCI Bus where the PCH device is located
+
+  If any of the OPTIONAL base address arguments is zero, this function will disable the corresponding
+  decoding, otherwise this function will enable the decoding.
+
+  This function locks down the PMBase.
+
+  @param BusNumber    The PCI Bus Number of this PCH device
+
+  @retval EFI_SUCCESS             Succeeds.
+  @retval EFI_INVALID_PARAMETER   Argument is not valid
+  @retval EFI_DEVICE_ERROR        Device error, aborts abnormally.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchInitialize (
+  IN  UINT8                       BusNumber
+  );
+
+
+/**
+  This function may trigger platform reset depending on the current GbE status,
+  the intended GbE enabling, and current ME status. (When ME is enabled, this function
+  may trigger a Global reset.)
+
+  This function may not return if it triggers an platform reset and the BIOS boot flow
+  restarts.
+
+  ** Platform code calling this function must ensure the platform is in a
+  state ready for the (global) reset action to be taken within this function.
+
+  If this function returns EFI_SUCCESS it indicates there is no need for platform
+  reset in this boot, and boot flow continues.
+
+  If this function returns EFI_DEVICE_ERROR, something error happens.
+
+  @param BusNumber      The PCI Bus Number of this PCH instance
+  @param EnableGbe      Intended GbE enabling action in this boot.
+                          TRUE  - GbE is to be enabled;
+                          FALSE - GbE is to be disabled;
+  @param MeStatus       Current ME status:
+                          TRUE  - ME is enabled
+                          FALSE - ME is disabled
+
+  @retval Resets            Will not return if platform reset action is taken.
+  @retval EFI_SUCCESS       No platform reset action is taken. System can continue boot flow.
+  @retval EFI_DEVICE_ERROR  Device error, aborts abnormally.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchGbeMandatedReset (
+  IN  UINT8                       BusNumber,
+  IN  BOOLEAN                     EnableGbe,
+  IN  BOOLEAN                     MeStatus
+  );
+
+
+/**
+
+  Internal function performing PCH init needed in PEI phase right after memory installed
+
+  @param PeiServices       General purpose services available to every PEIM.
+  @param NotifyDescriptor  The notification structure this PEIM registered on install.
+  @param Ppi               The memory discovered PPI.  Not used.
+
+  @retval EFI_SUCCESS      The function completed successfully.
+
+**/
+EFI_STATUS
+EFIAPI
+PchInitAfterMemInstall (
+  IN EFI_PEI_SERVICES             **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR    *NotifyDescriptor,
+  IN VOID                         *Ppi
+  );
+
+/**
+
+  Internal function performing initialization of the USB controller on S3 resume
+  or recovery.  This will make sure the USB settings are correct.
+
+  @param PeiServices       General purpose services available to every PEIM.
+  @param NotifyDescriptor  The notification structure this PEIM registered on install.
+  @param Ppi               The memory discovered PPI.  Not used.
+
+  @retval EFI_SUCCESS      The function completed successfully.
+
+**/
+EFI_STATUS
+EFIAPI
+PchInitUsb (
+  IN EFI_PEI_SERVICES             **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR    *NotifyDescriptor,
+  IN VOID                         *Ppi
+  );
+
+/**
+  Internal function performing SATA init needed in PEI phase
+
+  @retval EFI_SUCCESS The function completed successfully.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchSataInit (
+  VOID
+  );
+
+/**
+  Clears the wake/smi status and event enable bits based on the input parameters.
+
+  @param ClearStatus  Flag used to determine if the status should be cleared.
+  @param ClearEnables Flag used to determine if the enable flags should be cleared.
+
+  @retval EFI_SUCCESS
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchClearEvents (
+  IN  BOOLEAN   ClearStatus,
+  IN  BOOLEAN   ClearEnables
+  );
+
+/**
+  Reads the chassis intrusion status bit in the PCH and returns the current
+  value.  The status can also be cleared if needed by setting the Clear parameter
+  to TURE.
+
+  @param Clear        Determines if the Chassis Intrusion status should be
+                      cleared on exit.
+
+  @retval Intrusion   Returns the logical value of the Chassis Intrusion flag.
+
+**/
+BOOLEAN
+EFIAPI
+PeiPchGetIntrusionStatus (
+  IN  BOOLEAN     Clear
+  );
+
+/**
+  Determines the sleep state that the system was in prior to the current boot.
+  This will map some states to S5 if the system was in S1/S3 and a forced power
+  event is detected.
+
+  @param Clear  Clears the sleep state register once the sleep state information
+                has been obtained.
+
+  @retval PCH_S0  State has been read and cleared or a reset has occured.
+  @retval PCH_S1  System has come out of S1.
+  @retval PCH_S3  System has come out of S3.
+  @retval PCH_S4  System has come out of S4.
+  @retval PCH_S5  System has come out of S5 or was in S1/S3 and a power override
+                  event has occured.
+**/
+PCH_SLEEP_STATE_VAL
+EFIAPI
+PeiPchGetLastSleepState (
+  IN  BOOLEAN   Clear
+  );
+
+/**
+  Enables programming of PCH GPIO usage information during POST.  The individual
+  fields correspond directly to the registers in the PCH.  Bank = 1 refers to
+  GPIO_USE_SEL and associated fields.
+
+  @param Bank       Determines the GPIO bank to program.  Values 1 - 3 are valid.
+  @param UseSelect  Used to select Native or GPIO functionality.
+  @param IoSelect   Determines if the signal is an input or output.
+  @param Blink      Enables blink functionality for the given outputs.
+  @param Invert     Determines if the signal should be inverted when sent to GPE
+                    logic.
+**/
+EFI_STATUS
+EFIAPI
+PeiPchSetGpioConfig (
+  IN  UINT8   Bank,
+  IN  UINT32  UseSelect,
+  IN  UINT32  IoSelect,
+  IN  UINT32  Blink,
+  IN  UINT32  Invert
+  );
+
+/**
+  Reads the current status of the GPIO Level registers and returns the values
+  to the caller.
+
+  @param *GpLvl1  Values from GPIO Level register 1.
+  @param *GpLvl2  Values from GPIO Level register 2.
+  @param *GpLvl3  Values from GPIO Level register 3.
+
+  @retval EFI_SUCCESS Values read from the GPIO level register.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchGetGpioLevels (
+  OUT UINT32  *GpLvl1,
+  OUT UINT32  *GpLvl2,
+  OUT UINT32  *GpLvl3
+  );
+
+/**
+  Sets the current status of the GPIO Level registers.
+
+  @param GpLvl1   Values to be set in GPIO Level register 1.
+  @param GpLvl2   Values to be set in GPIO Level register 2.
+  @param GpLvl3   Values to be set in GPIO Level register 3.
+
+  @retval EFI_SUCCESS Values written to the GPIO level register.
+
+**/
+EFI_STATUS
+EFIAPI
+PeiPchSetGpioLevels (
+  IN  UINT32  *GpLvl1,
+  IN  UINT32  *GpLvl2,
+  IN  UINT32  *GpLvl3
+  );
+
+/**
+  Determines if a power failure has been detected by the PCH.
+
+  @param Clear    Determines if the state of the power failure status should be
+                  cleared.  Set to TRUE to clear the status bit(s).
+
+  @retval TRUE    A power failure was detected.
+  @retval FALSE   No power failure was detected.
+**/
+BOOLEAN
+EFIAPI
+PeiPchGetPowerFailureState (
+  IN  BOOLEAN   Clear
+  );
+
+#endif

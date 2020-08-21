@@ -1,0 +1,4 @@
+# note: BMP only supported but plans for jpg and png
+Copy the *.BMP file to MdeModulePkg/Logo
+Rename to Logo.bmp
+Build

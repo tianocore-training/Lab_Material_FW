@@ -1,0 +1,308 @@
+/*++
+  This file contains an 'Intel Pre-EFI Module' and is licensed  
+  for Intel CPUs and Chipsets under the terms of your license   
+  agreement with Intel or your vendor.  This file may be        
+  modified by the user, subject to additional terms of the      
+  license agreement                                             
+--*/
+/** @file
+  This file includes a memory call back function notified when MRC is done,
+  following action is performed in this file,
+    1. ICH initialization after MRC.
+    2. SIO initialization.
+    3. Install ResetSystem and FinvFv PPI.
+    4. Set MTRR for PEI
+    5. Create FV HOB and Flash HOB
+
+Copyright (c) 1999 - 2010, Intel Corporation.<BR>
+All rights reserved.  This software and associated documentation
+(if any) is furnished under a license and may only be used or
+copied in accordance with the terms of the license.  Except as
+permitted by such license, no part of this software or
+documentation may be reproduced, stored in a retrieval system, or transmitted
+in any form or by any means without the express written consent of Intel Corporation.
+
+**/
+
+
+#include "CommonHeader.h"
+
+#include "Platform.h"
+#include "SioInit.h"
+
+extern EFI_PEI_PPI_DESCRIPTOR mPpiStall[];
+
+STATIC EFI_PEI_RESET_PPI mResetPpi = { ResetSystem };
+
+STATIC EFI_PEI_PPI_DESCRIPTOR mPpiList[1] = {
+  {
+    (EFI_PEI_PPI_DESCRIPTOR_PPI | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
+    &gEfiPeiResetPpiGuid,
+    &mResetPpi
+  }
+};
+
+
+/**
+  This function reset the entire platform, including all processor and devices, and
+  reboots the system.
+
+  @param  PeiServices General purpose services available to every PEIM.
+
+  @retval EFI_SUCCESS if it completed successfully.
+**/
+EFI_STATUS
+EFIAPI
+ResetSystem (
+  IN CONST EFI_PEI_SERVICES          **PeiServices
+  )
+{
+  ResetCold();
+  return EFI_SUCCESS;
+}
+
+/**
+  This function provides a blocking stall for reset at least the given number of microseconds
+  stipulated in the final argument.
+
+  @param  PeiServices General purpose services available to every PEIM.
+
+  @param  this Pointer to the local data for the interface.
+
+  @param  Microseconds number of microseconds for which to stall.
+
+  @retval EFI_SUCCESS the function provided at least the required stall.
+**/
+EFI_STATUS
+EFIAPI
+Stall (
+  IN CONST EFI_PEI_SERVICES   **PeiServices,
+  IN CONST EFI_PEI_STALL_PPI  *This,
+  IN UINTN                    Microseconds
+  )
+{
+  MicroSecondDelay (Microseconds);
+  return EFI_SUCCESS;
+}
+
+
+/**
+  This function will be called when MRC is done.
+
+  @param  PeiServices General purpose services available to every PEIM.
+
+  @param  NotifyDescriptor Information about the notify event..
+
+  @param  Ppi The notify context.
+
+  @retval EFI_SUCCESS If the function completed successfully.
+**/
+EFI_STATUS
+EFIAPI
+MemoryDiscoveredPpiNotifyCallback (
+  IN EFI_PEI_SERVICES           **PeiServices,
+  IN EFI_PEI_NOTIFY_DESCRIPTOR  *NotifyDescriptor,
+  IN VOID                       *Ppi
+  )
+{
+  EFI_STATUS                            Status;
+  EFI_BOOT_MODE                         BootMode;
+  EFI_PEI_HOB_POINTERS                  Hob;
+  UINT64                                MemoryLength;
+  UINT64                                MemoryLengthUc;
+  UINT64                                MaxMemoryLength;
+  UINT64                                MemOverflow;
+  MTRR_SETTINGS                         ZeroMtrr;
+  
+  DEBUG ((EFI_D_INFO, "Platform PEIM Memory Callback\n"));
+
+  PERF_START (NULL, "SetCache", NULL, 0);
+
+  //
+  // Calculate total memory
+  // Set to 1 MB. Since 1MB cacheability will always be set
+  // until override by CSM
+  //
+
+  MemoryLength = 0x100000;
+
+  Status = PeiServicesGetHobList ((VOID **) &Hob.Raw);
+  ASSERT_EFI_ERROR (Status);
+
+  while (!END_OF_HOB_LIST (Hob)) {
+    if (Hob.Header->HobType == EFI_HOB_TYPE_RESOURCE_DESCRIPTOR) {
+      if (Hob.ResourceDescriptor->ResourceType == EFI_RESOURCE_SYSTEM_MEMORY) {
+        //
+        // Skip the memory region below 1MB
+        //
+        if (Hob.ResourceDescriptor->PhysicalStart >= 0x100000) {
+          MemoryLength += (UINT64) (Hob.ResourceDescriptor->ResourceLength);
+        }
+      }
+    }
+    Hob.Raw = GET_NEXT_HOB (Hob);
+  }
+
+  //
+  // Check if a UC region is present
+  //
+  MaxMemoryLength = MemoryLength;
+  // Round up to nearest 256MB
+  MemOverflow = (MemoryLength & 0x0fffffff);
+  if (MemOverflow != 0) {
+    MaxMemoryLength = MemoryLength + (0x10000000 - MemOverflow);
+  }
+
+
+  Status = PeiServicesGetBootMode (&BootMode);
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Clear the CAR Settings
+  //
+  PERF_START (NULL, "SetCX", NULL, 0);    
+ 
+  //
+  // reset all Mtrrs to 0 include fixed MTRR and variable MTRR
+  //
+  ZeroMem (&ZeroMtrr, sizeof(MTRR_SETTINGS));
+  MtrrSetAllMtrrs(&ZeroMtrr);
+  
+  PERF_END (NULL, "SetCX", NULL, 0);
+  
+  //
+  // Cache the flash area to improve the boot performance for
+  // both normal boot and S3
+  //
+
+  PERF_START (NULL, "SetCX", NULL, 0);    
+  Status = MtrrSetMemoryAttribute (PcdGet32 (PcdFlashAreaBaseAddress), PcdGet32 (PcdFlashAreaSize), CacheWriteProtected);
+  ASSERT_EFI_ERROR (Status);
+  PERF_END (NULL, "SetCX", NULL, 0);
+
+  if (BootMode != BOOT_ON_S3_RESUME) {
+
+    //
+    // We only Set the cache attribute for Normal Boot.
+    // For S3 boot path, these MTRR settings are save to memory by CPU Driver during normal boot path
+    // and restore by CpuS3 PEIM in S3 boot path
+    
+    //
+    // Set the memory range as WB
+    //
+    PERF_START (NULL, "SetCX", NULL, 0);    
+    Status = MtrrSetMemoryAttribute (0x100000, MaxMemoryLength - 0x100000, CacheWriteBack);
+    ASSERT_EFI_ERROR (Status);
+    PERF_END (NULL, "SetCX", NULL, 0);
+
+    PERF_START (NULL, "SetCX", NULL, 0);
+    Status = MtrrSetMemoryAttribute (0x00000, 0xA0000, CacheWriteBack);
+    ASSERT_EFI_ERROR (Status);
+    PERF_END (NULL, "SetCX", NULL, 0);
+
+    PERF_START (NULL, "SetCX", NULL, 0);    
+    Status = MtrrSetMemoryAttribute (0xC0000, 0x40000, CacheWriteProtected);
+    ASSERT_EFI_ERROR (Status);
+    PERF_END (NULL, "SetCX", NULL, 0);
+
+    while (MaxMemoryLength != MemoryLength) {
+      MemoryLengthUc = GetPowerOfTwo64 (MaxMemoryLength - MemoryLength);
+
+      PERF_START (NULL, "SetCX", NULL, 0);    
+      Status = MtrrSetMemoryAttribute (MaxMemoryLength - MemoryLengthUc, MemoryLengthUc, CacheUncacheable);
+      ASSERT_EFI_ERROR (Status);
+      PERF_END (NULL, "SetCX", NULL, 0);
+      MaxMemoryLength -= MemoryLengthUc;
+    }
+  }
+
+  PERF_END (NULL, "SetCache", NULL, 0);
+
+  //
+  // Install PeiReset for PeiResetSystem service
+  //
+  Status = PeiServicesInstallPpi (&mPpiList[0]);
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Do ICH initialization after MRC
+  //
+  PeiIchPostMemInit ();
+
+  //
+  // Do basic SIO init
+  //
+  SioInit (mSioTable_8, 18, mSioTable_16, 5);
+
+  Status = PeiServicesInstallPpi (&mPpiStall[0]);
+  ASSERT_EFI_ERROR (Status);
+
+  //
+  // Create the firmware volume HOB's
+  //
+  DEBUG_CODE_BEGIN ();
+  
+  //
+  // Make sure core will report FV hob for BFV
+  //
+  BuildFvHob (
+    PcdGet32 (PcdFlashFvRecoveryBase),
+    PcdGet32 (PcdFlashFvRecoverySize)
+    );
+
+	
+  DEBUG_CODE_END ();
+
+  if (BootMode == BOOT_IN_RECOVERY_MODE) {
+
+    //
+    // Init Floppy.
+    //
+    SioIoWrite8 (mSioFloppy, 10);
+
+    Status = InitializeRecovery (PeiServices);
+    ASSERT_EFI_ERROR (Status);
+  } else {
+    PeiServicesInstallFvInfoPpi (
+      NULL,
+      (VOID *) (UINTN) PcdGet32 (PcdFlashFvMainBase),
+      PcdGet32 (PcdFlashFvMainSize),
+      NULL,
+      NULL
+      );
+    BuildFvHob (
+      PcdGet32 (PcdFlashFvMainBase), 
+      PcdGet32 (PcdFlashFvMainSize)
+      );
+    
+    //
+    // Don't need to install variable FV INFO ppi.
+    //
+    BuildFvHob (
+      PcdGet32 (PcdFlashNvStorageBase), 
+      PcdGet32 (PcdFlashNvStorageSize)
+      );
+  }
+
+  DEBUG ((EFI_D_INFO, "Fv Hob Built \n"));
+
+  if (BootMode == BOOT_ON_S3_RESUME) {
+    return EFI_SUCCESS;
+  }
+
+  IchPowerOffIfPowerButtonOverride ();
+
+  //
+  // Build flash HOB, it's going to be used by GCD and E820 building
+  //
+  BuildResourceDescriptorHob (
+    EFI_RESOURCE_FIRMWARE_DEVICE,
+    (EFI_RESOURCE_ATTRIBUTE_PRESENT    |
+    EFI_RESOURCE_ATTRIBUTE_INITIALIZED |
+    EFI_RESOURCE_ATTRIBUTE_UNCACHEABLE),
+    PcdGet32 (PcdFlashAreaBaseAddress),
+    PcdGet32 (PcdFlashAreaSize)
+    );
+
+  return Status;
+}

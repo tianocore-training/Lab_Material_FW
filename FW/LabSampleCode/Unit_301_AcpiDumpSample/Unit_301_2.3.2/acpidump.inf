@@ -1,0 +1,162 @@
+## @file
+#  Copyright (c) 2010 - 2013, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = AcpiDump
+  FILE_GUID                      = B8D820C5-428F-40d1-84A6-0787F2D9AFD0
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 0.1
+  ENTRY_POINT                    = ShellCEntryLib
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF
+#
+
+[Sources]
+    apdump.c 
+    apfiles.c
+    apmain.c
+     components/tables/tbfadt.c
+     components/tables/tbfind.c
+     components/tables/tbinstal.c 
+     components/tables/tbprint.c 
+     components/tables/tbutils.c 
+     components/tables/tbxface.c 
+     components/tables/tbxfload.c 
+     components/tables/tbxfroot.c 
+     components/utilities/utaddress.c 
+     components/utilities/utalloc.c 
+     components/utilities/utbuffer.c 
+     components/utilities/utcache.c 
+     components/utilities/utclib.c 
+     components/utilities/utcopy.c 
+     components/utilities/utdebug.c 
+     components/utilities/utdecode.c 
+     components/utilities/utdelete.c 
+     components/utilities/uterror.c 
+     components/utilities/uteval.c 
+     components/utilities/utexcep.c 
+     components/utilities/utglobal.c 
+     components/utilities/utids.c 
+     components/utilities/utinit.c 
+     components/utilities/utlock.c 
+     components/utilities/utmath.c 
+     components/utilities/utmisc.c 
+     components/utilities/utmutex.c
+     components/utilities/utobject.c
+     components/utilities/utosi.c
+     components/utilities/utownerid.c
+     components/utilities/utpredef.c
+     components/utilities/utresrc.c 
+     components/utilities/utstate.c 
+     components/utilities/utstring.c 
+     components/utilities/uttrack.c 
+     components/utilities/utxface.c 
+     components/utilities/utxferror.c 
+     components/utilities/utxfinit.c  
+     components/utilities/utxfmutex.c 
+     os_specific/service_layers/uefitbl.c 
+     common/adfile.c 
+     common/adisasm.c 
+     common/adwalk.c 
+     common/ahpredef.c 
+     common/dmextern.c  
+     common/dmtable.c 
+     common/dmtbdump.c 
+     common/dmtbinfo.c 
+     common/getopt.c 
+     common/adfile.c 
+     common/adisasm.c 
+     common/adwalk.c 
+     common/ahpredef.c 
+     common/dmextern.c 
+     common/dmtbdump.c 
+     common/dmtbinfo.c 
+     common/getopt.c   
+
+    #header files
+    acpidump.h
+     compiler/aslcompiler.h
+     compiler/aslmessages.h
+     compiler/aslglobal.h
+     compiler/asldefine.h
+     compiler/asltypes.h
+     compiler/dtcompiler.h
+     compiler/dttemplate.h
+     compiler/preprocess.h
+     include/acapps.h
+     include/acbuffer.h
+     include/accommon.h
+     include/acconfig.h
+     include/acdebug.h
+     include/acdisasm.h
+     include/acdispat.h
+     include/acevents.h
+     include/acexcep.h
+     include/acglobal.h
+     include/achware.h
+     include/acinterp.h
+     include/aclocal.h
+     include/acmacros.h
+     include/acnames.h
+     include/acnamesp.h
+     include/acobject.h
+     include/acopcode.h
+     include/acoutput.h
+     include/acparser.h
+     include/acpi.h
+     include/acpiosxf.h
+     include/acpixf.h
+     include/acpredef.h
+     include/acresrc.h
+     include/acrestyp.h
+     include/acstruct.h
+     include/actables.h
+     include/actbl.h
+     include/actbl1.h
+     include/actbl2.h
+     include/actbl3.h
+     include/actypes.h
+     include/acutils.h
+     include/amlcode.h
+     include/amlresrc.h
+     include/platform/accygwin.h 
+     include/platform/acefi.h 
+     include/platform/acenv.h 
+     include/platform/acfreebsd.h 
+     include/platform/acgcc.h 
+     include/platform/acuefi.h 
+     include/platform/acmsvc.h 
+     include/platform/acnetbsd.h 
+     include/platform/acos2.h
+     include/platform/acwin.h 
+     include/platform/acwin64.h
+
+[Packages]
+  StdLib/StdLib.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiLib
+  LibC
+  LibString
+  LibStdio
+  LibGdtoa
+  LibWchar
+  BaseLib
+  DevShell
+
+[BuildOptions]
+  INTEL:*_*_*_CC_FLAGS    = /Qdiag-disable:181,186
+   MSFT:*_*_*_CC_FLAGS    = /Od
+    GCC:*_*_*_CC_FLAGS    = -O0 -Wno-unused-variable

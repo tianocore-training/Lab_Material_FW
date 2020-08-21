@@ -1,0 +1,11 @@
+Ppi, Produced, 147, r:\myworkspace\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 49, PpiList
+Ppi, Produced, 147, r:\myworkspace\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 77, NewPpi
+Ppi, Consumed, 147, r:\myworkspace\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 105, Guid
+Ppi, Callback, 147, r:\myworkspace\MdePkg\Library\PeiServicesLib\PeiServicesLib.c, 132, NotifyList
+Protocol, Produced, 177, r:\myworkspace\MdePkg\Library\UefiLib\UefiLib.c, 289, (EFI_GUID *) Name
+Protocol, Callback, 177, r:\myworkspace\MdePkg\Library\UefiLib\UefiLib.c, 254, (EFI_GUID *) Name
+Ppi, Consumed, 341, r:\myworkspace\MdeModulePkg\Core\Pei\FwVol\FwVol.c, 569, FvInfo2Ppi.FvFormat
+Protocol, Produced, 384, r:\myworkspace\MdeModulePkg\Core\Dxe\SectionExtraction\CoreSectionExtraction.c, 239, ExtractHandlerGuidTable [ExtractHandlerNumber]
+Protocol, Produced, 395, r:\myworkspace\MdeModulePkg\Core\Dxe\Hand\Handle.c, 311, Protocol
+Protocol, Produced, 395, r:\myworkspace\MdeModulePkg\Core\Dxe\Hand\Handle.c, 582, Protocol
+Protocol, Produced, 395, r:\myworkspace\MdeModulePkg\Core\Dxe\Hand\Handle.c, 870, Protocol
