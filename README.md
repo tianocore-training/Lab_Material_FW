@@ -61,8 +61,8 @@ After downloading, Copy Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any 
   - Documentation
   - DriverWizard
   - edk2-ws 
-       - edk2-libc Same as https://github.com/tianocore/edk2-libc 
-  - LabSampleCode
+       - edk2-libc fix-ups for https://github.com/tianocore/edk2-libc
+  - LabSampleCode - solutions for the labs
   
 ####  From Presentations_FW
 - **FW**
