@@ -1,0 +1,35 @@
+## @file
+# Sample UnitTest built for execution on a Host/Dev machine.
+#
+# Copyright (c) Microsoft Corporation.<BR>
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = CheckPrimeUnitTestHost
+  FILE_GUID      = 549D33A9-9FD8-4117-95B0-85C814F68E7C
+  MODULE_TYPE    = HOST_APPLICATION
+  VERSION_STRING = 1.0
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  CheckPrimeUnitTest.c
+  CheckPrimeUnitTest.h
+  PrimeNumber.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  UnitTestLib
+
+[Pcd]
+  
