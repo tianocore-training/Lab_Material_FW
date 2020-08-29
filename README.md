@@ -39,7 +39,7 @@ This lab Material uses the edk2 and edk2-libc
 Before downloading this Lab Material, First download edk2 and edk2-libc to the directory `/edk2ws`:
 ```
 Mkdir edk2-ws
-cd edk2-sw
+cd edk2-ws
 git clone -b LabBranch https://github.com/tianocore-training/edk2.git
 git clone https://github.com/tianocore/edk2-libc.git
 
@@ -66,4 +66,4 @@ After downloading, Copy Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any 
   
 ####  From Presentations_FW
 - **FW**
-  - Presentations   
+  - Presentations  PDFs  https://github.com/tianocore-training/Presentation_FW 
