@@ -1,7 +1,7 @@
 <!--- @file
   Readme.md for UEFI / EDK II Training  Lab Material FW
 
-  Copyright (c) 2020, Intel Corporation. All rights reserved.<BR>
+  Copyright (c) 2020-2021, Intel Corporation. All rights reserved.<BR>
 
   Redistribution and use in source (original document form) and 'compiled'
   forms (converted to PDF, epub, HTML and other formats) with or without
@@ -32,16 +32,17 @@
 # Lab_Material_FW
 Lab Material for UEFI / EDK II Training
 
-To see the Slides with links to the presentations goto https://gitpitch.com/tianocore-training/Tianocore_Training_Contents/master#/
+To see the PDFs of the presentations goto 
+https://github.com/tianocore-training/Tianocore_Training_Contents/wiki
 
 This lab Material uses the edk2 and edk2-libc
 
-Before downloading this Lab Material, First download edk2 and edk2-libc to the directory `/edk2ws`:
+Before downloading this Lab Material, First download edk2 and edk2-libc to the directory `/edk2-ws`:
 ```
 Mkdir edk2-ws
 cd edk2-ws
-git clone -b LabBranch https://github.com/tianocore-training/edk2.git
-git clone https://github.com/tianocore/edk2-libc.git
+git clone -b Edk2Lab_21Q1 https://github.com/tianocore-training/edk2.git
+git clone -b LabBranch https://github.com/tianocore-training/edk2-libc.git
 
 cd ..
 ```
@@ -61,7 +62,7 @@ After downloading, Copy Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any 
   - Documentation
   - DriverWizard
   - edk2-ws 
-       - edk2-libc fix-ups for https://github.com/tianocore/edk2-libc
+       - setenv.sh and setenv.bat
   - LabSampleCode - solutions for the labs
   
 ####  From Presentations_FW
