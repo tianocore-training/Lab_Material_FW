@@ -37,7 +37,7 @@
   SmbiosLib|Include/Library/SmbiosLib.h
   EmuMagicPageLib|Include/Library/EmuMagicPageLib.h
 ```
-## Protocols section, Porotocols defined by this package
+## Protocols section, defined by this package
 ```
 [Protocols]
   gEmuThunkProtocolGuid          = { 0x5CF32E0B, 0x8EDF, 0x2E44, { 0x9C, 0xDA, 0x93, 0x20, 0x5E, 0x99, 0xEC, 0x1C } }

@@ -32,7 +32,7 @@
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
 ```
-## Define Switches to deterimine some configurations
+## Define Switches to determine some configurations
 ```
   DEFINE  ADD_SHELL_STRING         = FALSE
   #
@@ -152,7 +152,7 @@
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
 !endif
 ```
-## Library Classes for the the UEFI phases
+## Library Classes for the the UEFI Boot phases
 ```
 [LibraryClasses.common.SEC]
   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
