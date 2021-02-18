@@ -1,3 +1,4 @@
+# Build -y MyReport.log
 ```
 Platform Summary
 Platform Name:        EmulatorPkg
