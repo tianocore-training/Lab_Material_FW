@@ -1,15 +1,15 @@
-
+# Build -h Command
 ```
 Usage: build.exe [options] [all|fds|genc|genmake|clean|cleanall|cleanlib|modules|libraries|run]
- 
-Copyright (c) 2007 - 2017, Intel Corporation  All rights reserved.
- 
+
+Copyright (c) 2007 - 2018, Intel Corporation  All rights reserved.
+
 Options:
   --version             show program's version number and exit
   -h, --help            show this help message and exit
   -a TARGETARCH, --arch=TARGETARCH
-                        ARCHS is one of list: IA32, X64, IPF, ARM, AARCH64 or
-                        EBC, which overrides target.txt's TARGET_ARCH
+                        ARCHS is one of list: IA32, X64, ARM, AARCH64, RISCV64
+                        or EBC, which overrides target.txt's TARGET_ARCH
                         definition. To specify more archs, please repeat this
                         option.
   -p PLATFORMFILE, --platform=PLATFORMFILE
@@ -98,5 +98,10 @@ Options:
                         directory.
   --genfds-multi-thread
                         Enable GenFds multi thread to generate ffs file.
+  --no-genfds-multi-thread
+                        Disable GenFds multi thread to generate ffs file.
+  --disable-include-path-check
+                        Disable the include path check for outside of package.
+
 
 ```
