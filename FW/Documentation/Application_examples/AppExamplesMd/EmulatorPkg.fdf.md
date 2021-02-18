@@ -1,3 +1,5 @@
+# FDF File for the EmulatorPkg
+```
 ## @file
 # This is Emulator FDF file with UEFI HII features enabled
 #
@@ -6,7 +8,9 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
-
+```
+## The FD Section - produces a file Fv_Recovery.FD in the build outputs directory 
+```
 [FD.Fv_Recovery]
 #
 # In OS X PEIMs are really XIP, so we need to make this address match the malloced
@@ -18,11 +22,15 @@ Size          = 0x005a0000|gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareFdSize  #The
 ErasePolarity = 1
 BlockSize     = 0x10000
 NumBlocks     = 0x5a
-
+```
+## FvRecovery Firmware Volume located a offset 0 with Length 0x580000 
+```
 0x00000000|0x00580000
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashFvRecoveryBase|gEmulatorPkgTokenSpaceGuid.PcdEmuFlashFvRecoverySize
 FV = FvRecovery
-
+```
+## Begin the Variable Storage Regions - Layout Regions that define an empty variable store. NV Vars, Event Log, FTW regions defined
+```
 0x00580000|0x0000c000
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
 #NV_VARIABLE_STORE
@@ -86,6 +94,9 @@ DATA = {
 #NV_FTW_SPARE
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashNvStorageFtwSpareBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
 
+```
+## Firmware Volumes that are going to be created, notice the attributes and then the added modules
+```
 [FV.FvRecovery]
 FvNameGuid         = 6D99E806-3D38-42c2-A095-5F4300BFD7DC
 FvAlignment        = 16         #FV alignment and FV attributes setting.
@@ -108,7 +119,9 @@ READ_LOCK_STATUS   = TRUE
 #
 #  PEI Phase modules
 #
-
+```
+## The Apriori section will dispatch those modules liste first
+```
 #
 #  PEI Apriori file example, more PEIM module added later.
 #
@@ -199,8 +212,9 @@ INF  MdeModulePkg/Universal/DriverSampleDxe/DriverSampleDxe.inf
 !if $(SECURE_BOOT_ENABLE) == TRUE
 INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
 !endif
-
-INF  MyWizardDriver/MyWizardDriver.inf
+```
+## Example Including another file with another list of Modules
+```
 #
 # Network stack drivers
 #
@@ -220,7 +234,9 @@ INF FatPkg/EnhancedFatDxe/Fat.inf
 INF  ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
 !endif
 INF  ShellPkg/Application/Shell/Shell.inf
-
+```
+## Rules Section
+```
 [Rule.Common.SEC]
   FILE SEC = $(NAMED_GUID)  {
     PE32     PE32    Align=Auto     $(INF_OUTPUT)/$(MODULE_NAME).efi
@@ -321,4 +337,4 @@ INF  ShellPkg/Application/Shell/Shell.inf
     UI        STRING="$(MODULE_NAME)" Optional
     VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
   }
-
+```

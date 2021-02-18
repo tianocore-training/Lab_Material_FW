@@ -6,6 +6,7 @@
 #
 # Copyright (c) 2006 - 2020, Intel Corporation. All rights reserved.<BR>
 # Portions copyright (c) 2010 - 2011, Apple Inc. All rights reserved.<BR>
+# Copyright (c) Microsoft Corporation.
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -16,7 +17,7 @@
   PLATFORM_GUID                  = 05FD064D-1073-E844-936C-A0E16317107D
   PLATFORM_VERSION               = 0.3
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/Emulator$(ARCH)
+  OUTPUT_DIRECTORY               = $(WORKSPACE)/Build/Emulator$(ARCH)
 
   SUPPORTED_ARCHITECTURES        = X64|IA32
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
@@ -36,7 +37,14 @@
   DEFINE NETWORK_IP6_ENABLE       = FALSE
   DEFINE NETWORK_TLS_ENABLE       = FALSE
   DEFINE NETWORK_HTTP_BOOT_ENABLE = FALSE
+  DEFINE NETWORK_HTTP_ENABLE      = FALSE
   DEFINE NETWORK_ISCSI_ENABLE     = FALSE
+  DEFINE SECURE_BOOT_ENABLE       = FALSE
+
+  #
+  # Redfish definition
+  #
+  DEFINE REDFISH_ENABLE = FALSE
 
 [SkuIds]
   0|DEFAULT
@@ -99,7 +107,10 @@
   #
   PlatformBootManagerLib|EmulatorPkg/Library/PlatformBmLib/PlatformBmLib.inf
   KeyMapLib|EmulatorPkg/Library/KeyMapLibNull/KeyMapLibNull.inf
-
+  !if $(REDFISH_ENABLE) == TRUE
+    RedfishPlatformHostInterfaceLib|EmulatorPkg/Library/RedfishPlatformHostInterfaceLib/RedfishPlatformHostInterfaceLib.inf
+    RedfishPlatformCredentialLib|EmulatorPkg/Library/RedfishPlatformCredentialLib/RedfishPlatformCredentialLib.inf
+  !endif
   #
   # Misc
   #
@@ -115,11 +126,22 @@
   LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
   CpuExceptionHandlerLib|MdeModulePkg/Library/CpuExceptionHandlerLibNull/CpuExceptionHandlerLibNull.inf
   TpmMeasurementLib|MdeModulePkg/Library/TpmMeasurementLibNull/TpmMeasurementLibNull.inf
-  AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
+  VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
+  VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
   SortLib|MdeModulePkg/Library/BaseSortLib/BaseSortLib.inf
   ShellLib|ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
+
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  RngLib|MdePkg/Library/BaseRngLibTimerLib/BaseRngLibTimerLib.inf
+  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
+  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+  PlatformSecureLib|SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
+  AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
+!else
+  AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
+!endif
 
 [LibraryClasses.common.SEC]
   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
@@ -171,6 +193,16 @@
   TimerLib|EmulatorPkg/Library/DxeCoreTimerLib/DxeCoreTimerLib.inf
   EmuThunkLib|EmulatorPkg/Library/DxeEmuLib/DxeEmuLib.inf
 
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+!endif
+
+[LibraryClasses.common.DXE_RUNTIME_DRIVER]
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
+!endif
+
 [LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
   PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
@@ -188,9 +220,10 @@
 
 [PcdsFixedAtBuild]
 # UEFI / EDK II Training
-#gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
+# gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
 #   Here is where you would put the HelloWorldPrintString PCD
 # HINT: look at MdeModulePkg.dec for HelloWorldPrintString
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdImageProtectionPolicy|0x00000000
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000040
@@ -203,6 +236,10 @@
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareFdSize|0x002a0000
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareBlockSize|0x10000
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareVolume|L"../FV/FV_RECOVERY.fd"
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdMaxAuthVariableSize|0x2800
+  gEfiSecurityPkgTokenSpaceGuid.PcdUserPhysicalPresence|TRUE
+!endif
 
   gEmulatorPkgTokenSpaceGuid.PcdEmuMemorySize|L"64!64"
 
@@ -237,6 +274,18 @@
 
   #  0-PCANSI, 1-VT100, 2-VT00+, 3-UTF8, 4-TTYTERM
   gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType|1
+
+!if $(REDFISH_ENABLE) == TRUE
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceDevicePath.DevicePathMatchMode|DEVICE_PATH_MATCH_MAC_NODE
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceDevicePath.DevicePathNum|1
+  #
+  # Below is the MAC address of network adapter on EDK2 Emulator platform.
+  # You can use ifconfig under EFI shell to get the MAC address of network adapter on EDK2 Emulator platform.
+  #
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceDevicePath.DevicePath|{DEVICE_PATH("MAC(000000000000,0x1)")}
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceAccessModeInBand|False
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishDiscoverAccessModeInBand|False
+!endif
 
 [PcdsDynamicDefault.common.DEFAULT]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64|0
@@ -319,7 +368,14 @@
   EmulatorPkg/ResetRuntimeDxe/Reset.inf
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   EmulatorPkg/FvbServicesRuntimeDxe/FvbServicesRuntimeDxe.inf
-  MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+
+  MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf {
+    <LibraryClasses>
+!if $(SECURE_BOOT_ENABLE) == TRUE
+      NULL|SecurityPkg/Library/DxeImageVerificationLib/DxeImageVerificationLib.inf
+!endif
+  }
+
   MdeModulePkg/Universal/EbcDxe/EbcDxe.inf
   MdeModulePkg/Universal/MemoryTest/NullMemoryTestDxe/NullMemoryTestDxe.inf
   EmulatorPkg/EmuThunkDxe/EmuThunk.inf
@@ -328,6 +384,9 @@
   EmulatorPkg/PlatformSmbiosDxe/PlatformSmbiosDxe.inf
   EmulatorPkg/TimerDxe/Timer.inf
 
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+!endif
 
   MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf {
     <LibraryClasses>
@@ -416,7 +475,10 @@
       NULL|ShellPkg/Library/UefiShellDebug1CommandsLib/UefiShellDebug1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellInstall1CommandsLib/UefiShellInstall1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib.inf
+      NULL|ShellPkg/Library/UefiShellNetwork2CommandsLib/UefiShellNetwork2CommandsLib.inf
+      NULL|ShellPkg/Library/UefiShellAcpiViewCommandLib/UefiShellAcpiViewCommandLib.inf
       HandleParsingLib|ShellPkg/Library/UefiHandleParsingLib/UefiHandleParsingLib.inf
+      OrderedCollectionLib|MdePkg/Library/BaseOrderedCollectionRedBlackTreeLib/BaseOrderedCollectionRedBlackTreeLib.inf
       SortLib|MdeModulePkg/Library/UefiSortLib/UefiSortLib.inf
       PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
 #      SafeBlockIoLib|ShellPkg/Library/SafeBlockIoLib/SafeBlockIoLib.inf
@@ -434,12 +496,15 @@
 
 !include NetworkPkg/Network.dsc.inc
 
+!if $(REDFISH_ENABLE) == TRUE
+  EmulatorPkg/Application/RedfishPlatformConfig/RedfishPlatformConfig.inf
+!endif
+!include RedfishPkg/Redfish.dsc.inc
+
 
 # UEFI / EDK II Training Class
 
 # Add new modules here
-
- 
 
 [BuildOptions]
   #

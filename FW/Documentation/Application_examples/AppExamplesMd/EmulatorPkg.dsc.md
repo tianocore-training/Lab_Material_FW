@@ -1,22 +1,27 @@
+# DSC File for EmulatorPkg
+```
 ## @file
 # UEFI/PI Emulation Platform with UEFI HII interface supported.
 #
 # The Emulation Platform can be used to debug individual modules, prior to creating
 # a real platform. This also provides an example for how an DSC is created.
 #
-# Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2006 - 2020, Intel Corporation. All rights reserved.<BR>
 # Portions copyright (c) 2010 - 2011, Apple Inc. All rights reserved.<BR>
+# Copyright (c) Microsoft Corporation.
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
-
+```
+## List of Defines,  Package Name, GUILD, Version ...
+```
 [Defines]
   PLATFORM_NAME                  = EmulatorPkg
   PLATFORM_GUID                  = 05FD064D-1073-E844-936C-A0E16317107D
   PLATFORM_VERSION               = 0.3
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/Emulator$(ARCH)
+  OUTPUT_DIRECTORY               = $(WORKSPACE)/Build/Emulator$(ARCH)
 
   SUPPORTED_ARCHITECTURES        = X64|IA32
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
@@ -26,9 +31,10 @@
 # For UEFI / EDK II Training 
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
-#
+```
+## Define Switches to deterimine some configurations
+```
   DEFINE  ADD_SHELL_STRING         = FALSE
-
   #
   # Network definition
   #
@@ -36,11 +42,22 @@
   DEFINE NETWORK_IP6_ENABLE       = FALSE
   DEFINE NETWORK_TLS_ENABLE       = FALSE
   DEFINE NETWORK_HTTP_BOOT_ENABLE = FALSE
+  DEFINE NETWORK_HTTP_ENABLE      = FALSE
   DEFINE NETWORK_ISCSI_ENABLE     = FALSE
+  DEFINE SECURE_BOOT_ENABLE       = FALSE
 
+  #
+  # Redfish definition
+  #
+  DEFINE REDFISH_ENABLE = FALSE
+```  
+## Sku ID
+```
 [SkuIds]
   0|DEFAULT
-
+```
+## Library Classes - Global. Notice the DSC file is pointing to the .inf file
+```
 [LibraryClasses]
   #
   # Entry point
@@ -99,7 +116,10 @@
   #
   PlatformBootManagerLib|EmulatorPkg/Library/PlatformBmLib/PlatformBmLib.inf
   KeyMapLib|EmulatorPkg/Library/KeyMapLibNull/KeyMapLibNull.inf
-
+  !if $(REDFISH_ENABLE) == TRUE
+    RedfishPlatformHostInterfaceLib|EmulatorPkg/Library/RedfishPlatformHostInterfaceLib/RedfishPlatformHostInterfaceLib.inf
+    RedfishPlatformCredentialLib|EmulatorPkg/Library/RedfishPlatformCredentialLib/RedfishPlatformCredentialLib.inf
+  !endif
   #
   # Misc
   #
@@ -115,12 +135,25 @@
   LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
   CpuExceptionHandlerLib|MdeModulePkg/Library/CpuExceptionHandlerLibNull/CpuExceptionHandlerLibNull.inf
   TpmMeasurementLib|MdeModulePkg/Library/TpmMeasurementLibNull/TpmMeasurementLibNull.inf
-  AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
+  VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
+  VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
   SortLib|MdeModulePkg/Library/BaseSortLib/BaseSortLib.inf
   ShellLib|ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
 
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  RngLib|MdePkg/Library/BaseRngLibTimerLib/BaseRngLibTimerLib.inf
+  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
+  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
+  PlatformSecureLib|SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
+  AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
+!else
+  AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
+!endif
+```
+## Library Classes for the the UEFI phases
+```
 [LibraryClasses.common.SEC]
   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
@@ -171,6 +204,16 @@
   TimerLib|EmulatorPkg/Library/DxeCoreTimerLib/DxeCoreTimerLib.inf
   EmuThunkLib|EmulatorPkg/Library/DxeEmuLib/DxeEmuLib.inf
 
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+!endif
+
+[LibraryClasses.common.DXE_RUNTIME_DRIVER]
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
+!endif
+
 [LibraryClasses.common.DXE_RUNTIME_DRIVER, LibraryClasses.common.UEFI_DRIVER, LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
   PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
@@ -180,10 +223,12 @@
   PeCoffExtraActionLib|EmulatorPkg/Library/DxeEmuPeCoffExtraActionLib/DxeEmuPeCoffExtraActionLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   TimerLib|EmulatorPkg/Library/DxeTimerLib/DxeTimerLib.inf
+```
+## PCDs Section, changing the default value by this package
+```
 
 [PcdsFeatureFlag]
   gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSwitchToLongMode|FALSE
-  gEfiMdeModulePkgTokenSpaceGuid.PcdStatusCodeUseSerial|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdPeiCoreImageLoaderSearchTeSectionFirst|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplBuildPageTables|FALSE
 
@@ -191,8 +236,8 @@
 # UEFI / EDK II Training
 # gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
 #   Here is where you would put the HelloWorldPrintString PCD
-#    HINT, Look at the MdeModulePkg.Dec file 
-  
+# HINT: look at MdeModulePkg.dec for HelloWorldPrintString
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdImageProtectionPolicy|0x00000000
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000040
@@ -200,10 +245,15 @@
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x1f
   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizeNonPopulateCapsule|0x0
   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizePopulateCapsule|0x0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdStatusCodeUseSerial|TRUE
 
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareFdSize|0x002a0000
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareBlockSize|0x10000
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareVolume|L"../FV/FV_RECOVERY.fd"
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  gEfiMdeModulePkgTokenSpaceGuid.PcdMaxAuthVariableSize|0x2800
+  gEfiSecurityPkgTokenSpaceGuid.PcdUserPhysicalPresence|TRUE
+!endif
 
   gEmulatorPkgTokenSpaceGuid.PcdEmuMemorySize|L"64!64"
 
@@ -239,6 +289,20 @@
   #  0-PCANSI, 1-VT100, 2-VT00+, 3-UTF8, 4-TTYTERM
   gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType|1
 
+!if $(REDFISH_ENABLE) == TRUE
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceDevicePath.DevicePathMatchMode|DEVICE_PATH_MATCH_MAC_NODE
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceDevicePath.DevicePathNum|1
+  #
+  # Below is the MAC address of network adapter on EDK2 Emulator platform.
+  # You can use ifconfig under EFI shell to get the MAC address of network adapter on EDK2 Emulator platform.
+  #
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceDevicePath.DevicePath|{DEVICE_PATH("MAC(000000000000,0x1)")}
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceAccessModeInBand|False
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishDiscoverAccessModeInBand|False
+!endif
+```
+## Dynamic PCDs Section, changing the default value by this package
+```
 [PcdsDynamicDefault.common.DEFAULT]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64|0
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase64|0
@@ -248,12 +312,16 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn|L"Setup"|gEmuSystemConfigGuid|0x0|80
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow|L"Setup"|gEmuSystemConfigGuid|0x4|25
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|L"Timeout"|gEfiGlobalVariableGuid|0x0|10
-
+```
+## Finally the Components section, which every DSC MUST have
+```
 [Components]
 !if "IA32" in $(ARCH) || "X64" in $(ARCH)
-  !if "MSFT" in $(FAMILY)
+  !if "MSFT" in $(FAMILY) || $(WIN_HOST_BUILD) == TRUE
     ##
     #  Emulator, OS WIN application
+    #  CLANGPDB is cross OS tool chain. It depends on WIN_HOST_BUILD flag
+    #  to build WinHost application.
     ##
     EmulatorPkg/Win/Host/WinHost.inf
   !else
@@ -318,7 +386,14 @@
   EmulatorPkg/ResetRuntimeDxe/Reset.inf
   MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   EmulatorPkg/FvbServicesRuntimeDxe/FvbServicesRuntimeDxe.inf
-  MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+
+  MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf {
+    <LibraryClasses>
+!if $(SECURE_BOOT_ENABLE) == TRUE
+      NULL|SecurityPkg/Library/DxeImageVerificationLib/DxeImageVerificationLib.inf
+!endif
+  }
+
   MdeModulePkg/Universal/EbcDxe/EbcDxe.inf
   MdeModulePkg/Universal/MemoryTest/NullMemoryTestDxe/NullMemoryTestDxe.inf
   EmulatorPkg/EmuThunkDxe/EmuThunk.inf
@@ -327,6 +402,9 @@
   EmulatorPkg/PlatformSmbiosDxe/PlatformSmbiosDxe.inf
   EmulatorPkg/TimerDxe/Timer.inf
 
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
+!endif
 
   MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf {
     <LibraryClasses>
@@ -399,14 +477,14 @@
 !endif
 
 # For UEFI / EDK II Training  
- ShellPkg/Application/Shell/Shell.inf {
+  ShellPkg/Application/Shell/Shell.inf {
     <LibraryClasses>
       ShellCommandLib|ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.inf
       NULL|ShellPkg/Library/UefiShellLevel2CommandsLib/UefiShellLevel2CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellLevel1CommandsLib/UefiShellLevel1CommandsLib.inf
 !if $(ADD_SHELL_STRING) == TRUE 
 	# Training Lib for build switch lab
-      NULL|ShellPkg/Library/UefiShellLevel3Commands_Training_Lib/UefiShellLevel3Commands_Training_Lib.inf
+      NULL|ShellPkg/Library/UefiShellLevel3CommandsLib_Training_Lib/UefiShellLevel3Commands_Training_Lib.inf
 !else
 	# normal Lib for build switch
       NULL|ShellPkg/Library/UefiShellLevel3CommandsLib/UefiShellLevel3CommandsLib.inf
@@ -415,7 +493,10 @@
       NULL|ShellPkg/Library/UefiShellDebug1CommandsLib/UefiShellDebug1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellInstall1CommandsLib/UefiShellInstall1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellNetwork1CommandsLib/UefiShellNetwork1CommandsLib.inf
+      NULL|ShellPkg/Library/UefiShellNetwork2CommandsLib/UefiShellNetwork2CommandsLib.inf
+      NULL|ShellPkg/Library/UefiShellAcpiViewCommandLib/UefiShellAcpiViewCommandLib.inf
       HandleParsingLib|ShellPkg/Library/UefiHandleParsingLib/UefiHandleParsingLib.inf
+      OrderedCollectionLib|MdePkg/Library/BaseOrderedCollectionRedBlackTreeLib/BaseOrderedCollectionRedBlackTreeLib.inf
       SortLib|MdeModulePkg/Library/UefiSortLib/UefiSortLib.inf
       PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
 #      SafeBlockIoLib|ShellPkg/Library/SafeBlockIoLib/SafeBlockIoLib.inf
@@ -429,14 +510,23 @@
       gEfiMdePkgTokenSpaceGuid.PcdUefiLibMaxPrintBufferSize|8000
   }
 
-!endif  # Skip Main BUild
+!endif
 
 !include NetworkPkg/Network.dsc.inc
+
+!if $(REDFISH_ENABLE) == TRUE
+  EmulatorPkg/Application/RedfishPlatformConfig/RedfishPlatformConfig.inf
+!endif
+!include RedfishPkg/Redfish.dsc.inc
 
 
 # UEFI / EDK II Training Class
 
 # Add new modules here
+```
+## Build Options Section
+```
+
 [BuildOptions]
   #
   # Disable deprecated APIs.
@@ -445,7 +535,28 @@
 
   MSFT:DEBUG_*_*_CC_FLAGS = /Od /Oy-
   MSFT:NOOPT_*_*_CC_FLAGS = /Od /Oy-
+  GCC:DEBUG_CLANGPDB_*_CC_FLAGS =-O0 -Wno-unused-command-line-argument -Wno-incompatible-pointer-types -Wno-enum-conversion -Wno-incompatible-pointer-types -Wno-sometimes-uninitialized -Wno-constant-conversion -Wno-main-return-type
 
   MSFT:*_*_*_DLINK_FLAGS     = /ALIGN:4096 /FILEALIGN:4096 /SUBSYSTEM:CONSOLE
   MSFT:DEBUG_*_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
   MSFT:NOOPT_*_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
+
+!if $(WIN_HOST_BUILD) == TRUE
+  #
+  # CLANGPDB tool chain depends on WIN_HOST_BUILD flag to generate the windows application.
+  #
+  GCC:*_CLANGPDB_*_DLINK_FLAGS     = /ALIGN:4096 /FILEALIGN:4096 /SUBSYSTEM:CONSOLE
+  GCC:DEBUG_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
+  GCC:NOOPT_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
+!endif
+```
+## Adding more modules, etc. done by adding more sections to the end of the file
+```
+[Components]
+MyDummyDriver/MyDummyDriver.inf
+
+[LibraryClasses.common.UEFI_DRIVER]
+  HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+
+
+```
