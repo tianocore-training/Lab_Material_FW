@@ -9,7 +9,8 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ```
-## The FD Section - produces a file Fv_Recovery.FD in the build outputs directory 
+## The FD Section 
+- produces a file Fv_Recovery.FD in the build outputs directory 
 ```
 [FD.Fv_Recovery]
 #
@@ -23,13 +24,15 @@ ErasePolarity = 1
 BlockSize     = 0x10000
 NumBlocks     = 0x5a
 ```
-## FvRecovery Firmware Volume located a offset 0 with Length 0x580000 
+## FvRecovery Firmware Volume 
+- located a offset 0 with Length 0x580000 
 ```
 0x00000000|0x00580000
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashFvRecoveryBase|gEmulatorPkgTokenSpaceGuid.PcdEmuFlashFvRecoverySize
 FV = FvRecovery
 ```
-## Begin the Variable Storage Regions - Layout Regions that define an empty variable store. NV Vars, Event Log, FTW regions defined
+## Begin the Variable Storage Regions - 
+- Layout Regions that define an empty variable store. NV Vars, Event Log, FTW regions defined
 ```
 0x00580000|0x0000c000
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
@@ -95,7 +98,8 @@ DATA = {
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashNvStorageFtwSpareBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
 
 ```
-## Firmware Volumes that are going to be created, notice the attributes and then the added modules
+## Firmware Volumes that are going to be created, 
+- notice the attributes and then the added modules
 ```
 [FV.FvRecovery]
 FvNameGuid         = 6D99E806-3D38-42c2-A095-5F4300BFD7DC
@@ -120,7 +124,8 @@ READ_LOCK_STATUS   = TRUE
 #  PEI Phase modules
 #
 ```
-## The Apriori section will dispatch those modules liste first
+## The Apriori section 
+- will dispatch those modules liste first
 ```
 #
 #  PEI Apriori file example, more PEIM module added later.
