@@ -61,6 +61,7 @@ After downloading, Copy Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any 
 - **FW**
   - Documentation
   - DriverWizard
+  - edk2Linux
   - edk2-ws 
        - setenv.sh and setenv.bat
   - LabSampleCode - solutions for the labs

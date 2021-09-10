@@ -4,7 +4,7 @@
 # The Emulation Platform can be used to debug individual modules, prior to creating
 # a real platform. This also provides an example for how an DSC is created.
 #
-# Copyright (c) 2006 - 2020, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
 # Portions copyright (c) 2010 - 2011, Apple Inc. All rights reserved.<BR>
 # Copyright (c) Microsoft Corporation.
 #
@@ -24,7 +24,7 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = EmulatorPkg/EmulatorPkg.fdf
 
-# For UEFI / EDK II Training 
+# For UEFI / EDK II Training
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
 #
@@ -48,6 +48,8 @@
 
 [SkuIds]
   0|DEFAULT
+
+!include MdePkg/MdeLibs.dsc.inc
 
 [LibraryClasses]
   #
@@ -120,8 +122,8 @@
   PeiServicesTablePointerLib|EmulatorPkg/Library/PeiServicesTablePointerLibMagicPage/PeiServicesTablePointerLibMagicPage.inf
   DebugLib|MdeModulePkg/Library/PeiDxeDebugLibReportStatusCode/PeiDxeDebugLibReportStatusCode.inf
 
-  # Example for UEFI / EDK II Training 
-  #DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf  
+  # Example for UEFI / EDK II Training
+  #DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
 
   LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
   CpuExceptionHandlerLib|MdeModulePkg/Library/CpuExceptionHandlerLibNull/CpuExceptionHandlerLibNull.inf
@@ -139,6 +141,8 @@
   OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
   PlatformSecureLib|SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
   AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
+  SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
+  SecureBootVariableProvisionLib|SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.inf
 !else
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
 !endif
@@ -458,13 +462,13 @@
   }
 !endif
 
-# For UEFI / EDK II Training  
+# For UEFI / EDK II Training
   ShellPkg/Application/Shell/Shell.inf {
     <LibraryClasses>
       ShellCommandLib|ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.inf
       NULL|ShellPkg/Library/UefiShellLevel2CommandsLib/UefiShellLevel2CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellLevel1CommandsLib/UefiShellLevel1CommandsLib.inf
-!if $(ADD_SHELL_STRING) == TRUE 
+!if $(ADD_SHELL_STRING) == TRUE
 	# Training Lib for build switch lab
       NULL|ShellPkg/Library/UefiShellLevel3CommandsLib_Training_Lib/UefiShellLevel3Commands_Training_Lib.inf
 !else
@@ -505,11 +509,6 @@
 # UEFI / EDK II Training Class
 
 # Add new modules here
-
- SampleApp/SampleApp.inf{
-<LibraryClasses>
-DebugLib|MdePkg/Library/UefiDebugLibConOut/UefiDebugLibConOut.inf
-}
 
 [BuildOptions]
   #
