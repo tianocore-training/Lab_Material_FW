@@ -42,7 +42,7 @@ Before downloading this Lab Material, First download edk2 and edk2-libc to the d
 Mkdir edk2-ws
 cd edk2-ws
 git clone -b Edk2Lab_21Q3 https://github.com/tianocore-training/edk2.git
-git clone -b Edk2Lab_21Q3 https://github.com/tianocore-training/edk2-libc.git
+git clone https://github.com/tianocore/edk2-libc.git
 
 cd ..
 ```
