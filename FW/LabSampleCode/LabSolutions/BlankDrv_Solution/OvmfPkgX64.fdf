@@ -317,7 +317,9 @@ INF  OvmfPkg/LinuxInitrdDynamicShellCommand/LinuxInitrdDynamicShellCommand.inf
 INF  ShellPkg/Application/Shell/Shell.inf
 
 INF MdeModulePkg/Logo/LogoDxe.inf
-
+!if $(ADD_BLANKDRV) == TRUE
+INF  BlankDrv/BlankDrv.inf
+!endif
 #
 # Network modules
 #
@@ -387,9 +389,6 @@ INF  MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 # TPM support
 #
 !include OvmfPkg/OvmfTpmDxe.fdf.inc
-
-
-INF  MyWizardDriver/MyWizardDriver.inf
 
 ################################################################################
 

@@ -28,8 +28,8 @@
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
 #
-  DEFINE  ADD_SHELL_STRING         = TRUE
-
+  DEFINE  ADD_SHELL_STRING         = FALSE
+  DEFINE  ADD_BLANKDRV 	           = FALSE
   #
   # Network definition
   #
@@ -510,9 +510,6 @@
 
 # Add new modules here
 
- SampleApp/SampleApp.inf
- 
-
 [BuildOptions]
   #
   # Disable deprecated APIs.
@@ -534,4 +531,12 @@
   GCC:*_CLANGPDB_*_DLINK_FLAGS     = /ALIGN:4096 /FILEALIGN:4096 /SUBSYSTEM:CONSOLE
   GCC:DEBUG_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
   GCC:NOOPT_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
+!endif
+
+
+
+!if $(ADD_BLANKDRV) == TRUE
+[Components]
+
+BlankDrv/BlankDrv.inf
 !endif

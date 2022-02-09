@@ -510,6 +510,12 @@
 
 # Add new modules here
 
+SampleApp/SampleApp.inf {
+   <LibraryClasses>
+    DebugLib|MdePkg/Library/UefiDebugLibConOut/UefiDebugLibConOut.inf
+ }
+
+
 [BuildOptions]
   #
   # Disable deprecated APIs.

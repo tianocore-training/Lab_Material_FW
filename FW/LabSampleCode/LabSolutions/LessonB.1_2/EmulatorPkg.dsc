@@ -28,7 +28,7 @@
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
 #
-  DEFINE  ADD_SHELL_STRING         = TRUE
+  DEFINE  ADD_SHELL_STRING         = FALSE
 
   #
   # Network definition
@@ -224,9 +224,11 @@
 
 [PcdsFixedAtBuild]
 # UEFI / EDK II Training
-# gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
+ gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
 #   Here is where you would put the HelloWorldPrintString PCD
 # HINT: look at MdeModulePkg.dec for HelloWorldPrintString
+gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintString|L"My New String!\n"
+
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdImageProtectionPolicy|0x00000000
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
@@ -509,9 +511,6 @@
 # UEFI / EDK II Training Class
 
 # Add new modules here
-
- SampleApp/SampleApp.inf
- 
 
 [BuildOptions]
   #

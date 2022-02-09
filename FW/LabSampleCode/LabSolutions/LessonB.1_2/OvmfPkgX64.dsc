@@ -19,18 +19,18 @@
   PLATFORM_GUID                  = 5a9e7754-d81b-49ea-85ad-69eaa7b1539b
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/OvmfIa32
-  SUPPORTED_ARCHITECTURES        = IA32
+  OUTPUT_DIRECTORY               = Build/OvmfX64
+  SUPPORTED_ARCHITECTURES        = X64
   BUILD_TARGETS                  = NOOPT|DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = OvmfPkg/OvmfPkgIa32.fdf
+  FLASH_DEFINITION               = OvmfPkg/OvmfPkgX64.fdf
 
-
-# For UEFI / EDK II Training 
+# For UEFI / EDK II Training
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
-#  
-  DEFINE  ADD_SHELL_STRING         = FALSE 
+#
+  DEFINE  ADD_SHELL_STRING         = FALSE
+  
   #
   # Defines for default states.  These can be changed on the command line.
   # -D FLAG=VALUE
@@ -38,7 +38,6 @@
   DEFINE SECURE_BOOT_ENABLE      = FALSE
   DEFINE SMM_REQUIRE             = FALSE
   DEFINE SOURCE_DEBUG_ENABLE     = FALSE
-  DEFINE LOAD_X64_ON_IA32_ENABLE = FALSE
 
 !include OvmfPkg/OvmfTpmDefines.dsc.inc
 
@@ -85,6 +84,11 @@
   MSFT:RELEASE_*_*_CC_FLAGS            = /D MDEPKG_NDEBUG
 !if $(TOOL_CHAIN_TAG) != "XCODE5" && $(TOOL_CHAIN_TAG) != "CLANGPDB"
   GCC:*_*_*_CC_FLAGS                   = -mno-mmx -mno-sse
+!endif
+!if $(SOURCE_DEBUG_ENABLE) == TRUE
+  MSFT:*_*_X64_GENFW_FLAGS  = --keepexceptiontable
+  GCC:*_*_X64_GENFW_FLAGS   = --keepexceptiontable
+  INTEL:*_*_X64_GENFW_FLAGS = --keepexceptiontable
 !endif
   RELEASE_*_*_GENFW_FLAGS = --zero
 
@@ -239,7 +243,7 @@
 
 [LibraryClasses.common]
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-  VmgExitLib|UefiCpuPkg/Library/VmgExitLibNull/VmgExitLibNull.inf
+  VmgExitLib|OvmfPkg/Library/VmgExitLib/VmgExitLib.inf
 
 [LibraryClasses.common.SEC]
   TimerLib|OvmfPkg/Library/AcpiTimerLib/BaseRomAcpiTimerLib.inf
@@ -263,6 +267,7 @@
 !else
   CpuExceptionHandlerLib|UefiCpuPkg/Library/CpuExceptionHandlerLib/SecPeiCpuExceptionHandlerLib.inf
 !endif
+  VmgExitLib|OvmfPkg/Library/VmgExitLib/SecVmgExitLib.inf
   MemEncryptSevLib|OvmfPkg/Library/BaseMemEncryptSevLib/SecMemEncryptSevLib.inf
 
 [LibraryClasses.common.PEI_CORE]
@@ -473,6 +478,12 @@
 !endif
 
 [PcdsFixedAtBuild]
+# UEFI / EDK II Training
+ gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
+#   Here is where you would put the HelloWorldPrintString PCD
+# HINT: look at MdeModulePkg.dec for HelloWorldPrintString
+gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintString|L"My New String!\n"
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdStatusCodeMemorySize|1
 !if $(SMM_REQUIRE) == FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
@@ -602,6 +613,12 @@
   gUefiOvmfPkgTokenSpaceGuid.PcdPciIoSize|0x0
   gUefiOvmfPkgTokenSpaceGuid.PcdPciMmio32Base|0x0
   gUefiOvmfPkgTokenSpaceGuid.PcdPciMmio32Size|0x0
+  gUefiOvmfPkgTokenSpaceGuid.PcdPciMmio64Base|0x0
+!ifdef $(CSM_ENABLE)
+  gUefiOvmfPkgTokenSpaceGuid.PcdPciMmio64Size|0x0
+!else
+  gUefiOvmfPkgTokenSpaceGuid.PcdPciMmio64Size|0x800000000
+!endif
 
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|0
 
@@ -721,8 +738,8 @@
     <LibraryClasses>
 !if $(SECURE_BOOT_ENABLE) == TRUE
       NULL|SecurityPkg/Library/DxeImageVerificationLib/DxeImageVerificationLib.inf
-!endif
 !include OvmfPkg/OvmfTpmSecurityStub.dsc.inc
+!endif
   }
 
   MdeModulePkg/Universal/EbcDxe/EbcDxe.inf
@@ -903,7 +920,13 @@
       ShellCommandLib|ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.inf
       NULL|ShellPkg/Library/UefiShellLevel2CommandsLib/UefiShellLevel2CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellLevel1CommandsLib/UefiShellLevel1CommandsLib.inf
+!if $(ADD_SHELL_STRING) == TRUE
+	# Training Lib for build switch lab
+      NULL|ShellPkg/Library/UefiShellLevel3CommandsLib_Training_Lib/UefiShellLevel3Commands_Training_Lib.inf
+!else
+	# normal Lib for build switch
       NULL|ShellPkg/Library/UefiShellLevel3CommandsLib/UefiShellLevel3CommandsLib.inf
+!endif
       NULL|ShellPkg/Library/UefiShellDriver1CommandsLib/UefiShellDriver1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellDebug1CommandsLib/UefiShellDebug1CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellInstall1CommandsLib/UefiShellInstall1CommandsLib.inf
@@ -911,6 +934,7 @@
 !if $(NETWORK_IP6_ENABLE) == TRUE
       NULL|ShellPkg/Library/UefiShellNetwork2CommandsLib/UefiShellNetwork2CommandsLib.inf
 !endif
+      NULL|ShellPkg/Library/UefiShellAcpiViewCommandLib/UefiShellAcpiViewCommandLib.inf
       HandleParsingLib|ShellPkg/Library/UefiHandleParsingLib/UefiHandleParsingLib.inf
       PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
       BcfgCommandLib|ShellPkg/Library/UefiShellBcfgCommandLib/UefiShellBcfgCommandLib.inf
@@ -927,6 +951,10 @@
 !endif
 
   OvmfPkg/PlatformDxe/Platform.inf
+  OvmfPkg/AmdSevDxe/AmdSevDxe.inf {
+    <LibraryClasses>
+    PciLib|MdePkg/Library/BasePciLibCf8/BasePciLibCf8.inf
+  }
   OvmfPkg/IoMmuDxe/IoMmuDxe.inf
 
 !if $(SMM_REQUIRE) == TRUE
@@ -993,4 +1021,8 @@
   #
 !include OvmfPkg/OvmfTpmComponentsDxe.dsc.inc
 
-SampleApp/SampleApp.inf 
+
+# UEFI / EDK II Training Class
+
+# Add new modules here
+ MdeModulePkg/Application/HelloWorld/HelloWorld.inf

@@ -1,46 +1,25 @@
-# DEC file for EmulatorPkg
-## Header
-
-```
 ## @file
 #
 # This is the Emu Emulation Environment Platform
 #
-# Copyright (c) 2008 - 2022, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2008 - 2019, Intel Corporation. All rights reserved.<BR>
 # Portions copyright (c) 2011, Apple Inc. All rights reserved.
 # (C) Copyright 2020 Hewlett Packard Enterprise Development LP<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
-```
-## List of List of Defines,  Package Name, GUILD, Version ...
-* The first 4 defines are key words for the DEC spec.
-* The DEC Spec number is what version of the EDK II DEC spec this package is at
-* All things EDK II get a GUID see https://www.guidgenerator.com/ to get a new GUID
-* The Package Version is User defined and is Number dot Number 
 
-```
 [Defines]
   DEC_SPECIFICATION              = 0x00010005
   PACKAGE_NAME                   = EmulatorPkg
   PACKAGE_GUID                   = 36E48BD7-7D92-5A47-A2CD-513F072E3300
   PACKAGE_VERSION                = 0.1
-```
-## The Include section,there is an include directory for this package
- 
-This is to use relative paths throughout the EDK II source code  
-```
+
+
 [Includes]
   Include
-```
-## Library classes section
 
-* These are the libraries created by this package. Notice each is pointing to a .h file.
-* The Library Base Name is on the left the a vertical bar followed by the relative path to the interface file.
-* Each of these Libraries are produced by this package
-
-```
 
 [LibraryClasses]
   ThunkPpiList|Include/Library/ThunkPpiList.h
@@ -50,14 +29,7 @@ This is to use relative paths throughout the EDK II source code
   PpiListLib|Include/Library/PpiListLib.h
   SmbiosLib|Include/Library/SmbiosLib.h
   EmuMagicPageLib|Include/Library/EmuMagicPageLib.h
-```
-## Protocols section, defined by this package
 
-* If this package is producing a protocol (function interface) then the function will be listed here.
-* This allows other Modules to discover these protocols and use them.
-
-
-```
 [Protocols]
   gEmuThunkProtocolGuid          = { 0x5CF32E0B, 0x8EDF, 0x2E44, { 0x9C, 0xDA, 0x93, 0x20, 0x5E, 0x99, 0xEC, 0x1C } }
   gEmuIoThunkProtocolGuid        = { 0x453368F6, 0x7C85, 0x434A, { 0xA9, 0x8A, 0x72, 0xD1, 0xB7, 0xFF, 0xA9, 0x26 } }
@@ -68,15 +40,7 @@ This is to use relative paths throughout the EDK II source code
 
 [Ppis]
   gEmuThunkPpiGuid               = { 0xE113F896, 0x75CF, 0xF640, { 0x81, 0x7F, 0xC8, 0x5A, 0x79, 0xE8, 0xAE, 0x67 } }
-```
-## Guids section, Guids defined by this package
 
-* If there are data structures produced by this package, they will need a GUID to identify them.
-* *Remember*, UEFI / EDK II only know about GUIDs and not a user friendly name.
-* The fist example is the GUID for the PCDs
-* All Packages will probably have some PCDs that it will define and thus will define a GUID to associate with the PCD data structures.
-
-```
 [Guids]
   gEmulatorPkgTokenSpaceGuid  = { 0x4F792E68, 0xE8C8, 0x794E, { 0xB1, 0xD8, 0x37, 0x03, 0xF3, 0xF2, 0xD5, 0xA5 } }
   gEmuSystemConfigGuid       = { 0xF8626165, 0x6CEB, 0x924A, { 0xBA, 0xFC, 0xF1, 0x3A, 0xB9, 0xD6, 0x57, 0x28 } }
@@ -84,16 +48,6 @@ This is to use relative paths throughout the EDK II source code
   gEmuPhysicalDisksGuid      = { 0xf2bdcc96, 0x8985, 0x11db, { 0x87, 0x19, 0x00, 0x40, 0xd0, 0x2b, 0x18, 0x35 } }
   gEmuRedfishServiceGuid     = { 0x3fb208ac, 0x2185, 0x498c, { 0xbf, 0x46, 0xdc, 0x23, 0xda, 0x58, 0x7b, 0x55 } }
 
-```
-## PCDs Section, Declared by this package
-
-* The PCDs in this section are all produced / created by this package.
-* They are unique because of the GUID from the GUID section.  
-* The PCDs listed will be given the best known default to start with and then if a Platform would like a different value it should be updated in the corresponding .DSC for the platform.
-
-**NOTE** It is important to have the last number for each defined PCD be a Token value defined as a unique hex number for this file.
-
-```
 [PcdsFeatureFlag]
   ## If TRUE, if symbols only load on breakpoints and gdb entry
   gEmulatorPkgTokenSpaceGuid.PcdEmulatorLazyLoadSymbols|TRUE|BOOLEAN|0x00020000
@@ -132,13 +86,7 @@ This is to use relative paths throughout the EDK II source code
   # The user ID and password are fixed as below.
   gEmulatorPkgTokenSpaceGuid.PcdRedfishServieUserId|"admin"|VOID*|0x00001022
   gEmulatorPkgTokenSpaceGuid.PcdRedfishServiePassword|"pwd123456"|VOID*|0x00001023
-```
-## Patchable PCDs Section 
 
-If it is a patchable PCDs, other tools can change the values outside of the Build
-
-
-```
 [PcdsFixedAtBuild, PcdsPatchableInModule]
   gEmulatorPkgTokenSpaceGuid.PcdEmuBootMode|1|UINT32|0x00001006
   gEmulatorPkgTokenSpaceGuid.PcdEmuFirmwareVolume|L"..\\Fv\\Fv_Recovery.fd"|VOID*|0x00001009
@@ -173,4 +121,6 @@ If it is a patchable PCDs, other tools can change the values outside of the Buil
   gEmulatorPkgTokenSpaceGuid.PcdEmuCpuSpeed|L"3000"|VOID*|0x00001008
   gEmulatorPkgTokenSpaceGuid.PcdEmuMpServicesPollingInterval|0x100|UINT64|0x0000101a
 
-```
+# UEFI / EDK II Training
+
+  gEmulatorPkgTokenSpaceGuid.PcdSampleAppString|L"SampleApp String\n"|VOID*|0x00001099

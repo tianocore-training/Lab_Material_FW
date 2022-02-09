@@ -1,7 +1,7 @@
 <!--- @file
   Readme.md for UEFI / EDK II Training  Lab Material FW
 
-  Copyright (c) 2020-2021, Intel Corporation. All rights reserved.<BR>
+  Copyright (c) 2020-2022, Intel Corporation. All rights reserved.<BR>
 
   Redistribution and use in source (original document form) and 'compiled'
   forms (converted to PDF, epub, HTML and other formats) with or without
@@ -41,7 +41,7 @@ Before downloading this Lab Material, First download edk2 and edk2-libc to the d
 ```
 Mkdir edk2-ws
 cd edk2-ws
-git clone -b Edk2Lab_21Q3 https://github.com/tianocore-training/edk2.git
+git clone -b Edk2Lab_22Q1 https://github.com/tianocore-training/edk2.git
 git clone https://github.com/tianocore/edk2-libc.git
 
 cd ..

@@ -3,7 +3,7 @@
 #
 #  This is a simple shell application
 #
-#  Copyright (c) 2009-2022, Intel Corporation.
+#  Copyright (c) 2009, Intel Corporation.
 #
 #  All rights reserved. This program and the accompanying materials
 #  are licensed and made available under the terms and conditions of the BSD License
@@ -16,10 +16,10 @@
 #**/
 
 [Defines]
-  INF_VERSION                    = 0x00010005
-  BASE_NAME                      = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  FILE_GUID                      = #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  MODULE_TYPE                    = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  INF_VERSION                    = 1.25
+  BASE_NAME                      = SampleApp
+  FILE_GUID                      = 10C75C00-3052-4467-9ED8-7196CAAF610F
+  MODULE_TYPE                    = UEFI_APPLICATION
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = UefiMain
 
@@ -30,14 +30,17 @@
 #
 
 [Sources]
-  XXXXXXX
+  SampleApp.c
 
 [Packages]
-#  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
+  MdePkg/MdePkg.dec
+  
 [LibraryClasses]
-#  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
+   UefiBootServicesTableLib
+   UefiApplicationEntryPoint
+   UefiLib
+   DebugLib
+ 
 [Guids]
 
 [Ppis]
@@ -47,3 +50,5 @@
 [FeaturePcd]
 
 [Pcd]
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS = /Od /Oy-

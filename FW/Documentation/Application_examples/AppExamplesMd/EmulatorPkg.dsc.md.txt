@@ -1,17 +1,41 @@
+# DSC File for EmulatorPkg
+
+## Header
+ 
+```
 ## @file
 # UEFI/PI Emulation Platform with UEFI HII interface supported.
 #
 # The Emulation Platform can be used to debug individual modules, prior to creating
 # a real platform. This also provides an example for how an DSC is created.
 #
-# Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2006 - 2022, Intel Corporation. All rights reserved.<BR>
 # Portions copyright (c) 2010 - 2011, Apple Inc. All rights reserved.<BR>
 # Copyright (c) Microsoft Corporation.
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
+```
+## List of Defines,  Package Name, GUILD, Version ...
 
+The list of defines is similar to the DEC file, the first 9 are key words as part of the EDK II DSC spec. and can be listed in any order.
+
+* The DSC Version is User defined and is Number dot Number 
+* The DSC Spec number is what version of the EDK II DEC spec this DSC File is at
+ 
+Output directory – this is the build directory output starting from the WORKSPACE.  Notice for this file there is a MACRO used “$(WORKSPACE)” without this it is the relative path of the invocation of the build command.
+
+Supported architectures – list which ones this platform supports, can be multiple
+
+Build Target – listed in target.txt
+
+SKU ID identifier – this can be used to set different defaults with PCDs
+
+Flash Definition – typically in the same directory as the DSC and DEC
+
+
+```
 [Defines]
   PLATFORM_NAME                  = EmulatorPkg
   PLATFORM_GUID                  = 05FD064D-1073-E844-936C-A0E16317107D
@@ -24,12 +48,17 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = EmulatorPkg/EmulatorPkg.fdf
 
-# For UEFI / EDK II Training
+# For UEFI / EDK II Training 
 # This flag is to enable a different ver string for building of the ShellPkg
 # These can be changed on the command line.
-#
-  DEFINE  ADD_SHELL_STRING         = TRUE
+```
+## Define Switches to determine some configurations
 
+The following is a list of MACRO definitions that can be passe from the build command using the “-D” switch.  If used, the value changes to “TRUE”
+
+
+```
+  DEFINE  ADD_SHELL_STRING         = FALSE
   #
   # Network definition
   #
@@ -45,12 +74,19 @@
   # Redfish definition
   #
   DEFINE REDFISH_ENABLE = FALSE
-
+```  
+## Sku ID
+```
 [SkuIds]
   0|DEFAULT
+```
+## Library Classes - Global. Notice the DSC file is pointing to the .inf file
 
-!include MdePkg/MdeLibs.dsc.inc
+The way this works is all modules need to point to an implementation of a library that they are referencing.  It is done in the .DSC file.
 
+Typically, the DSC will have a superset of library mappings such that all modules will get a defined set of mappings.
+
+```
 [LibraryClasses]
   #
   # Entry point
@@ -122,8 +158,8 @@
   PeiServicesTablePointerLib|EmulatorPkg/Library/PeiServicesTablePointerLibMagicPage/PeiServicesTablePointerLibMagicPage.inf
   DebugLib|MdeModulePkg/Library/PeiDxeDebugLibReportStatusCode/PeiDxeDebugLibReportStatusCode.inf
 
-  # Example for UEFI / EDK II Training
-  #DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+  # Example for UEFI / EDK II Training 
+  #DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf  
 
   LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
   CpuExceptionHandlerLib|MdeModulePkg/Library/CpuExceptionHandlerLibNull/CpuExceptionHandlerLibNull.inf
@@ -141,12 +177,16 @@
   OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
   PlatformSecureLib|SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
   AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
-  SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
-  SecureBootVariableProvisionLib|SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.inf
 !else
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
 !endif
+```
+## Library Classes for the the UEFI Boot phases
 
+This next set of Library mappings if the module is `MODULE_TYPE = SEC`, Then that module will get the following library implementation assignment.
+
+
+```
 [LibraryClasses.common.SEC]
   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
@@ -216,6 +256,15 @@
   PeCoffExtraActionLib|EmulatorPkg/Library/DxeEmuPeCoffExtraActionLib/DxeEmuPeCoffExtraActionLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   TimerLib|EmulatorPkg/Library/DxeTimerLib/DxeTimerLib.inf
+```
+## PCDs Section, changing the default value by this package
+
+The DSC file is where the EDK II developer would change the PCD setting to something other than the default set by the DEC file.
+
+If the DEC default is okay there is no reason to include it in the DSC
+
+
+```
 
 [PcdsFeatureFlag]
   gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSwitchToLongMode|FALSE
@@ -290,7 +339,9 @@
   gEfiRedfishPkgTokenSpaceGuid.PcdRedfishRestExServiceAccessModeInBand|False
   gEfiRedfishPkgTokenSpaceGuid.PcdRedfishDiscoverAccessModeInBand|False
 !endif
-
+```
+## Dynamic PCDs Section, changing the default value by this package
+```
 [PcdsDynamicDefault.common.DEFAULT]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64|0
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase64|0
@@ -300,7 +351,19 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn|L"Setup"|gEmuSystemConfigGuid|0x0|80
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow|L"Setup"|gEmuSystemConfigGuid|0x4|25
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|L"Timeout"|gEfiGlobalVariableGuid|0x0|10
+```
+## Finally the Components section, which every DSC MUST have
 
+This section lists the modules to compile and link
+
+Note, some of the modules can have sub-sections using angle brackets “<” “>” to scope to other definitions, boot options and library mappings.
+
+If a sub-section is defined for the module listing the syntax is to have an initial curly bracket “{“ followed by the list of sections, then a final closing curly bracket “}”
+
+See the example where the inf for PeiMain.inf is included below
+
+
+```
 [Components]
 !if "IA32" in $(ARCH) || "X64" in $(ARCH)
   !if "MSFT" in $(FAMILY) || $(WIN_HOST_BUILD) == TRUE
@@ -462,13 +525,13 @@
   }
 !endif
 
-# For UEFI / EDK II Training
+# For UEFI / EDK II Training  
   ShellPkg/Application/Shell/Shell.inf {
     <LibraryClasses>
       ShellCommandLib|ShellPkg/Library/UefiShellCommandLib/UefiShellCommandLib.inf
       NULL|ShellPkg/Library/UefiShellLevel2CommandsLib/UefiShellLevel2CommandsLib.inf
       NULL|ShellPkg/Library/UefiShellLevel1CommandsLib/UefiShellLevel1CommandsLib.inf
-!if $(ADD_SHELL_STRING) == TRUE
+!if $(ADD_SHELL_STRING) == TRUE 
 	# Training Lib for build switch lab
       NULL|ShellPkg/Library/UefiShellLevel3CommandsLib_Training_Lib/UefiShellLevel3Commands_Training_Lib.inf
 !else
@@ -509,9 +572,9 @@
 # UEFI / EDK II Training Class
 
 # Add new modules here
-
- SampleApp/SampleApp.inf
- 
+```
+## Build Options Section
+```
 
 [BuildOptions]
   #
@@ -535,3 +598,14 @@
   GCC:DEBUG_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
   GCC:NOOPT_CLANGPDB_*_DLINK_FLAGS = /EXPORT:InitializeDriver=$(IMAGE_ENTRY_POINT) /BASE:0x10000
 !endif
+```
+## Adding more modules, etc. done by adding more sections to the end of the file
+```
+[Components]
+MyDummyDriver/MyDummyDriver.inf
+
+[LibraryClasses.common.UEFI_DRIVER]
+  HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+
+
+```
