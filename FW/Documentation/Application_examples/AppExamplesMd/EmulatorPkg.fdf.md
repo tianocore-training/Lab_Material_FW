@@ -11,6 +11,8 @@
 ```
 ## The FD Section 
 - produces a file Fv_Recovery.FD in the build outputs directory 
+- Must have a FD (Flash Device) and FV (Firmware Volume) Section
+
 ```
 [FD.Fv_Recovery]
 #
@@ -26,6 +28,7 @@ NumBlocks     = 0x5a
 ```
 ## FvRecovery Firmware Volume 
 - located a offset 0 with Length 0x580000 
+- Notice for the Emulator this is starting at offset 0 but for actual Intel Arch platform the FvRecovery FV should be near the top.
 ```
 0x00000000|0x00580000
 gEmulatorPkgTokenSpaceGuid.PcdEmuFlashFvRecoveryBase|gEmulatorPkgTokenSpaceGuid.PcdEmuFlashFvRecoverySize
@@ -125,7 +128,9 @@ READ_LOCK_STATUS   = TRUE
 #
 ```
 ## The Apriori section 
-- will dispatch those modules liste first
+- will dispatch those modules listed first
+- For EmulatorPkg there is one for PEI and one for DXE.  Typically these would be in different FV on  normal system firmware
+
 ```
 #
 #  PEI Apriori file example, more PEIM module added later.
@@ -139,6 +144,10 @@ APRIORI DXE {
   INF  MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
   INF  MdeModulePkg/Universal/Metronome/Metronome.inf
   }
+```
+## List of modules included in the FvRecovery FV 
+- this is the order by the PEI and DXe dispatchers
+```
 INF  EmulatorPkg/Sec/Sec.inf
 INF  MdeModulePkg/Core/Pei/PeiMain.inf
 INF  MdeModulePkg/Universal/PCD/Pei/Pcd.inf
@@ -210,7 +219,12 @@ INF  MdeModulePkg/Universal/LoadFileOnFv2/LoadFileOnFv2.inf
 INF  RuleOverride = UI MdeModulePkg/Application/UiApp/UiApp.inf
 INF  MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
 INF  MdeModulePkg/Universal/DriverSampleDxe/DriverSampleDxe.inf
+```
+## Example Including another file with another list of Modules
+## Secure Boot 
+- Notice only included by the SECURE_BOOT_ENABLE macro 
 
+```
 #
 # Secure Boot Key Enroll
 #
@@ -218,7 +232,7 @@ INF  MdeModulePkg/Universal/DriverSampleDxe/DriverSampleDxe.inf
 INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
 !endif
 ```
-## Example Including another file with another list of Modules
+## Network 
 ```
 #
 # Network stack drivers

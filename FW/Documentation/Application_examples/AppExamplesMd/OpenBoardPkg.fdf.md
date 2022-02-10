@@ -12,9 +12,15 @@
 ##
 ```
 ## Include of the Flash map layout
+- The included file will list the mappings of all the FV with Offesets and sizes
+
 ```
 [Defines]
    !include $(PROJECT)/Include/Fdf/FlashMapInclude.fdf
+```
+## FD Section
+
+```
 
 ################################################################################
 #
@@ -43,6 +49,9 @@ NumBlocks     = $(FLASH_NUM_BLOCKS)
 
 DEFINE SIPKG_DXE_SMM_BIN  = INF
 DEFINE SIPKG_PEI_BIN      = INF
+```
+Some of the values defined below will override the values from the included `FlashMapInclude.fdf` above
+```
 
 # Set FLASH_REGION_FV_RECOVERY_OFFSET to PcdNemCodeCacheBase, because macro expression is not supported.
 # So, PlatformSecLib uses PcdBiosAreaBaseAddress + PcdNemCodeCacheBase to get the real CodeCache base address.
@@ -64,6 +73,17 @@ SET gIntelFsp2WrapperTokenSpaceGuid.PcdFspmBaseAddress       = $(gSiPkgTokenSpac
 SET gIntelFsp2WrapperTokenSpaceGuid.PcdFspsBaseAddress       = $(gSiPkgTokenSpaceGuid.PcdBiosAreaBaseAddress) + $(gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSOffset)
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashAreaBaseAddress    = gSiPkgTokenSpaceGuid.PcdBiosAreaBaseAddress
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashAreaSize           = gSiPkgTokenSpaceGuid.PcdBiosSize
+```
+## List the FD region layout
+- correspond to the locations of different images within the flash device.
+- Regions must be defined in ascending order and may not overlap.
+-  Offset|Size
+- PcdOffsetCName|PcdSizeCName
+- PcdBaseCName|PcdSizeCname     
+   - Typically the Base = offeset and the size is the same 
+- RegionType <FV, DATA, or FILE>
+
+```
 ################################################################################
 #
 # Following are lists of FD Region layout which correspond to the locations of different
@@ -80,6 +100,9 @@ SET gMinPlatformPkgTokenSpaceGuid.PcdFlashAreaSize           = gSiPkgTokenSpaceG
 # Fv Size can be adjusted
 #
 ################################################################################
+```
+## NV Variable Store
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageVariableOffset|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
 #NV_VARIABLE_STORE
@@ -120,7 +143,9 @@ DATA = {
   #FORMATTED: 0x5A #HEALTHY: 0xFE #Reserved: UINT16 #Reserved1: UINT32
   0x5A, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 }
-
+```
+## FTW working region
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingOffset|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
 #NV_FTW_WORKING
@@ -135,58 +160,79 @@ DATA = {
   0xE0, 0x1F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 }
 
+```
+
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareOffset|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
 gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase|gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
 #NV_FTW_SPARE
+```
+
+```
 
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedSize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedSize
 FV = FvAdvanced
+```
+```
 
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvSecurityOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvSecuritySize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvSecurityBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvSecuritySize
 FV = FvSecurity
+```
 
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvOsBootOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvOsBootSize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvOsBootBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvOsBootSize
 FV = FvOsBoot
+```
 
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvUefiBootOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvUefiBootSize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvUefiBootBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvUefiBootSize
 FV = FvUefiBoot
-
+```
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPostMemoryOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPostMemorySize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPostMemoryBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPostMemorySize
 FV = FvPostMemory
-
+```
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSSize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspSSize
 # FSP_S Section
 FILE = $(PLATFORM_FSP_BIN_PACKAGE)/Fsp_Rebased_S.fd
-
+```
+```
 gSiPkgTokenSpaceGuid.PcdFlashMicrocodeFvOffset|gSiPkgTokenSpaceGuid.PcdFlashMicrocodeFvSize
 gSiPkgTokenSpaceGuid.PcdFlashMicrocodeFvBase|gSiPkgTokenSpaceGuid.PcdFlashMicrocodeFvSize
 #Microcode
 FV = FvMicrocode
-
+```
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMSize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspMSize
 # FSP_M Section
 FILE = $(PLATFORM_FSP_BIN_PACKAGE)/Fsp_Rebased_M.fd
-
+```
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspTOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspTSize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspTBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspTSize
 # FSP_T Section
 FILE = $(PLATFORM_FSP_BIN_PACKAGE)/Fsp_Rebased_T.fd
-
+```
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedPreMemoryOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedPreMemorySize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedPreMemoryBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedPreMemorySize
 FV = FvAdvancedPreMemory
-
+```
+The following FV is where the reset vector would be located
+```
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemoryOffset|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemorySize
 gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemoryBase|gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemorySize
 FV = FvPreMemory
 ```
+
 ## Firmware Volumes that are going to be created
 ```
 ################################################################################

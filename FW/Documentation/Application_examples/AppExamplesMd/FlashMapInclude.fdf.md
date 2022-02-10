@@ -1,3 +1,5 @@
+# Flash map Include file for the family of the Whiskey Lake
+
 ```
 ## @file
 #  Flash map for the UpXtreme Board.
@@ -23,6 +25,10 @@ SET gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageOffset           = 0x00000000
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageSize             = 0x00040000  #
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageVariableOffset   = 0x00000000  # Flash addr (0xFF950000)
 SET gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize    = 0x0001E000  #
+```
+- Notice how the above 2 areas overlap - starting at the same offset but different sizes 
+- the code uses the GUID to distinguish
+```
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingOffset = 0x0001E000  # Flash addr (0xFF96E000)
 SET gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize  = 0x00002000  #
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareOffset   = 0x00020000  # Flash addr (0xFF970000)
@@ -47,6 +53,9 @@ SET gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspTOffset              = 0x0063A000
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashFvFspTSize                = 0x00006000  #
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedPreMemoryOffset = 0x00640000  # Flash addr (0xFFF90000)
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashFvAdvancedPreMemorySize   = 0x00010000  #
+```
+- this is where the Reset vector code will reside
+```
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemoryOffset         = 0x00650000  # Flash addr (0xFFFA0000)
 SET gMinPlatformPkgTokenSpaceGuid.PcdFlashFvPreMemorySize           = 0x00060000  #
 ```

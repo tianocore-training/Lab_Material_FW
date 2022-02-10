@@ -19,7 +19,21 @@
 ```
 ## List of Defines,  Package Name, GUILD, Version ...
 
-msspend 
+The list of defines is similar to the DEC file, the first 9 are key words as part of the EDK II DSC spec. and can be listed in any order.
+
+* The DSC Version is User defined and is Number dot Number 
+* The DSC Spec number is what version of the EDK II DEC spec this DSC File is at
+ 
+Output directory – this is the build directory output starting from the WORKSPACE.  Notice for this file there is a MACRO used “$(WORKSPACE)” without this it is the relative path of the invocation of the build command.
+
+Supported architectures – list which ones this platform supports, can be multiple
+
+Build Target – listed in target.txt
+
+SKU ID identifier – this can be used to set different defaults with PCDs
+
+Flash Definition – typically in the same directory as the DSC and DEC
+
 
 ```
 [Defines]
@@ -39,6 +53,10 @@ msspend
 # These can be changed on the command line.
 ```
 ## Define Switches to determine some configurations
+
+The following is a list of MACRO definitions that can be passe from the build command using the “-D” switch.  If used, the value changes to “TRUE”
+
+
 ```
   DEFINE  ADD_SHELL_STRING         = FALSE
   #
@@ -63,6 +81,11 @@ msspend
   0|DEFAULT
 ```
 ## Library Classes - Global. Notice the DSC file is pointing to the .inf file
+
+The way this works is all modules need to point to an implementation of a library that they are referencing.  It is done in the .DSC file.
+
+Typically, the DSC will have a superset of library mappings such that all modules will get a defined set of mappings.
+
 ```
 [LibraryClasses]
   #
@@ -159,6 +182,10 @@ msspend
 !endif
 ```
 ## Library Classes for the the UEFI Boot phases
+
+This next set of Library mappings if the module is `MODULE_TYPE = SEC`, Then that module will get the following library implementation assignment.
+
+
 ```
 [LibraryClasses.common.SEC]
   PeiServicesLib|EmulatorPkg/Library/SecPeiServicesLib/SecPeiServicesLib.inf
@@ -231,6 +258,12 @@ msspend
   TimerLib|EmulatorPkg/Library/DxeTimerLib/DxeTimerLib.inf
 ```
 ## PCDs Section, changing the default value by this package
+
+The DSC file is where the EDK II developer would change the PCD setting to something other than the default set by the DEC file.
+
+If the DEC default is okay there is no reason to include it in the DSC
+
+
 ```
 
 [PcdsFeatureFlag]
@@ -320,6 +353,16 @@ msspend
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|L"Timeout"|gEfiGlobalVariableGuid|0x0|10
 ```
 ## Finally the Components section, which every DSC MUST have
+
+This section lists the modules to compile and link
+
+Note, some of the modules can have sub-sections using angle brackets “<” “>” to scope to other definitions, boot options and library mappings.
+
+If a sub-section is defined for the module listing the syntax is to have an initial curly bracket “{“ followed by the list of sections, then a final closing curly bracket “}”
+
+See the example where the inf for PeiMain.inf is included below
+
+
 ```
 [Components]
 !if "IA32" in $(ARCH) || "X64" in $(ARCH)
