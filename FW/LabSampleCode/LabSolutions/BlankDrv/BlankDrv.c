@@ -309,11 +309,11 @@ DriverCallback (
   OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
   )
 {
-  BLANKDRV_DEV      *PrivateData;
   EFI_STATUS                      Status;
-  EFI_FORM_ID                     FormId;
+ 
+ 
+  DEBUG ((DEBUG_INFO, "\n:: START Call back , Question ID =0x%08x Type =0x%08x Action = 0x%08x", QuestionId, Type, Action));
 
-    DEBUG ((DEBUG_INFO, "\n:: START Call back , Question ID =0x%08x Type =0x%08x Action = 0x%08x", QuestionId, Type, Action));
 
   if (((Value == NULL) && (Action != EFI_BROWSER_ACTION_FORM_OPEN) && (Action != EFI_BROWSER_ACTION_FORM_CLOSE))||
     (ActionRequest == NULL)) {
@@ -321,10 +321,7 @@ DriverCallback (
   }
 
 
-  FormId = 0;
   Status = EFI_SUCCESS;
-  PrivateData = BLANKDRV_DEV_FROM_THIS (This);
-
   return Status;
 }
 
@@ -519,10 +516,8 @@ UefiMain(
   EFI_HII_STRING_PROTOCOL         *HiiString;
   EFI_FORM_BROWSER2_PROTOCOL      *FormBrowser2;
   EFI_HII_CONFIG_ROUTING_PROTOCOL *HiiConfigRouting;
-  EFI_STRING                      ConfigRequestHdr;
   UINTN                            BufferSize;
   BLANKDRV_DEV      *PrivateData;
-
 
 
 	ZeroMem (&Key, sizeof (EFI_INPUT_KEY));
@@ -551,7 +546,6 @@ UefiMain(
  //
   // Initialize the local variables.
   //
-  ConfigRequestHdr = NULL;
   //
   // Initialize screen dimensions for SendForm().
   // Remove 3 characters from top and bottom
