@@ -1,7 +1,7 @@
 /** @file
   This is a simple shell application
 
-  Copyright (c) 2008-2012, Intel Corporation                                                         
+  Copyright (c) 2008-2022, Intel Corporation                                                         
   All rights reserved. This program and the accompanying materials                          
   are licensed and made available under the terms and conditions of the BSD License         
   which accompanies this distribution.  The full text of the license may be found at        
@@ -13,10 +13,13 @@
 **/
 
 #include <Uefi.h>
+#include <Library/PcdLib.h>
 #include <Library/UefiApplicationEntryPoint.h>
 #include <Library/UefiLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/UefiBootServicesTableLib.h>
+#include <Library/DebugLib.h>
+
 #define CHAR_DOT	0x002E    // '.' in Unicode
 
 /**
@@ -35,37 +38,38 @@ UefiMain (
   IN EFI_HANDLE        ImageHandle,
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
-{
-  	UINTN          EventIndex;
+{	
+        UINTN          EventIndex;
 	BOOLEAN		   ExitLoop;
-    EFI_INPUT_KEY	   Key;
+        EFI_INPUT_KEY	   Key;
 
-    
-	//1 7.3
-   	Print(L"System Table: 0x%p\n",SystemTable); 
+	// 3
+  	Print(L"System Table: 0x%p\n",SystemTable); 
 	
-	//2 7.4
-	Print(L"\nPress any Key to continue : \n\n");
+	// 4
+	Print(L"\nPress any Key to continue : \n");
 	gBS->WaitForEvent (1, &gST->ConIn->WaitForKey, &EventIndex);
-	
-	
-	//3 7.5
-	Print(L"Enter text. Include a dot ('.') in a sentence then <Enter> to exit:\n\n");
-	ZeroMem (&Key, sizeof (EFI_INPUT_KEY));
+
+	// 5
+        // first empty the Keyboard Buffer
 	gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
-	ExitLoop = FALSE;
-	do {
-		gBS->WaitForEvent (1, &gST->ConIn->WaitForKey, &EventIndex);
-		gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
-        Print(L"%c", Key.UnicodeChar);
-	    if (Key.UnicodeChar == CHAR_DOT){
-			ExitLoop = TRUE;
-		}
-	} while (!(Key.UnicodeChar == CHAR_LINEFEED || 
-		       Key.UnicodeChar == CHAR_CARRIAGE_RETURN) || 
-			   !(ExitLoop) );
+	// Check the PCD Feature Flag
+	if (FeaturePcdGet(PcdTypeWriterFeatureEnable)) {
+		Print(L"Enter text. Include a dot ('.') in a sentence then <Enter> to exit:\n");
+		ZeroMem(&Key, sizeof(EFI_INPUT_KEY));
+
+		ExitLoop = FALSE;
+		do {
+			gBS->WaitForEvent(1, &gST->ConIn->WaitForKey, &EventIndex);
+			gST->ConIn->ReadKeyStroke(gST->ConIn, &Key);
+			Print(L"%c", Key.UnicodeChar);
+			if (Key.UnicodeChar == CHAR_DOT) {
+				ExitLoop = TRUE;
+			}
+		} while (!(Key.UnicodeChar == CHAR_CARRIAGE_RETURN) ||
+			!(ExitLoop));
+  }
+  Print(L"\n");
 	
-	Print(L"\n");
-	
-	return EFI_SUCCESS;
+  return EFI_SUCCESS;
 }

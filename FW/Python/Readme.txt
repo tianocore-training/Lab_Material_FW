@@ -1,1 +1,1 @@
-Download and install Python 3.7.x from: https://www.python.org/
+Download and install Python 3.8.x from: https://www.python.org/

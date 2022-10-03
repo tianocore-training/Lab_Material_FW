@@ -131,6 +131,7 @@
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
   VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
   VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
+  VariableFlashInfoLib|MdeModulePkg/Library/BaseVariableFlashInfoLib/BaseVariableFlashInfoLib.inf
   SortLib|MdeModulePkg/Library/BaseSortLib/BaseSortLib.inf
   ShellLib|ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
@@ -509,16 +510,22 @@
 # UEFI / EDK II Training Class
 
 # Add new modules here
-  UnitTestFrameworkPkg/Test/UnitTest/Sample/CheckPrimeUnitTest/CheckPrimeUnitTestUefiShell.inf{
-    <LibraryClasses>
-  	UnitTestLib|UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.inf
-  	UnitTestPersistenceLib|UnitTestFrameworkPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
-        UnitTestResultReportLib|UnitTestFrameworkPkg/Library/UnitTestResultReportLib/UnitTestResultReportLibConOut.inf
-#        UnitTestResultReportLib|UnitTestFrameworkPkg/Library/UnitTestResultReportLib/UnitTestResultReportLibDebugLib.inf
+   UnitTestFrameworkPkg/Test/UnitTest/Sample/CheckPrimeUnitTest/CheckPrimeUnitTestUefiShell.inf{
 
-
+  <LibraryClasses>
+     UnitTestLib|UnitTestFrameworkPkg/Library/UnitTestLib/UnitTestLib.inf
+     UnitTestPersistenceLib|UnitTestFrameworkPkg/Library/UnitTestPersistenceLibNull/UnitTestPersistenceLibNull.inf
+     UnitTestResultReportLib|UnitTestFrameworkPkg/Library/UnitTestResultReportLib/UnitTestResultReportLibConOut.inf
+     NULL|UnitTestFrameworkPkg/Library/UnitTestDebugAssertLib/UnitTestDebugAssertLib.inf
+ 
   <PcdsFixedAtBuild>
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x17
+    gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x17
+
+  <BuildOptions>
+  MSFT:*_*_*_CC_FLAGS  = -D DISABLE_NEW_DEPRECATED_INTERFACES -D EDKII_UNIT_TEST_FRAMEWORK_ENABLED
+  GCC:*_*_*_CC_FLAGS   = -D DISABLE_NEW_DEPRECATED_INTERFACES -D EDKII_UNIT_TEST_FRAMEWORK_ENABLED
+  XCODE:*_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES -D EDKII_UNIT_TEST_FRAMEWORK_ENABLED
+
 }
 
 [BuildOptions]

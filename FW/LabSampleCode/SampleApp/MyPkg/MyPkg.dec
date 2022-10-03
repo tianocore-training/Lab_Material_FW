@@ -1,0 +1,27 @@
+## @file
+#  My Package for UEFI / EDK II Training
+#
+# Package to Test Sample UEFI Applications.
+#
+#
+# Copyright (c) 2022, Intel Corporation. All rights reserved.<BR>
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+[Defines]
+DEC_SPECIFICATION = 0x00010017
+PACKAGE_NAME      = MyPkg
+PACKAGE_VERSION   = 0.1
+PACKAGE_GUID      = 8DA8DB33-C101-457E-ACDE-35254B0D8993
+
+[Includes]
+
+[Guids]
+
+gEfiMyPkgTokenSpaceGuid                      =  {0x188e4998, 0x5a55, 0x41df, { 0x83, 0xc6, 0xdf, 0x9b, 0x1f, 0x79, 0x23, 0xa8 } }
+
+[PcdsFixedAtBuild, PcdsPatchableInModule]
+
+[PcdsFeatureFlag]
+

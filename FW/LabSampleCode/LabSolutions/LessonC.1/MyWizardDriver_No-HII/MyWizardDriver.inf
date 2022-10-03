@@ -41,7 +41,7 @@
 
 [Protocols]
   gEfiDriverBindingProtocolGuid
-  gEfiPciIoProtocolGuid
+  gEfiUsbIoProtocolGuid
   gEfiDriverSupportedEfiVersionProtocolGuid
   gEfiComponentName2ProtocolGuid
   gEfiComponentNameProtocolGuid

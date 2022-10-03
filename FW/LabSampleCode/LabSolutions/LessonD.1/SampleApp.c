@@ -1,7 +1,7 @@
 /** @file
   This is a simple shell application
 
-  Copyright (c) 2008-2012, Intel Corporation                                                         
+  Copyright (c) 2008-2022, Intel Corporation                                                         
   All rights reserved. This program and the accompanying materials                          
   are licensed and made available under the terms and conditions of the BSD License         
   which accompanies this distribution.  The full text of the license may be found at        
@@ -13,6 +13,7 @@
 **/
 
 #include <Uefi.h>
+#include <Library/PcdLib.h>
 #include <Library/UefiApplicationEntryPoint.h>
 #include <Library/UefiLib.h>
 #include <Library/BaseMemoryLib.h>
@@ -40,7 +41,8 @@ UefiMain (
 {
   	UINTN          EventIndex;
 	BOOLEAN		   ExitLoop;
-    EFI_INPUT_KEY	   Key;
+        EFI_INPUT_KEY	   Key;
+
 	DEBUG((EFI_D_INFO, "\r\n>>>>>[UefiMain] Entry point: 0x%p <<<<<<\r\n", UefiMain));
 
 	DEBUG((0xffffffff, "\n\nUEFI Base Training DEBUG DEMO\n"));
@@ -67,30 +69,32 @@ UefiMain (
 	DEBUG((DEBUG_ERROR, " 0x%08x USING DEBUG DEBUG_ERROR\n", (UINTN)(DEBUG_ERROR)));
 
 
-	//1 7.3
+	// 3
   	Print(L"System Table: 0x%p\n",SystemTable); 
 	
-	//2 7.4
-	Print(L"\nPress any Key to continue : \n\n");
+	// 4
+	Print(L"\nPress any Key to continue : \n");
 	gBS->WaitForEvent (1, &gST->ConIn->WaitForKey, &EventIndex);
 	
-	
-	//3 7.5
-	Print(L"Enter text. Include a dot ('.') in a sentence then <Enter> to exit:\n\n");
-	ZeroMem (&Key, sizeof (EFI_INPUT_KEY));
+	// 5
+        // first empty the Keyboard Buffer
 	gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
-	ExitLoop = FALSE;
-	do {
+	// Check the PCD Feature Flag
+	if (FeaturePcdGet(PcdTypeWriterFeatureEnable)) {
+ 	  Print(L"Enter text. Include a dot ('.') in a sentence then <Enter> to exit:\n");
+	  ZeroMem (&Key, sizeof (EFI_INPUT_KEY));
+
+	  ExitLoop = FALSE;
+	  do {
 		gBS->WaitForEvent (1, &gST->ConIn->WaitForKey, &EventIndex);
 		gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
-        Print(L"%c", Key.UnicodeChar);
-	    if (Key.UnicodeChar == CHAR_DOT){
+                Print(L"%c", Key.UnicodeChar);
+	        if (Key.UnicodeChar == CHAR_DOT){
 			ExitLoop = TRUE;
 		}
-	} while (!(Key.UnicodeChar == CHAR_LINEFEED || 
-		       Key.UnicodeChar == CHAR_CARRIAGE_RETURN) || 
+	   } while (!(Key.UnicodeChar == CHAR_CARRIAGE_RETURN) ||
 			   !(ExitLoop) );
-	
+	}
 	Print(L"\n");
 	
 	return EFI_SUCCESS;

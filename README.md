@@ -37,14 +37,21 @@ https://github.com/tianocore-training/Tianocore_Training_Contents/wiki
 
 This lab Material uses the edk2 and edk2-libc
 
-Before downloading this Lab Material, First download edk2 and edk2-libc to the directory `/edk2-ws`:
+Before downloading this Lab Material, First download the open source Simics QSP to the directory `edk2-ws`:
 ```
-Mkdir edk2-ws
-cd edk2-ws
-git clone -b Edk2Lab_22Q1 https://github.com/tianocore-training/edk2.git
-git clone https://github.com/tianocore/edk2-libc.git
-
-cd ..
+$ Mkdir edk2-ws
+$ cd edk2-ws
+$ git clone -b Edk2Lab_22Q3 https://github.com/tianocore-training/edk2.git
+$ git clone https://github.com/tianocore/edk2-libc.git
+$ git clone https://github.com/tianocore/edk2-platforms.git
+$ git clone https://github.com/tianocore/edk2-non-osi.git
+$ git clone https://github.com/intel/FSP.git
+$ cd edk2
+$ git submodule update --init
+$ cd ..
+$ cd edk2-platforms
+$ git reset --hard c546cc01f1517b42470f3ae44d67efcb8ee257fc
+$ cd ..
 ```
 
 Download this Lab Material
@@ -64,7 +71,9 @@ After downloading, Copy Lab_Material_FW/FW/edk2-ws to edk2-ws and overwrite any 
   - edk2Linux
   - edk2-ws 
        - setenv.sh and setenv.bat
+	   - edk2-platforms - for updates to Simics QSP BoardX58Ich10 Openboard package
   - LabSampleCode - solutions for the labs
+  
   
 ####  From Presentations_FW
 - **FW**

@@ -131,6 +131,7 @@
   VarCheckLib|MdeModulePkg/Library/VarCheckLib/VarCheckLib.inf
   VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
   VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
+  VariableFlashInfoLib|MdeModulePkg/Library/BaseVariableFlashInfoLib/BaseVariableFlashInfoLib.inf
   SortLib|MdeModulePkg/Library/BaseSortLib/BaseSortLib.inf
   ShellLib|ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
@@ -227,7 +228,7 @@
  gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes|3
 #   Here is where you would put the HelloWorldPrintString PCD
 # HINT: look at MdeModulePkg.dec for HelloWorldPrintString
-gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintString|L"My New String!\n"
+ gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintString|L"My New String!\n"
 
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdImageProtectionPolicy|0x00000000

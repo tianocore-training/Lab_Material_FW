@@ -143,7 +143,7 @@ MyWizardDriverComponentNameGetControllerName (
   Status = EfiTestManagedDevice (
              ControllerHandle,
              gMyWizardDriverDriverBinding.DriverBindingHandle,
-             &gEfiPciIoProtocolGuid
+             &gEfiUsbIoProtocolGuid
              );
   if (EFI_ERROR (Status)) {
     return Status;

@@ -12,7 +12,7 @@
     WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 **/
 
-
+#include <Library/PcdLib.h>
 #include  <stdio.h>
 #include <Library/UefiBootServicesTableLib.h>
 
@@ -36,6 +36,7 @@ main (
   )
 {
    char c;
+
 // 1
    printf("System Table: %p \n", gST) ; 
 // 2
@@ -43,12 +44,12 @@ main (
    c=(char)getchar();
  
 // 3
-   puts ("Enter text. Include a dot ('.') in a sentence then <Enter> to exit:");
-  do {
-      c=(char)getchar();
-     } while (c != '.');
-
-
+   if (FeaturePcdGet(PcdTypeWriterFeatureEnable)) {
+	   puts("Enter text. Include a dot ('.') in a sentence then <Enter> to exit:");
+	   do {
+		   c = (char)getchar();
+	   } while (c != '.');
+   }
   puts ("\n");
 
   return 0;

@@ -29,14 +29,17 @@
 // UEFI Driver Model Protocols
 //
 #include <Protocol/DriverBinding.h>
+#include <Protocol/HiiDatabase.h>
+#include <Protocol/HiiPackageList.h>
 #include <Protocol/DriverSupportedEfiVersion.h>
 #include <Protocol/ComponentName2.h>
 #include <Protocol/ComponentName.h>
+#include <Protocol/HiiConfigAccess.h>
 
 //
 // Consumed Protocols
 //
-#include <Protocol/PciIo.h>
+#include <Protocol/UsbIo.h>
 
 //
 // Produced Protocols
@@ -50,7 +53,7 @@
 //
 // Driver Version
 //
-#define MY_WIZARD_DRIVER_VERSION  0x00000000
+#define MY_WIZARD_DRIVER_VERSION  0x0000000a
 
 //
 // Protocol instances
@@ -58,12 +61,14 @@
 extern EFI_DRIVER_BINDING_PROTOCOL  gMyWizardDriverDriverBinding;
 extern EFI_COMPONENT_NAME2_PROTOCOL  gMyWizardDriverComponentName2;
 extern EFI_COMPONENT_NAME_PROTOCOL  gMyWizardDriverComponentName;
+extern EFI_HII_CONFIG_ACCESS_PROTOCOL  gMyWizardDriverHiiConfigAccess;
 
 //
 // Include files with function prototypes
 //
 #include "DriverBinding.h"
 #include "ComponentName.h"
+#include "HiiConfigAccess.h"
 #include "SerialIo.h"
 
 #endif

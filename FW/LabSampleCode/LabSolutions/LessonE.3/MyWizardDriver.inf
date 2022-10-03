@@ -49,7 +49,7 @@
 
 [Protocols]
   gEfiDriverBindingProtocolGuid
-  gEfiPciIoProtocolGuid
+  gEfiUsbIoProtocolGuid
   gEfiDriverSupportedEfiVersionProtocolGuid
   gEfiHiiPackageListProtocolGuid
   gEfiHiiDatabaseProtocolGuid

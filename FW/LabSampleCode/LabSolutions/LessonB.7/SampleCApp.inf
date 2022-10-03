@@ -31,15 +31,18 @@
   StdLib/StdLib.dec
   MdePkg/MdePkg.dec
   ShellPkg/ShellPkg.dec
+  AppPkg/AppPkg.dec
+
 
 [LibraryClasses]
   LibC
   LibStdio
   DevShell
-
+  PcdLib
   UefiBootServicesTableLib
 
-
+[FeaturePcd]
+  gAppPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable  ## CONSUMES
 
 [BuildOptions]
   MSFT:*_*_IA32_CC_FLAGS  = /Oi-

@@ -1,0 +1,60 @@
+## @file
+#  TODO: Brief Description of UEFI Driver MyWizardDriver
+#  
+#  TODO: Detailed Description of UEFI Driver MyWizardDriver
+#
+#  TODO: Copyright for UEFI Driver MyWizardDriver
+#  
+#  TODO: License for UEFI Driver MyWizardDriver
+#  
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = MyWizardDriver
+  FILE_GUID                 = 2b9b7a00-f175-11ec-82e4-4485002a4585
+  MODULE_TYPE               = UEFI_DRIVER
+  VERSION_STRING            = 0.1
+  ENTRY_POINT               = MyWizardDriverDriverEntryPoint
+  UNLOAD_IMAGE              = MyWizardDriverUnload
+  UEFI_HII_RESOURCE_SECTION = TRUE
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[Sources]
+  MyWizardDriverNVDataStruc.h
+  MyWizardDriver.h
+  MyWizardDriverE.c
+  ComponentName.c
+  ComponentName.h
+  MyWizardDriver.uni
+  MyWizardDriver.vfr
+  HiiConfigAccess.c
+  HiiConfigAccess.h
+  SerialIo.c
+  SerialIo.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  BaseLib
+  UefiLib
+  DevicePathLib
+  DebugLib
+
+[Protocols]
+  gEfiDriverBindingProtocolGuid
+  gEfiUsbIoProtocolGuid
+  gEfiDriverSupportedEfiVersionProtocolGuid
+  gEfiHiiPackageListProtocolGuid
+  gEfiHiiDatabaseProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+  gEfiSerialIoProtocolGuid
+
+[Guids]
+

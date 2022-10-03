@@ -16,7 +16,7 @@
 #**/
 
 [Defines]
-  INF_VERSION                    = 0x00010005
+  INF_VERSION                    = 1.25
   BASE_NAME                      = SampleApp
   FILE_GUID                      = 10C75C00-3052-4467-9ED8-7196CAAF610F
   MODULE_TYPE                    = UEFI_APPLICATION
@@ -34,12 +34,17 @@
 
 [Packages]
   MdePkg/MdePkg.dec
+  MyPkg/MyPkg.dec
   
 [LibraryClasses]
    UefiBootServicesTableLib
    UefiApplicationEntryPoint
    UefiLib
    DebugLib
+   PcdLib
+
+[FeaturePcd]
+  gEfiMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable  ## CONSUMES
  
 [Guids]
 
@@ -49,6 +54,6 @@
 
 [FeaturePcd]
 
-[Pcd]
+
 [BuildOptions]
   MSFT:*_*_*_CC_FLAGS = /Od /Oy-

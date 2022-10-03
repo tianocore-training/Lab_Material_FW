@@ -200,7 +200,8 @@ INF  MdeModulePkg/Universal/DriverSampleDxe/DriverSampleDxe.inf
 INF SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
 !endif
 
-INF  MyWizardDriver/MyWizardDriver.inf
+INF  MyPkg/MyWizardDriver/MyWizardDriver.inf
+
 #
 # Network stack drivers
 #
