@@ -44,7 +44,7 @@
    PcdLib
 
 [FeaturePcd]
-   gMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable   ## CONSUMES
+   gEfiMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable   ## CONSUMES
 
 [Guids]
 

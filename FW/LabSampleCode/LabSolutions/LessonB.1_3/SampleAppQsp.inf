@@ -50,4 +50,4 @@
 
 
 [Pcd]
-  gMyPkgTokenSpaceGuid.PcdSampleAppString  ## SOMETIMES_CONSUMES
+  gEfiMyPkgTokenSpaceGuid.PcdSampleAppString  ## SOMETIMES_CONSUMES

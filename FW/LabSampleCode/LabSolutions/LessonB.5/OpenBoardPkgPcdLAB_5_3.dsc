@@ -296,7 +296,7 @@
 
 [PcdsFeatureFlag]
 !if   $(ADD_TYPEWRITTER) == TRUE
-    gMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable|TRUE
+    gEfiMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable|TRUE
 !else
-   gMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable|FALSE
+   gEfiMyPkgTokenSpaceGuid.PcdTypeWriterFeatureEnable|FALSE
 !endif
